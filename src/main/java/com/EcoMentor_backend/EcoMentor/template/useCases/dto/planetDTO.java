@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.template.useCases.dto;
 
 import com.EcoMentor_backend.EcoMentor.template.entity.Planet;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class planetDTO {
     /*
 

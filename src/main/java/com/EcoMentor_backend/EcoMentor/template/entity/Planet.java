@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.template.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor //creates automatically a constructor with all arguments
 @NoArgsConstructor //creates automatically a constructor without any arguments
+@Builder
 public class Planet {
     
     @Id

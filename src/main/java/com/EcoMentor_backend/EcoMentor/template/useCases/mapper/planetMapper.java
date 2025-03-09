@@ -25,12 +25,12 @@ public class planetMapper {
         if (dto == null) {
             return null;
         }
-        Planet planet = new Planet();
-        planet.setName(dto.getName());
-        planet.setDiameterKm(dto.getDiameterKm());
-        planet.setDiscoveryDate(dto.getDiscoveryDate());
-        planet.setPlanetType(dto.getPlanetType());
 
-        return planet;
+        return Planet.builder()
+                .name(dto.getName())
+                .diameterKm(dto.getDiameterKm())
+                .discoveryDate(dto.getDiscoveryDate())
+                .planetType(dto.getPlanetType())
+                .build();
     }
 }

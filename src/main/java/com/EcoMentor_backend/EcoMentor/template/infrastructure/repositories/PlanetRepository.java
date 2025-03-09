@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface planetRepository extends JpaRepository<Planet, Long> {
+public interface PlanetRepository extends JpaRepository<Planet, Long> {
     //check if a planet with this name already exists
     boolean existsByName(String name);
 
