@@ -1,6 +1,5 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.entity;
 
-
 import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
 import jakarta.persistence.*;
@@ -16,8 +15,8 @@ import java.util.ArrayList;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "certificate")
 @Data
-@AllArgsConstructor //creates automatically a constructor with all arguments
-@NoArgsConstructor //creates automatically a constructor without any arguments
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Certificate {
     @Id
@@ -27,22 +26,15 @@ public class Certificate {
     private CertificateType certificateType;
 
     @ManyToOne
-    @JoinColumn( name = "addressId", referencedColumnName = "addressId")
+    @JoinColumn(name = "addressId", referencedColumnName = "addressId")
     private Address address;
 
     @ManyToMany
     @JoinTable(
             name = "tbl_certificate_recommendations",
-            joinColumns = @JoinColumn (
-                    name = " recommendationId",
-                    referencedColumnName = "recommendationId"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "recommendationId",
-                    referencedColumnName = "recommendationId"
-            )
+            joinColumns = @JoinColumn(name = "certificateId", referencedColumnName = "certificateId"),
+            inverseJoinColumns = @JoinColumn(name = "recommendationId", referencedColumnName = "recommendationId")
     )
     private ArrayList<Recommendation> recommendations;
     //TODO decide definitive data structure for recommendations
-
 }

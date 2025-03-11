@@ -75,7 +75,7 @@ public class OfficialCertificate extends Certificate {
     private float insulation;
 
     @NotNull
-    private float window;
+    private float windowEfficiency;
 
     @NotNull
     private String heatingQualification;
