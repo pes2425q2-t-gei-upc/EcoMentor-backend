@@ -16,8 +16,10 @@ public class GetUserByIdUseCase {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
     }
+
+
     public UserDTO execute(long id) {
-        User user = userRepository.findById(id).orElseThrow(() ->  new RuntimeException("User not found"));
+        User user = userRepository.findUserById(id);
         return userMapper.toDTO(user);
     }
 }
