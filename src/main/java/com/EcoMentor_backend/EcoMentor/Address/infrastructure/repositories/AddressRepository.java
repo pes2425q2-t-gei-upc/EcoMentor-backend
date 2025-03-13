@@ -14,6 +14,9 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     boolean existsAddressByAddressNameAndAddressNumber(String addressName, String addressNumber);
     Address findByAddressId(Long addressId);
     List<Address> findAll();
+    List<Address> findByProvince(String province);
+    List<Address> findByTown(String town);
+
     @Query(value = """
     SELECT * FROM address 
     WHERE ST_DWithin(location, CAST(:point AS geography), :radius)
