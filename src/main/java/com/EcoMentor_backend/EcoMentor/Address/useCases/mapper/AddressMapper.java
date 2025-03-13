@@ -4,9 +4,14 @@ import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import org.springframework.stereotype.Component;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Coordinate;
 
 @Component
 public class AddressMapper {
+
+    private final GeometryFactory geometryFactory = new GeometryFactory();
 
     // Entity to DTO conversion. The id field is included in the DTO.
     public AddressDTO toDTO(Address address) {
@@ -21,8 +26,9 @@ public class AddressMapper {
                 .town(address.getTown())
                 .region(address.getRegion())
                 .province(address.getProvince())
-                .longitude(address.getLongitude())
-                .latitude(address.getLatitude())
+                .longitude((float) address.getLocation().getX())
+                .latitude((float) address.getLocation().getY())
+                .certificates(address.getCertificates()) // TODO: Change to CertificateDTO when available
                 .build();
     }
 
@@ -31,6 +37,7 @@ public class AddressMapper {
         if (dto == null) {
             return null;
         }
+        Point location = geometryFactory.createPoint(new Coordinate(dto.getLongitude(), dto.getLatitude()));
         return Address.builder()
                 .addressName(dto.getAddressName())
                 .addressNumber(dto.getAddressNumber())
@@ -38,8 +45,8 @@ public class AddressMapper {
                 .town(dto.getTown())
                 .region(dto.getRegion())
                 .province(dto.getProvince())
-                .longitude(dto.getLongitude())
-                .latitude(dto.getLatitude())
+                .location(location)
+                .certificates(dto.getCertificates()) // TODO: Change to CertificateDTO when available
                 .build();
     }
 }

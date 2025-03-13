@@ -9,9 +9,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
+import org.locationtech.jts.geom.Point;
 
 @Entity
-@Table(name = "adress", uniqueConstraints = {
+@Table(name = "address", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"addressName", "addressNumber"})
 })
 @Data
@@ -37,9 +38,8 @@ public class Address {
     @NotNull
     private String province;
     @NotNull
-    private float longitude;
-    @NotNull
-    private float latitude;
+    @Column(columnDefinition = "geometry(Point, 4326)") // EPSG 4326 para coordenadas geográficas
+    private Point location; // Es la longitud y latitud de la dirección
 
     @OneToMany(mappedBy = "address")
     private List<Certificate> certificates;

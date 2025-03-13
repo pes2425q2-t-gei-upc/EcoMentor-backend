@@ -22,14 +22,6 @@ public class CreateAddressUserCase {
         if(addressRepository.existsAddressByAddressNameAndAddressNumber(createAddressDTO.getAddressName(), createAddressDTO.getAddressNumber())) {
             throw new RuntimeException("Address already exists");
         }
-        //TODO: Hay que comprobar que el Certificate que me meten exista
-        /*
-        if () {
-            throw new RuntimeException("Certificate does not exist");
-        }
-
-         */
-
         Address address = addressMapper.toEntity(createAddressDTO);
         addressRepository.save(address);
         return address.getAddressId();
