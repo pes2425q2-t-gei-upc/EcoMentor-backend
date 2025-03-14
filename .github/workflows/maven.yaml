@@ -21,6 +21,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK 21 Slim
         uses: actions/setup-java@v4
         with:
@@ -28,8 +29,26 @@ jobs:
           architecture: 'x64'
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
+
+      # if pom.xml is modified, the new key isn't cached and dependencies are redownloaded
+      - name: Set up Maven cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
+
+      - name: Clean Project
+        run: mvn clean
+      - name: Validate Project
+        run: mvn validate
+      - name: Compile Project
+        run: mvn compile
+      - name: Test Project
+        run: mvn test
+      - name: Package Project
+        run: mvn package
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       #- name: Update dependency graph
