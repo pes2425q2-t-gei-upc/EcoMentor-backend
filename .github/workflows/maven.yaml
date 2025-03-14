@@ -52,7 +52,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: Run Docker Container
-        run: docker-compose up -d
+        run: docker compose up -d
 
   build:
     runs-on: ubuntu-latest
@@ -74,4 +74,4 @@ jobs:
     needs: build
     steps:
       - name: Stop Docker Container
-        run: docker-compose down -v
+        run: docker compose down -v
