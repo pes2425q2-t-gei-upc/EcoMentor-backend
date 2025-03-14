@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 
@@ -17,10 +18,11 @@ import java.util.ArrayList;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 public class Certificate {
     @Id
-    private String certificateId; //TODO change to UUIDV7
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long certificateId; //TODO change to UUIDV7
 
     @NotNull
     private CertificateType certificateType;
