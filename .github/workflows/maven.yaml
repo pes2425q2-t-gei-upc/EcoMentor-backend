@@ -10,7 +10,7 @@ name: CI
 
 on:
   push:
-    branches: [ "dev", "ci_pipeline" ]
+    branches: [ "main", "dev", "ci_pipeline" ]
   pull_request:
     branches: [ "main", "dev" ]
 
@@ -51,32 +51,27 @@ jobs:
         if: always()
         run: docker compose down -v
 
-  linter-warning:
+  linter:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Super-linter
-        uses: super-linter/super-linter@v7.3.0
+      - name: Super-linter Warnings
+        uses: super-linter/super-linter/slim@v7.3.0
         env:
           RUN_LOCAL: true
           DISPLAY: "console"
           LINTER_DIRS: "src"
+          SUPER_LINTER_BRANCH: dev
           LINTER_RULE: "warning"
 
-  linter-errors:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Super-linter
-        uses: super-linter/super-linter@v7.3.0
+      - name: Super-linter Errors
+        uses: super-linter/super-linter/slim@v7.3.0
         env:
           RUN_LOCAL: true
           DISPLAY: "console"
           LINTER_DIRS: "src"
+          SUPER_LINTER_BRANCH: dev
           LINTER_RULE: "errors"
