@@ -23,7 +23,7 @@ public class GetCertificateByBiomass {
     }
 
     public List<CertificateDTO> execute(boolean biomass) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateBybiomass(biomass);
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByBiomass(biomass);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));

@@ -24,7 +24,7 @@ public class GetCertificateByCo2Qualification {
     }
 
     public List<CertificateDTO> execute(Qualification Co2Qualification) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByco2Qualification(Co2Qualification);
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByCo2Qualification(Co2Qualification);
         List<CertificateDTO> certificateDTOs = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOs.add(certificateMapper.toDTO(certificate));

@@ -4,10 +4,7 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.*;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,7 +35,7 @@ public class AddressGetController {
     }
 
     @GetMapping("/{addressId}")
-    public ResponseEntity<AddressDTO> getAddress(Long addressId) {
+    public ResponseEntity<AddressDTO> getAddress(@PathVariable Long addressId) {
         AddressDTO address = getAddressByAddressIdUserCase.execute(addressId);
         return ResponseEntity.ok(address);
     }
@@ -49,13 +46,13 @@ public class AddressGetController {
     }
 
     @GetMapping("/province/{province}")
-    public ResponseEntity<List<AddressDTO>> getAddressByProvince(String province) {
+    public ResponseEntity<List<AddressDTO>> getAddressByProvince(@PathVariable String province) {
         List<AddressDTO> address = getAddressByProvince.execute(province);
         return ResponseEntity.ok(address);
     }
 
     @GetMapping("/town/{town}")
-    public ResponseEntity<List<AddressDTO>> getAddressByTown(String town) {
+    public ResponseEntity<List<AddressDTO>> getAddressByTown(@PathVariable String town) {
         List<AddressDTO> address = getAddressByTownUserCase.execute(town);
         return ResponseEntity.ok(address);
     }

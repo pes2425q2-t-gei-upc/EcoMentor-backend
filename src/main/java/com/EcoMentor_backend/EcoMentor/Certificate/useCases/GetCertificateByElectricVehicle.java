@@ -23,7 +23,7 @@ public class GetCertificateByElectricVehicle {
     }
 
     public List<CertificateDTO> execute(boolean electricVehicle) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByelectricVehicle(electricVehicle);
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByElectricVehicle(electricVehicle);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));

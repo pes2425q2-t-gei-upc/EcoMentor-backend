@@ -19,7 +19,7 @@ public class GetCertificateByCertificateIdUseCase {
     }
 
     public CertificateDTO execute(Long certificateId) {
-        Certificate certificate = certificateRepository.findCertificateBycertificateId(certificateId);
+        Certificate certificate = certificateRepository.findCertificateByCertificateId(certificateId);
         return certificateMapper.toDTO(certificate);
     }
 }

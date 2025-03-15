@@ -22,7 +22,7 @@ public class GetCertificateByClimateZoneUseCase {
         this.certificateMapper = certificateMapper;
     }
     public List<CertificateDTO> execute(String climaticZone) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByclimaticZone(climaticZone);
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByClimateZone(climaticZone);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));

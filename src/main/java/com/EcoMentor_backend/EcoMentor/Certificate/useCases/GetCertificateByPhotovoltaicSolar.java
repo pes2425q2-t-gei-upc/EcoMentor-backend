@@ -23,7 +23,7 @@ public class GetCertificateByPhotovoltaicSolar {
     }
 
     public List<CertificateDTO> execute(boolean photovoltaicSolar) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByphotovoltaicSolar(photovoltaicSolar);
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByPhotovoltaicSolar(photovoltaicSolar);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));

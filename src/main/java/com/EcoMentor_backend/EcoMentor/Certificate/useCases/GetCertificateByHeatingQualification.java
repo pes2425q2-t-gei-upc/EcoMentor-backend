@@ -23,7 +23,7 @@ public class GetCertificateByHeatingQualification {
         this.certificateMapper = certificateMapper;
     }
     public List<CertificateDTO> execute(Qualification heatingQualification) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByheatingQualification(heatingQualification);
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByHeatingQualification(heatingQualification);
         List<CertificateDTO> certificateDTOs = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOs.add(certificateMapper.toDTO(certificate));

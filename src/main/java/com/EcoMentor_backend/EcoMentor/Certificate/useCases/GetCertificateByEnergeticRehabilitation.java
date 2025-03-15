@@ -23,7 +23,7 @@ public class GetCertificateByEnergeticRehabilitation {
     }
 
     public List<CertificateDTO> execute(boolean EnergeticRehabilitation) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByenergeticRehabilitation(EnergeticRehabilitation);
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByEnergeticRehabilitation(EnergeticRehabilitation);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));

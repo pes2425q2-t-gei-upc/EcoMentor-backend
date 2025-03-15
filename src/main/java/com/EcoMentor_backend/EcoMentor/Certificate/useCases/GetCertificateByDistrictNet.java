@@ -23,7 +23,7 @@ public class GetCertificateByDistrictNet {
     }
 
     public List<CertificateDTO> execute(boolean districtNet) {
-        List<OfficialCertificate> certificates = CertificateRepository.findCertificateBydistrictNet(districtNet);
+        List<OfficialCertificate> certificates = CertificateRepository.findCertificateByDistrictNet(districtNet);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));

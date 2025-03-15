@@ -24,7 +24,7 @@ public class GetCertificateByNonRenewablePrimaryQualificationUseCase {
     }
 
     public List<CertificateDTO> execute(Qualification NonRenewablePrimaryQualification) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateBynonRenewablePrimaryQualification(NonRenewablePrimaryQualification);
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByNonRenewablePrimaryQualification(NonRenewablePrimaryQualification);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));

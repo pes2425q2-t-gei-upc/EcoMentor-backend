@@ -24,7 +24,7 @@ public class GetCertificateByACSQualification {
     }
 
 public List<CertificateDTO> execute(Qualification ACSQualification) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByacsQualification(ACSQualification);
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByAcsQualification(ACSQualification);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));

@@ -23,7 +23,7 @@ public class GetCertificateByGeothermal {
     }
 
     public List<CertificateDTO> execute(boolean geothermal) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateBygeothermal(geothermal);
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByGeothermal(geothermal);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));

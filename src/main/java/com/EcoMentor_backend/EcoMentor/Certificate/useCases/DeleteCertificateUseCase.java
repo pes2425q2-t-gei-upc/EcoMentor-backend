@@ -13,7 +13,7 @@ public class DeleteCertificateUseCase {
     public DeleteCertificateUseCase(CertificateRepository certificateRepository) { this.certificateRepository = certificateRepository; }
 
     public void execute(Long certificateId) {
-        Certificate certificate = certificateRepository.findCertificateBycertificateId(certificateId);
+        Certificate certificate = certificateRepository.findCertificateByCertificateId(certificateId);
         if(certificate == null) {
             throw new RuntimeException("Certificate not found");
         }

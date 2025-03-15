@@ -22,7 +22,7 @@ public class GetCertificateByAddressUseCase {
     }
 
     public List<CertificateDTO> execute(Long addressId) {
-        List<Certificate> certificates = certificateRepository.findCertificateByaddress(addressId);
+        List<Certificate> certificates = certificateRepository.findCertificateByAddress_AddressId(addressId);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (Certificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));
