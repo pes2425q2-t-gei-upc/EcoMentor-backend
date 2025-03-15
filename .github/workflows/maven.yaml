@@ -38,6 +38,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: Run Docker Container
+        id: run-container
         run: docker compose up -d
 
       - name: Clean Project
@@ -48,7 +49,14 @@ jobs:
         run: mvn compile
 
       - name: Test Project
+        id: test
         run: mvn test
 
+      - name: Print Test Errors
+        if: steps.test.outcome == 'failure'
+        run: |
+          echo /home/runner/work/EcoMentor-backend/EcoMentor-backend/target/surefire-reports
+
       - name: Stop Docker Container
+        if: steps.run-container.outcome == 'success'
         run: docker compose down -v
