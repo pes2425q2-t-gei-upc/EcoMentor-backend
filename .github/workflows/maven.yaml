@@ -30,13 +30,7 @@ jobs:
 
       - name: Setup Docker
         uses: docker/setup-buildx-action@v2
-      - name: Cache Docker Build
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile', '**/docker-compose.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
+
       - name: Run Docker Container
         id: run-container
         run: docker compose up -d
@@ -53,10 +47,10 @@ jobs:
         continue-on-error: true
         run: mvn test
 
-      - name: Print Job Success
-        if: steps.test.outcome == 'success'
+      - name: Print Job Failed
+        if: failure()
         run: |
-          echo "Success!"
+          echo "Failure!"
 
       - name: Stop Docker Container
         if: steps.run-container.outcome == 'success'
