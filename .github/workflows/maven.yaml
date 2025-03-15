@@ -53,10 +53,10 @@ jobs:
         run: mvn test
 
       - name: Print Test Errors
-        if: steps.test.outcome == 'failure'
+        if: steps.test.outcome == 'failure' || steps.test.outcome == 'cancelled'
         run: |
           echo /home/runner/work/EcoMentor-backend/EcoMentor-backend/target/surefire-reports
 
       - name: Stop Docker Container
-        if: steps.run-container.outcome == 'success'
+        if: always()
         run: docker compose down -v
