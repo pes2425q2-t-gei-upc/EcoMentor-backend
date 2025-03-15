@@ -1,20 +1,17 @@
-package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.dto;
+package com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.sql.Date;
 import java.time.Year;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class CreateOfficialCertificateDTO extends CreateCertificateDTO {
+public class OfficialCertificateDTO extends CertificateDTO {
     private String documentId;
 
 

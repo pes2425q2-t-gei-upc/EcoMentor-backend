@@ -1,6 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.DeleteCertificateUseCase;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.DeleteCertificateUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +25,7 @@ public class CertificateDeleteController {
             deleteCertificateUseCase.execute(certificateId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
-        catch (RuntimeException e) { //! Hay que modificarlo por una exeption personalizada
+        catch (RuntimeException e) { //! Hay que modificarlo por una exception personalizada
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

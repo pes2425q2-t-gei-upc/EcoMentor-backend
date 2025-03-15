@@ -1,11 +1,11 @@
-package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.mapper;
+package com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.dto.CertificateDTO;
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.dto.CreateCertificateDTO;
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.dto.OfficialCertificateDTO;
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.dto.CreateOfficialCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateOfficialCertificateDTO;
 import org.springframework.stereotype.Component;
 
 @Component

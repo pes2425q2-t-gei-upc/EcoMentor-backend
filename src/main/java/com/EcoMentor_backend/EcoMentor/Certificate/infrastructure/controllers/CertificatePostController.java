@@ -1,7 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.CreateCertificateUseCase;
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.dto.CreateCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.CreateCertificateUseCase;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateCertificateDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

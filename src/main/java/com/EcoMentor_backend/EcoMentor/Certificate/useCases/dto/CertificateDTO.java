@@ -1,10 +1,9 @@
-package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.dto;
+package com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto;
 
 import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
 import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

@@ -2,8 +2,8 @@ package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers;
 
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.*;
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.useCases.dto.CertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.*;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
