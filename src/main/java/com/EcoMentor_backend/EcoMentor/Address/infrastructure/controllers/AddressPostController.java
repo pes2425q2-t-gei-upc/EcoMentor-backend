@@ -1,6 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Address.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Address.useCases.CreateAddressUserCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.CreateAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RequestMapping("/api/address")
 public class AddressPostController {
-    private final CreateAddressUserCase createAddressUserCase;
+    private final CreateAddressUseCase createAddressUseCase;
 
-    public AddressPostController(CreateAddressUserCase createAddressUserCase) {
-        this.createAddressUserCase = createAddressUserCase;
+    public AddressPostController(CreateAddressUseCase createAddressUseCase) {
+        this.createAddressUseCase = createAddressUseCase;
     }
     @PostMapping
     public ResponseEntity<Long> createAddress(@RequestBody @Validated CreateAddressDTO createAddressDTO) {
-        Long id = createAddressUserCase.execute(createAddressDTO);
+        Long id = createAddressUseCase.execute(createAddressDTO);
+        if (id == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 }

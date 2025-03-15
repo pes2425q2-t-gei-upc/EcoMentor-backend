@@ -15,17 +15,18 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GetNearAddressUserCase {
+public class GetNearAddressUseCase {
     private final AddressRepository addressRepository;
     private final AddressMapper addressMapper;
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
-    public GetNearAddressUserCase(AddressRepository addressRepository, AddressMapper addressMapper) {
+    public GetNearAddressUseCase(AddressRepository addressRepository, AddressMapper addressMapper) {
         this.addressRepository = addressRepository;
         this.addressMapper = addressMapper;
     }
 
     public List<AddressDTO> execute(double radius, double latitude, double longitude) {
+        radius = radius * 1000; //convert to meters
         Point location = geometryFactory.createPoint(new Coordinate(longitude, latitude));
         List<Address> listAddress = addressRepository.findAddressesWithinDistance(location, radius);
         if (listAddress.isEmpty()) {
