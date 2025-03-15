@@ -51,6 +51,10 @@ jobs:
           key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile', '**/docker-compose.yml') }}
           restore-keys: |
             ${{ runner.os }}-docker-
+      - name: Show Directory Tree
+        run: |
+            echo "Directory structure in the workspace:"
+            ls -R
       - name: Run Docker Container
         run: docker compose up -d
 
