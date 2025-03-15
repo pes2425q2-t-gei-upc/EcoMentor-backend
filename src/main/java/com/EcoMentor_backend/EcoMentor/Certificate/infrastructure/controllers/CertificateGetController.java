@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/certificate")
 public class CertificateGetController {
     private final GetAllCertificatesUseCase getAllCertificatesUseCase;
     private final GetCertificateByCertificateIdUseCase getCertificateByIdUseCase;
@@ -55,87 +55,87 @@ public class CertificateGetController {
         this.getCertificateByBiomass = getCertificateByBiomass;
     }
 
-    @GetMapping("/certificate/all")
+    @GetMapping
     public List<CertificateDTO> getAllCertificateUseCase() {
         return getAllCertificatesUseCase.execute();
     }
 
-    @GetMapping("/certificate/{id}")
-    public CertificateDTO getCertificateByIdUseCase(@PathVariable Long id) {
-        return getCertificateByIdUseCase.execute(id);
+    @GetMapping("/{certificateId}")
+    public CertificateDTO getCertificateByIdUseCase(@PathVariable Long certificateId) {
+        return getCertificateByIdUseCase.execute(certificateId);
     }
 
-    @GetMapping("/certificate/address/{addressId}")
+    @GetMapping("/address/{addressId}")
     public List<CertificateDTO> getCertificateByAddressUseCase(@PathVariable Long addressId) {
         return getCertificateByAddressUseCase.execute(addressId);
     }
 
-    @GetMapping("/certificate/{climateZone}")
+    @GetMapping("/climateZone/{climateZone}")
     public List<CertificateDTO> getCertificateByClimateZoneUseCase(@PathVariable String climateZone) {
         return getCertificateByClimateZoneUseCase.execute(climateZone);
     }
 
-    @GetMapping("/certificate/nonRenewablePrimaryQualification")
+    @GetMapping("/nonRenewablePrimaryQualification/{nonRenewablePrimaryQualification}")
     public List<CertificateDTO> getCertificateByNonRenewablePrimaryQualificationUseCase(@PathVariable Qualification nonRenewablePrimaryQualification) {
         return getCertificateByNonRenewablePrimaryQualificationUseCase.execute(nonRenewablePrimaryQualification);
     }
 
-    @GetMapping("/certificate/{co2Qualification}")
+    @GetMapping("/co2Qualification/{co2Qualification}")
     public List<CertificateDTO> getCertificateByCo2Qualification(@PathVariable Qualification co2Qualification) {
         return getCertificateByCo2Emissions.execute(co2Qualification);
     }
 
-    @GetMapping("/certificate/{acsQualification}")
+    @GetMapping("/acsQualification/{acsQualification}")
     public List<CertificateDTO> getCertificateByACSQualification(@PathVariable Qualification acsQualification) {
         return getCertificateByACSQualification.execute(acsQualification);
     }
 
-    @GetMapping("/certificate/{heatingQualification}")
+    @GetMapping("/heatingQualification/{heatingQualification}")
     public List<CertificateDTO> getCertificateByHeatingQualification(@PathVariable Qualification heatingQualification) {
         return getCertificateByHeatingQualification.execute(heatingQualification);
     }
 
-    @GetMapping("/certificate/{lightingQualification}")
+    @GetMapping("/lightingQualification/{lightingQualification}")
     public List<CertificateDTO> getCertificateByLightingQualification(@PathVariable Qualification lightingQualification) {
         return getCertificateByLightingQualification.execute(lightingQualification);
     }
 
-    @GetMapping("/certificate/{refrigerationQualification}")
+    @GetMapping("/refrigerationQualification/{refrigerationQualification}")
     public List<CertificateDTO> getCertificateByRefrigerationQualification(@PathVariable Qualification refrigerationQualification) {
         return getCertificateByRefrigerationQualification.execute(refrigerationQualification);
     }
 
-    @GetMapping("/certificate/{solarThermal}")
+    @GetMapping("/solarThermal/{solarThermal}")
     public List<CertificateDTO> getCertificateBySolarThermal(@PathVariable boolean solarThermal) {
         return getCertificateBySolarThermal.execute(solarThermal);
     }
 
-    @GetMapping("/certificate/{photovoltaicSolar}")
+    @GetMapping("/photovoltaicSolar/{photovoltaicSolar}")
     public List<CertificateDTO> getCertificateByPhotovoltaicSolar(@PathVariable boolean photovoltaicSolar) {
         return getCertificateByPhotovoltaicSolar.execute(photovoltaicSolar);
     }
 
-    @GetMapping("/certificate/{energeticRehabilitation}")
+    @GetMapping("/energeticRehabilitation/{energeticRehabilitation}")
     public List<CertificateDTO> getCertificateByEnergeticRehabilitation(@PathVariable boolean energeticRehabilitation) {
         return getCertificateByEnergeticRehabilitation.execute(energeticRehabilitation);
     }
 
-    @GetMapping("/certificate/{districtNet}")
+    @GetMapping("/districtNet/{districtNet}")
     public List<CertificateDTO> getCertificateByDistrictNet(@PathVariable boolean districtNet) {
         return getCertificateByDistrictNet.execute(districtNet);
     }
 
-    @GetMapping("/certificate/{electricVehicle}")
+    @GetMapping("/electricVehicle/{electricVehicle}")
     public List<CertificateDTO> getCertificateByElectricVehicle(@PathVariable boolean electricVehicle) {
         return getCertificateByElectricVehicle.execute(electricVehicle);
     }
 
-    @GetMapping("/certificate/{geothermal}")
+    @GetMapping("/geothermal/{geothermal}")
     public List<CertificateDTO> getCertificateByGeothermal(@PathVariable boolean geothermal) {
         return getCertificateByGeothermal.execute(geothermal);
     }
 
-    @GetMapping("/certificate/{biomass}")
+    @GetMapping("/biomass/{biomass}")
     public List<CertificateDTO> getCertificateByBiomass(@PathVariable boolean biomass) {
         return getCertificateByBiomass.execute(biomass);
     }

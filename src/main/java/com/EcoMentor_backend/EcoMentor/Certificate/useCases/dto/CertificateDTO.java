@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,5 +19,5 @@ public class CertificateDTO {
     private Long certificateId;
     private CertificateType certificateType;
     private Address address;
-    private ArrayList<Recommendation> recommendations;
+    private List<Recommendation> recommendations;
 }
