@@ -53,10 +53,10 @@ jobs:
         continue-on-error: true
         run: mvn test
 
-      - name: Print Test Errors
-        if: steps.test.outcome == 'failure'
+      - name: Print Job Success
+        if: steps.test.outcome == 'success'
         run: |
-          echo /home/runner/work/EcoMentor-backend/EcoMentor-backend/target/surefire-reports
+          echo "Success!"
 
       - name: Stop Docker Container
         if: steps.run-container.outcome == 'success'
