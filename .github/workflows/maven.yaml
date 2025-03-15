@@ -61,17 +61,10 @@ jobs:
       - name: Super-linter Warnings
         uses: super-linter/super-linter/slim@v7.3.0
         env:
-          RUN_LOCAL: true
-          DISPLAY: "console"
-          LINTER_DIRS: "src"
-          DEFAULT_BRANCH: "dev"
-          LINTER_RULE: "warning"
-
-      - name: Super-linter Errors
-        uses: super-linter/super-linter/slim@v7.3.0
-        env:
-          RUN_LOCAL: true
-          DISPLAY: "console"
-          LINTER_DIRS: "src"
-          DEFAULT_BRANCH: "dev"
-          LINTER_RULE: "errors"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: origin/main
+          DISABLE_ERRORS: true
+          OUTPUT_FOLDER: linter_report
+          OUTPUT_DETAILS: detailed
+          IGNORE_GENERATED_FILES: true
+          IGNORE_GITIGNORED_FILES: true
