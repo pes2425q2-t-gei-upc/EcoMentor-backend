@@ -64,7 +64,7 @@ jobs:
           RUN_LOCAL: true
           DISPLAY: "console"
           LINTER_DIRS: "src"
-          SUPER_LINTER_BRANCH: dev
+          DEFAULT_BRANCH: "dev"
           LINTER_RULE: "warning"
 
       - name: Super-linter Errors
@@ -73,5 +73,5 @@ jobs:
           RUN_LOCAL: true
           DISPLAY: "console"
           LINTER_DIRS: "src"
-          SUPER_LINTER_BRANCH: dev
+          DEFAULT_BRANCH: "dev"
           LINTER_RULE: "errors"
