@@ -12,11 +12,11 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GetAddressByTownUserCase {
+public class GetAddressByTownUseCase {
     private final AddressRepository addressRepository;
     private final AddressMapper addressMapper;
 
-    public GetAddressByTownUserCase(AddressRepository addressRepository, AddressMapper addressMapper) {
+    public GetAddressByTownUseCase(AddressRepository addressRepository, AddressMapper addressMapper) {
         this.addressRepository = addressRepository;
         this.addressMapper = addressMapper;
     }
