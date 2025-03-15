@@ -44,7 +44,6 @@ jobs:
 
       - name: Test Project
         id: test
-        continue-on-error: true
         run: mvn test
 
 
