@@ -15,7 +15,7 @@ on:
     branches: [ "main", "dev" ]
 
 jobs:
-  setup-maven-and-build:
+  setup-build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,27 +26,7 @@ jobs:
           java-version: '21'
           architecture: 'x64'
           distribution: 'temurin'
-      - name: Check Java Version
-        run: java -version
-      - name: Set up Maven cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            maven-
-
-      - name: Clean Project
-        run: mvn clean
-      - name: Validate Project
-        run: mvn validate
-      - name: Compile Project
-        run: mvn compile
-
-  setup-postgres:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+          cache: 'maven'
 
       - name: Setup Docker
         uses: docker/setup-buildx-action@v2
@@ -57,26 +37,18 @@ jobs:
           key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile', '**/docker-compose.yml') }}
           restore-keys: |
             ${{ runner.os }}-docker-
-      - name: Show Directory Tree
-        run: |
-            echo "Directory structure in the workspace:"
-            ls -R
       - name: Run Docker Container
         run: docker compose up -d
 
-  test:
-    runs-on: ubuntu-latest
-    needs: [ setup-maven-and-build, setup-postgres]
-    steps:
-      - uses: actions/checkout@v4
+      - name: Clean Project
+        run: mvn clean
+      - name: Validate Project
+        run: mvn validate
+      - name: Compile Project
+        run: mvn compile
+
       - name: Test Project
         run: mvn test
-
-  clean:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - uses: actions/checkout@v4
 
       - name: Stop Docker Container
         run: docker compose down -v
