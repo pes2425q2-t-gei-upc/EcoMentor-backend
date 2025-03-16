@@ -15,12 +15,12 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GetNearAddressUserCase {
+public class GetNearAddressUseCase {
     private final AddressRepository addressRepository;
     private final AddressMapper addressMapper;
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
-    public GetNearAddressUserCase(AddressRepository addressRepository, AddressMapper addressMapper) {
+    public GetNearAddressUseCase(AddressRepository addressRepository, AddressMapper addressMapper) {
         this.addressRepository = addressRepository;
         this.addressMapper = addressMapper;
     }
