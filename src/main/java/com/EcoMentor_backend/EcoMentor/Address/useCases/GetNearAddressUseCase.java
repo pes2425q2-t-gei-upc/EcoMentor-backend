@@ -26,6 +26,8 @@ public class GetNearAddressUseCase {
     }
 
     public List<AddressDTO> execute(double radius, double latitude, double longitude) {
+        radius = radius * 1000; //convert to meters
+
         Point location = geometryFactory.createPoint(new Coordinate(longitude, latitude));
         List<Address> listAddress = addressRepository.findAddressesWithinDistance(location, radius);
         if (listAddress.isEmpty()) {

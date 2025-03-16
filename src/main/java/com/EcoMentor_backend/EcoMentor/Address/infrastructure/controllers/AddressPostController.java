@@ -22,6 +22,10 @@ public class AddressPostController {
     @PostMapping
     public ResponseEntity<Long> createAddress(@RequestBody @Validated CreateAddressDTO createAddressDTO) {
         Long id = createAddressUseCase.execute(createAddressDTO);
+
+        if (id == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 }

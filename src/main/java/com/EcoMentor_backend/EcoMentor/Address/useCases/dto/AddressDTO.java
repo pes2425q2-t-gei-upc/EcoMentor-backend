@@ -1,6 +1,5 @@
 package com.EcoMentor_backend.EcoMentor.Address.useCases.dto;
 
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +21,5 @@ public class AddressDTO {
     private String province;
     private float longitude;
     private float latitude;
-    private List<Certificate> certificates; //TODO Hay que cambiarlo por CertificateDTO cuando exista
+    private List<Long> certificatesId;
 }
