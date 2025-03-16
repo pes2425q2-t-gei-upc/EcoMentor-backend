@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Validated
-@RequestMapping("/api/certificates")
+@RequestMapping("/api/certificate")
 public class CertificatePostController {
     private final CreateCertificateUseCase createCertificateUseCase;
 
@@ -21,7 +21,7 @@ public class CertificatePostController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/official_certificates")
+    @PostMapping("/official_certificate")
     public ResponseEntity<Void> createOfficialCertificate(@RequestBody @Validated CreateCertificateDTO officialCertificate) {
         createCertificateUseCase.execute(officialCertificate);
         return ResponseEntity.status(HttpStatus.CREATED).build();

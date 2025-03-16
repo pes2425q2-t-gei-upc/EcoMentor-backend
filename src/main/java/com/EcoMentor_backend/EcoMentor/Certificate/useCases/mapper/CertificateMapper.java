@@ -1,5 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper;
 
+import com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories.AddressRepository;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.mapper.AddressMapper;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
@@ -10,6 +12,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CertificateMapper {
+
+    private final AddressMapper addressMapper;
+    private final AddressRepository addressRepository;
+
+    public CertificateMapper(AddressMapper addressMapper, AddressRepository addressRepository) {
+        this.addressMapper = addressMapper;
+        this.addressRepository = addressRepository;
+    }
 
     public CertificateDTO toDTO(Certificate certificate) {
         if (certificate == null) {
@@ -73,7 +83,7 @@ public class CertificateMapper {
         }
         if(dto instanceof CreateOfficialCertificateDTO createOfficialCertificateDTO) {
             return OfficialCertificate.builder()
-                    .address(createOfficialCertificateDTO.getAddress())
+                    .address(addressRepository.findByAddressId(addressMapper.toEntity(createOfficialCertificateDTO.getCreateAddressDTO()).getAddressId()))
                     .certificateType(createOfficialCertificateDTO.getCertificateType())
                     .recommendations(createOfficialCertificateDTO.getRecommendations())
                     .documentId(createOfficialCertificateDTO.getDocumentId())
@@ -112,7 +122,7 @@ public class CertificateMapper {
         }
         else {
             return Certificate.builder()
-                    .address(dto.getAddress())
+                    .address(addressRepository.findByAddressId(addressMapper.toEntity(dto.getCreateAddressDTO()).getAddressId()))
                     .certificateType(dto.getCertificateType())
                     .recommendations(dto.getRecommendations())
                     .build();
