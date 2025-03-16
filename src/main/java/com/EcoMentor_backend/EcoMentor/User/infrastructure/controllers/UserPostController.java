@@ -24,8 +24,4 @@ public class UserPostController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "API is accessible";
-    }
 }

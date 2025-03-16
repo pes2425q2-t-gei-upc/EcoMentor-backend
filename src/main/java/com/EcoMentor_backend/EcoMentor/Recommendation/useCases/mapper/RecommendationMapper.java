@@ -15,6 +15,7 @@ public class RecommendationMapper {
         }
         return RecommendationDTO.builder()
                 .recommendationId(recommendation.getRecommendationId())
+                .certificates(recommendation.getCertificates())
                 .name(recommendation.getName())
                 .canUpgradeIsolation(recommendation.isCanUpgradeIsolation())
                 .upgradedIsolation(recommendation.getUpgradedIsolation())
@@ -28,7 +29,7 @@ public class RecommendationMapper {
                 .upgradedHeat(recommendation.getUpgradedHeat())
                 .io(recommendation.getIo())
                 .ir(recommendation.getIr())
-                .is(recommendation.getIs())
+                .iss(recommendation.getIss())
                 .r(recommendation.getR())
                 .r0(recommendation.getR0())
                 .upgradedICEE(recommendation.getUpgradedICEE())
@@ -42,6 +43,7 @@ public class RecommendationMapper {
             return null;
         }
         return Recommendation.builder()
+                .certificates(dto.getCertificates())
                 .name(dto.getName())
                 .canUpgradeIsolation(dto.isCanUpgradeIsolation())
                 .UpgradedIsolation(dto.getUpgradedIsolation())
@@ -55,7 +57,7 @@ public class RecommendationMapper {
                 .UpgradedHeat(dto.getUpgradedHeat())
                 .Io(dto.getIo())
                 .Ir(dto.getIr())
-                .Is(dto.getIs())
+                .Iss(dto.getIss())
                 .R(dto.getR())
                 .R0(dto.getR0())
                 .UpgradedICEE(dto.getUpgradedICEE())

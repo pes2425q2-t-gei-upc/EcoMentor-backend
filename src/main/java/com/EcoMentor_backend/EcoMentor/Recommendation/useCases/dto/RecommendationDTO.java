@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,6 +15,7 @@ import java.util.List;
 @Builder
 public class RecommendationDTO {
     private Long recommendationId;
+    private List<Certificate> certificates;
     private String name;
     private boolean canUpgradeIsolation;
     private float upgradedIsolation;
@@ -27,7 +29,7 @@ public class RecommendationDTO {
     private float upgradedHeat;
     private float io;
     private float ir;
-    private float is;
+    private float iss;
     private float r;
     private float r0;
     private float upgradedICEE;
