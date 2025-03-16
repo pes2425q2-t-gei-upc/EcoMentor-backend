@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
-@RequestMapping("/api/certificates")
+@RequestMapping("/api/certificate")
 public class CertificateDeleteController {
 
     private final DeleteCertificateUseCase deleteCertificateUseCase;

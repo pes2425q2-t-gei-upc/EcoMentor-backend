@@ -12,48 +12,48 @@ import java.util.List;
 @Validated
 @RequestMapping("/api/address")
 public class AddressGetController {
-    private final GetAddressByAddressIdUserCase getAddressByAddressIdUserCase;
-    private final GetAllAddressUserCase getAllAddressUserCase;
-    private final GetNearAddressUserCase getNearAddressUserCase;
-    private final GetAddressByProvince getAddressByProvince;
-    private final GetAddressByTownUserCase getAddressByTownUserCase;
+    private final GetAddressByAddressIdUseCase getAddressByAddressIdUseCase;
+    private final GetAllAddressUseCase getAllAddressUseCase;
+    private final GetNearAddressUseCase getNearAddressUseCase;
+    private final GetAddressByProvinceUseCase getAddressByProvinceUseCase;
+    private final GetAddressByTownUseCase getAddressByTownUseCase;
 
 
-    public AddressGetController(GetAddressByAddressIdUserCase getAddressByAddressIdUserCase, GetAllAddressUserCase getAllAddressUserCase, GetAddressByProvince getAddressByProvince,
-                                GetNearAddressUserCase getNearAddressUserCase, GetAddressByTownUserCase getAddressByTownUserCase) {
-        this.getAddressByAddressIdUserCase = getAddressByAddressIdUserCase;
-        this.getAddressByProvince = getAddressByProvince;
-        this.getAllAddressUserCase = getAllAddressUserCase;
-        this.getNearAddressUserCase = getNearAddressUserCase;
-        this.getAddressByTownUserCase = getAddressByTownUserCase;
+    public AddressGetController(GetAddressByAddressIdUseCase getAddressByAddressIdUseCase, GetAllAddressUseCase getAllAddressUseCase, GetAddressByProvinceUseCase getAddressByProvinceUseCase,
+                                GetNearAddressUseCase getNearAddressUseCase, GetAddressByTownUseCase getAddressByTownUseCase) {
+        this.getAddressByAddressIdUseCase = getAddressByAddressIdUseCase;
+        this.getAddressByProvinceUseCase = getAddressByProvinceUseCase;
+        this.getAllAddressUseCase = getAllAddressUseCase;
+        this.getNearAddressUseCase = getNearAddressUseCase;
+        this.getAddressByTownUseCase = getAddressByTownUseCase;
     }
 
     @GetMapping
     public ResponseEntity<List<AddressDTO>> getAllAddress() {
-        List<AddressDTO> address = getAllAddressUserCase.execute();
+        List<AddressDTO> address = getAllAddressUseCase.execute();
         return ResponseEntity.ok(address);
     }
 
     @GetMapping("/{addressId}")
     public ResponseEntity<AddressDTO> getAddress(@PathVariable Long addressId) {
-        AddressDTO address = getAddressByAddressIdUserCase.execute(addressId);
+        AddressDTO address = getAddressByAddressIdUseCase.execute(addressId);
         return ResponseEntity.ok(address);
     }
     @GetMapping("/near")
     public ResponseEntity<List<AddressDTO>> getNearAddress(@RequestParam double radius, @RequestParam double latitude, @RequestParam double longitude) {
-        List<AddressDTO> address = getNearAddressUserCase.execute(radius, latitude, longitude);
+        List<AddressDTO> address = getNearAddressUseCase.execute(radius, latitude, longitude);
         return ResponseEntity.ok(address);
     }
 
     @GetMapping("/province/{province}")
     public ResponseEntity<List<AddressDTO>> getAddressByProvince(@PathVariable String province) {
-        List<AddressDTO> address = getAddressByProvince.execute(province);
+        List<AddressDTO> address = getAddressByProvinceUseCase.execute(province);
         return ResponseEntity.ok(address);
     }
 
     @GetMapping("/town/{town}")
     public ResponseEntity<List<AddressDTO>> getAddressByTown(@PathVariable String town) {
-        List<AddressDTO> address = getAddressByTownUserCase.execute(town);
+        List<AddressDTO> address = getAddressByTownUseCase.execute(town);
         return ResponseEntity.ok(address);
     }
 
