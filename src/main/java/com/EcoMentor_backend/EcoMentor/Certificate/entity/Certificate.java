@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -37,6 +38,6 @@ public class Certificate {
             joinColumns = @JoinColumn(name = "certificateId", referencedColumnName = "certificateId"),
             inverseJoinColumns = @JoinColumn(name = "recommendationId", referencedColumnName = "recommendationId")
     )
-    private ArrayList<Recommendation> recommendations;
+    private List<Recommendation> recommendations;
     //TODO decide definitive data structure for recommendations
 }

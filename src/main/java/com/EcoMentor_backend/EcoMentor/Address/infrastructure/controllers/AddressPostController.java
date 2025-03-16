@@ -25,6 +25,7 @@ public class AddressPostController {
         if (id == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 }
