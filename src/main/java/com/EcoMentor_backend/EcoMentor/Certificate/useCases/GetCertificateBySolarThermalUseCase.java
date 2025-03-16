@@ -13,17 +13,17 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GetCertificateByPhotovoltaicSolar {
+public class GetCertificateBySolarThermalUseCase {
     private final OfficialCertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetCertificateByPhotovoltaicSolar(OfficialCertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateBySolarThermalUseCase(OfficialCertificateRepository certificateRepository, CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }
 
-    public List<CertificateDTO> execute(boolean photovoltaicSolar) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByPhotovoltaicSolar(photovoltaicSolar);
+    public List<CertificateDTO> execute(boolean solarThermal) {
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateBySolarThermal(solarThermal);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));

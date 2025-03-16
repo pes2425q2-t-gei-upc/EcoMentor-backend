@@ -4,6 +4,7 @@ package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.*;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,26 +17,26 @@ public class CertificateGetController {
     private final GetCertificateByAddressUseCase getCertificateByAddressUseCase;
     private final GetCertificateByClimateZoneUseCase getCertificateByClimateZoneUseCase;
     private final GetCertificateByNonRenewablePrimaryQualificationUseCase getCertificateByNonRenewablePrimaryQualificationUseCase;
-    private final GetCertificateByCo2Qualification getCertificateByCo2Emissions;
-    private final GetCertificateByACSQualification getCertificateByACSQualification;
-    private final GetCertificateByHeatingQualification getCertificateByHeatingQualification;
-    private final GetCertificateByLightingQualification getCertificateByLightingQualification;
-    private final GetCertificateByRefrigerationQualification getCertificateByRefrigerationQualification;
-    private final GetCertificateBySolarThermal getCertificateBySolarThermal;
-    private final GetCertificateByPhotovoltaicSolar getCertificateByPhotovoltaicSolar;
-    private final GetCertificateByEnergeticRehabilitation getCertificateByEnergeticRehabilitation;
-    private final GetCertificateByDistrictNet getCertificateByDistrictNet;
-    private final GetCertificateByElectricVehicle getCertificateByElectricVehicle;
-    private final GetCertificateByGeothermal getCertificateByGeothermal;
-    private final GetCertificateByBiomass getCertificateByBiomass;
+    private final GetCertificateByCo2QualificationUseCase getCertificateByCo2Emissions;
+    private final GetCertificateByACSQualificationUseCase getCertificateByACSQualification;
+    private final GetCertificateByHeatingQualificationUseCase getCertificateByHeatingQualification;
+    private final GetCertificateByLightingQualificationUseCase getCertificateByLightingQualification;
+    private final GetCertificateByRefrigerationQualificationUseCase getCertificateByRefrigerationQualification;
+    private final GetCertificateBySolarThermalUseCase getCertificateBySolarThermal;
+    private final GetCertificateByPhotovoltaicSolarUseCase getCertificateByPhotovoltaicSolar;
+    private final GetCertificateByEnergeticRehabilitationUseCase getCertificateByEnergeticRehabilitation;
+    private final GetCertificateByDistrictNetUseCase getCertificateByDistrictNet;
+    private final GetCertificateByElectricVehicleUseCase getCertificateByElectricVehicle;
+    private final GetCertificateByGeothermalUseCase getCertificateByGeothermal;
+    private final GetCertificateByBiomassUseCase getCertificateByBiomass;
 
     public CertificateGetController(GetAllCertificatesUseCase getAllCertificatesUseCase, GetCertificateByCertificateIdUseCase getCertificateByIdUseCase, GetCertificateByAddressUseCase getCertificateByAddressUseCase, GetCertificateByClimateZoneUseCase getCertificateByClimateZoneUseCase
     , GetCertificateByNonRenewablePrimaryQualificationUseCase getCertificateByNonRenewablePrimaryQualificationUseCase
-    , GetCertificateByCo2Qualification getCertificateByCo2Emissions, GetCertificateByACSQualification getCertificateByACSQualification, GetCertificateByHeatingQualification getCertificateByHeatingQualification
-    , GetCertificateByLightingQualification getCertificateByLightingQualification, GetCertificateByRefrigerationQualification getCertificateByRefrigerationQualification
-    , GetCertificateBySolarThermal getCertificateBySolarThermal, GetCertificateByPhotovoltaicSolar getCertificateByPhotovoltaicSolar, GetCertificateByEnergeticRehabilitation getCertificateByEnergeticRehabilitation
-    , GetCertificateByDistrictNet getCertificateByDistrictNet, GetCertificateByElectricVehicle getCertificateByElectricVehicle, GetCertificateByGeothermal getCertificateByGeothermal
-    , GetCertificateByBiomass getCertificateByBiomass) {
+    , GetCertificateByCo2QualificationUseCase getCertificateByCo2Emissions, GetCertificateByACSQualificationUseCase getCertificateByACSQualification, GetCertificateByHeatingQualificationUseCase getCertificateByHeatingQualification
+    , GetCertificateByLightingQualificationUseCase getCertificateByLightingQualification, GetCertificateByRefrigerationQualificationUseCase getCertificateByRefrigerationQualification
+    , GetCertificateBySolarThermalUseCase getCertificateBySolarThermal, GetCertificateByPhotovoltaicSolarUseCase getCertificateByPhotovoltaicSolar, GetCertificateByEnergeticRehabilitationUseCase getCertificateByEnergeticRehabilitation
+    , GetCertificateByDistrictNetUseCase getCertificateByDistrictNet, GetCertificateByElectricVehicleUseCase getCertificateByElectricVehicle, GetCertificateByGeothermalUseCase getCertificateByGeothermal
+    , GetCertificateByBiomassUseCase getCertificateByBiomass) {
         this.getAllCertificatesUseCase = getAllCertificatesUseCase;
         this.getCertificateByIdUseCase = getCertificateByIdUseCase;
         this.getCertificateByAddressUseCase = getCertificateByAddressUseCase;
@@ -56,88 +57,153 @@ public class CertificateGetController {
     }
 
     @GetMapping
-    public List<CertificateDTO> getAllCertificateUseCase() {
-        return getAllCertificatesUseCase.execute();
+    public ResponseEntity<List<CertificateDTO>> getAllCertificateUseCase() {
+        List<CertificateDTO> certificates =  getAllCertificatesUseCase.execute();
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/{certificateId}")
-    public CertificateDTO getCertificateByIdUseCase(@PathVariable Long certificateId) {
-        return getCertificateByIdUseCase.execute(certificateId);
+    public ResponseEntity<CertificateDTO> getCertificateByIdUseCase(@PathVariable Long certificateId) {
+        CertificateDTO certificate = getCertificateByIdUseCase.execute(certificateId);
+        if (certificate == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificate);
     }
 
     @GetMapping("/address/{addressId}")
-    public List<CertificateDTO> getCertificateByAddressUseCase(@PathVariable Long addressId) {
-        return getCertificateByAddressUseCase.execute(addressId);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByAddressUseCase(@PathVariable Long addressId) {
+        List<CertificateDTO> certificates = getCertificateByAddressUseCase.execute(addressId);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/climateZone/{climateZone}")
-    public List<CertificateDTO> getCertificateByClimateZoneUseCase(@PathVariable String climateZone) {
-        return getCertificateByClimateZoneUseCase.execute(climateZone);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByClimateZoneUseCase(@PathVariable String climateZone) {
+        List<CertificateDTO> certificates =  getCertificateByClimateZoneUseCase.execute(climateZone);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/nonRenewablePrimaryQualification/{nonRenewablePrimaryQualification}")
-    public List<CertificateDTO> getCertificateByNonRenewablePrimaryQualificationUseCase(@PathVariable Qualification nonRenewablePrimaryQualification) {
-        return getCertificateByNonRenewablePrimaryQualificationUseCase.execute(nonRenewablePrimaryQualification);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByNonRenewablePrimaryQualificationUseCase(@PathVariable Qualification nonRenewablePrimaryQualification) {
+        List<CertificateDTO> certificates = getCertificateByNonRenewablePrimaryQualificationUseCase.execute(nonRenewablePrimaryQualification);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/co2Qualification/{co2Qualification}")
-    public List<CertificateDTO> getCertificateByCo2Qualification(@PathVariable Qualification co2Qualification) {
-        return getCertificateByCo2Emissions.execute(co2Qualification);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByCo2Qualification(@PathVariable Qualification co2Qualification) {
+        List<CertificateDTO> certificates = getCertificateByCo2Emissions.execute(co2Qualification);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/acsQualification/{acsQualification}")
-    public List<CertificateDTO> getCertificateByACSQualification(@PathVariable Qualification acsQualification) {
-        return getCertificateByACSQualification.execute(acsQualification);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByACSQualification(@PathVariable Qualification acsQualification) {
+        List<CertificateDTO> certificates = getCertificateByACSQualification.execute(acsQualification);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/heatingQualification/{heatingQualification}")
-    public List<CertificateDTO> getCertificateByHeatingQualification(@PathVariable Qualification heatingQualification) {
-        return getCertificateByHeatingQualification.execute(heatingQualification);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByHeatingQualification(@PathVariable Qualification heatingQualification) {
+        List<CertificateDTO> certificates = getCertificateByHeatingQualification.execute(heatingQualification);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/lightingQualification/{lightingQualification}")
-    public List<CertificateDTO> getCertificateByLightingQualification(@PathVariable Qualification lightingQualification) {
-        return getCertificateByLightingQualification.execute(lightingQualification);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByLightingQualification(@PathVariable Qualification lightingQualification) {
+        List<CertificateDTO> certificates = getCertificateByLightingQualification.execute(lightingQualification);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/refrigerationQualification/{refrigerationQualification}")
-    public List<CertificateDTO> getCertificateByRefrigerationQualification(@PathVariable Qualification refrigerationQualification) {
-        return getCertificateByRefrigerationQualification.execute(refrigerationQualification);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByRefrigerationQualification(@PathVariable Qualification refrigerationQualification) {
+        List<CertificateDTO> certificates = getCertificateByRefrigerationQualification.execute(refrigerationQualification);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/solarThermal/{solarThermal}")
-    public List<CertificateDTO> getCertificateBySolarThermal(@PathVariable boolean solarThermal) {
-        return getCertificateBySolarThermal.execute(solarThermal);
+    public ResponseEntity<List<CertificateDTO>> getCertificateBySolarThermal(@PathVariable boolean solarThermal) {
+        List<CertificateDTO> certificates = getCertificateBySolarThermal.execute(solarThermal);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/photovoltaicSolar/{photovoltaicSolar}")
-    public List<CertificateDTO> getCertificateByPhotovoltaicSolar(@PathVariable boolean photovoltaicSolar) {
-        return getCertificateByPhotovoltaicSolar.execute(photovoltaicSolar);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByPhotovoltaicSolar(@PathVariable boolean photovoltaicSolar) {
+        List<CertificateDTO> certificates = getCertificateByPhotovoltaicSolar.execute(photovoltaicSolar);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/energeticRehabilitation/{energeticRehabilitation}")
-    public List<CertificateDTO> getCertificateByEnergeticRehabilitation(@PathVariable boolean energeticRehabilitation) {
-        return getCertificateByEnergeticRehabilitation.execute(energeticRehabilitation);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByEnergeticRehabilitation(@PathVariable boolean energeticRehabilitation) {
+        List<CertificateDTO> certificates = getCertificateByEnergeticRehabilitation.execute(energeticRehabilitation);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/districtNet/{districtNet}")
-    public List<CertificateDTO> getCertificateByDistrictNet(@PathVariable boolean districtNet) {
-        return getCertificateByDistrictNet.execute(districtNet);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByDistrictNet(@PathVariable boolean districtNet) {
+        List<CertificateDTO> certificates = getCertificateByDistrictNet.execute(districtNet);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/electricVehicle/{electricVehicle}")
-    public List<CertificateDTO> getCertificateByElectricVehicle(@PathVariable boolean electricVehicle) {
-        return getCertificateByElectricVehicle.execute(electricVehicle);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByElectricVehicle(@PathVariable boolean electricVehicle) {
+        List<CertificateDTO> certificates = getCertificateByElectricVehicle.execute(electricVehicle);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/geothermal/{geothermal}")
-    public List<CertificateDTO> getCertificateByGeothermal(@PathVariable boolean geothermal) {
-        return getCertificateByGeothermal.execute(geothermal);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByGeothermal(@PathVariable boolean geothermal) {
+        List<CertificateDTO> certificates = getCertificateByGeothermal.execute(geothermal);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
     @GetMapping("/biomass/{biomass}")
-    public List<CertificateDTO> getCertificateByBiomass(@PathVariable boolean biomass) {
-        return getCertificateByBiomass.execute(biomass);
+    public ResponseEntity<List<CertificateDTO>> getCertificateByBiomass(@PathVariable boolean biomass) {
+        List<CertificateDTO> certificates = getCertificateByBiomass.execute(biomass);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(certificates);
     }
 
 }

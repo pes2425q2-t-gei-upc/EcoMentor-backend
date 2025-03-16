@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Certificate.useCases;
 
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.OfficialCertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
@@ -13,17 +14,17 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GetCertificateByGeothermal {
+public class GetCertificateByLightingQualificationUseCase {
     private final OfficialCertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetCertificateByGeothermal(OfficialCertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateByLightingQualificationUseCase(OfficialCertificateRepository certificateRepository, CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }
 
-    public List<CertificateDTO> execute(boolean geothermal) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByGeothermal(geothermal);
+    public List<CertificateDTO> execute(Qualification LightingQualification) {
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByLightingQualification(LightingQualification);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));
