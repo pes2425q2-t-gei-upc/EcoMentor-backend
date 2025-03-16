@@ -1,16 +1,18 @@
 package com.EcoMentor_backend.EcoMentor.Recommendation.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
+@Table(name = "recommendation")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +22,9 @@ public class Recommendation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long recommendationId;
+
+    @ManyToMany(mappedBy = "recommendations")
+    private List<Certificate> certificates;
 
     @NotNull
     private String name;
@@ -61,7 +66,7 @@ public class Recommendation {
     private float Ir;
 
     @NotNull
-    private float Is;
+    private float Iss;
 
     @NotNull
     private float R;
