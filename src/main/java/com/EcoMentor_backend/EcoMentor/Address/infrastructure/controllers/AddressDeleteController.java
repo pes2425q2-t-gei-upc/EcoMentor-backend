@@ -1,6 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Address.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Address.useCases.DeleteAddressUserCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.DeleteAddressUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RequestMapping("/api/address")
 public class AddressDeleteController {
-    private final DeleteAddressUserCase deleteAddressUserCase;
+    private final DeleteAddressUseCase deleteAddressUseCase;
 
-    public AddressDeleteController(DeleteAddressUserCase deleteAddressUserCase) {
-        this.deleteAddressUserCase = deleteAddressUserCase;
+    public AddressDeleteController(DeleteAddressUseCase deleteAddressUseCase) {
+        this.deleteAddressUseCase = deleteAddressUseCase;
     }
 
     @DeleteMapping("/{addressId}")
     public ResponseEntity<Void> deleteAddress(@PathVariable Long addressId) {
-        deleteAddressUserCase.execute(addressId);
+        deleteAddressUseCase.execute(addressId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,6 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.useCases;
 
-import com.EcoMentor_backend.EcoMentor.Address.useCases.CreateAddressUserCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.CreateAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
@@ -15,20 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class CreateOfficialCertificateUseCase {
     private final CertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
-    private final CreateAddressUserCase createAddressUserCase;
+    private final CreateAddressUseCase createAddressUseCase;
     private final OfficialCertificateRepository officialCertificateRepository;
 
     public CreateOfficialCertificateUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper
-            , CreateAddressUserCase createAddressUserCase, OfficialCertificateRepository OfficialCertificateRepository) {
+            , CreateAddressUseCase createAddressUseCase, OfficialCertificateRepository OfficialCertificateRepository) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
-        this.createAddressUserCase = createAddressUserCase;
+        this.createAddressUseCase = createAddressUseCase;
         this.officialCertificateRepository = OfficialCertificateRepository;
     }
 
     public void execute(CreateOfficialCertificateDTO certificateDTO) {
         CreateAddressDTO createAddressDTO = certificateDTO.getCreateAddressDTO();
-        createAddressUserCase.execute(createAddressDTO);
+        createAddressUseCase.execute(createAddressDTO);
         if (officialCertificateRepository.existsOfficialCertificateByDocumentId(certificateDTO.getDocumentId())) {
             throw new RuntimeException("Official Certificate already exists");
         }

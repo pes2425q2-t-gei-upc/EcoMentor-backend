@@ -1,6 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Address.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Address.useCases.DeleteAddressUserCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.DeleteAddressUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 public class AddressDeleteControllerTest {
 
     @Mock
-    private DeleteAddressUserCase deleteAddressUserCase;
+    private DeleteAddressUseCase deleteAddressUseCase;
 
     @InjectMocks
     private AddressDeleteController addressDeleteController;
@@ -30,11 +30,11 @@ public class AddressDeleteControllerTest {
     public void testDeleteAddress() {
         Long addressId = 1L;
 
-        doNothing().when(deleteAddressUserCase).execute(addressId);
+        doNothing().when(deleteAddressUseCase).execute(addressId);
 
         ResponseEntity<Void> response = addressDeleteController.deleteAddress(addressId);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        verify(deleteAddressUserCase).execute(addressId);
+        verify(deleteAddressUseCase).execute(addressId);
     }
 }
