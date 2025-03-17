@@ -12,4 +12,5 @@ public interface CertificateRepository extends JpaRepository<Certificate,String>
     List<Certificate> findCertificateByAddress_AddressId(Long addressId);
     List<Certificate> findAll();
 
+    boolean existsByCertificateId(Long certificateId);
 }
