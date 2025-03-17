@@ -4,6 +4,7 @@ package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.*;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class CertificateGetController {
     private final GetCertificateByElectricVehicle getCertificateByElectricVehicle;
     private final GetCertificateByGeothermal getCertificateByGeothermal;
     private final GetCertificateByBiomass getCertificateByBiomass;
+    private final GetOfficialCertificataByCertificateIdUseCase getOfficialCertificateByIdUseCase;
 
     public CertificateGetController(GetAllCertificatesUseCase getAllCertificatesUseCase, GetCertificateByCertificateIdUseCase getCertificateByIdUseCase, GetCertificateByAddressUseCase getCertificateByAddressUseCase, GetCertificateByClimateZoneUseCase getCertificateByClimateZoneUseCase
     , GetCertificateByNonRenewablePrimaryQualificationUseCase getCertificateByNonRenewablePrimaryQualificationUseCase
@@ -35,7 +37,7 @@ public class CertificateGetController {
     , GetCertificateByLightingQualification getCertificateByLightingQualification, GetCertificateByRefrigerationQualification getCertificateByRefrigerationQualification
     , GetCertificateBySolarThermal getCertificateBySolarThermal, GetCertificateByPhotovoltaicSolar getCertificateByPhotovoltaicSolar, GetCertificateByEnergeticRehabilitation getCertificateByEnergeticRehabilitation
     , GetCertificateByDistrictNet getCertificateByDistrictNet, GetCertificateByElectricVehicle getCertificateByElectricVehicle, GetCertificateByGeothermal getCertificateByGeothermal
-    , GetCertificateByBiomass getCertificateByBiomass) {
+    , GetCertificateByBiomass getCertificateByBiomass, GetOfficialCertificataByCertificateIdUseCase getOfficialCertificateByIdUseCase) {
         this.getAllCertificatesUseCase = getAllCertificatesUseCase;
         this.getCertificateByIdUseCase = getCertificateByIdUseCase;
         this.getCertificateByAddressUseCase = getCertificateByAddressUseCase;
@@ -53,6 +55,7 @@ public class CertificateGetController {
         this.getCertificateByElectricVehicle = getCertificateByElectricVehicle;
         this.getCertificateByGeothermal = getCertificateByGeothermal;
         this.getCertificateByBiomass = getCertificateByBiomass;
+        this.getOfficialCertificateByIdUseCase = getOfficialCertificateByIdUseCase;
     }
 
     @GetMapping

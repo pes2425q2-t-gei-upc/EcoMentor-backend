@@ -25,5 +25,5 @@ public interface OfficialCertificateRepository extends JpaRepository<OfficialCer
     List<OfficialCertificate> findCertificateByGeothermal(boolean geothermal);
     List<OfficialCertificate> findCertificateByEnergeticRehabilitation(boolean energeticRehabilitation);
 
-    OfficialCertificate findCertificateByCertificateId(Long certificateId);
+    OfficialCertificate findCertificatesByCertificateId(Long certificateId);
 }

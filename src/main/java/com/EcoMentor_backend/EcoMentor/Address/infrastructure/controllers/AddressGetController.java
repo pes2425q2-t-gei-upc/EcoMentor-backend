@@ -1,5 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Address.infrastructure.controllers;
 
+import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.*;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOWithOfficialCertificate;
@@ -83,10 +84,10 @@ public class AddressGetController {
     }
 
     @GetMapping("/BoundingBox")
-    public ResponseEntity<List<AddressDTOWithOfficialCertificate>> getOfficialCertificatesByAddressBoundingBox(@RequestParam double minLatitude, @RequestParam double maxLatitude,
+    public ResponseEntity<List<AddressDTO>> getOfficialCertificatesByAddressBoundingBox(@RequestParam double minLatitude, @RequestParam double maxLatitude,
                                                                                                                @RequestParam double minLongitude, @RequestParam double maxLongitude) {
 
-        List<AddressDTOWithOfficialCertificate> address = getAddressByBoundingBoxUseCase.execute(minLatitude, maxLatitude, minLongitude, maxLongitude);
+        List<AddressDTO> address = getAddressByBoundingBoxUseCase.execute(minLatitude, maxLatitude, minLongitude, maxLongitude);
         if (address.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

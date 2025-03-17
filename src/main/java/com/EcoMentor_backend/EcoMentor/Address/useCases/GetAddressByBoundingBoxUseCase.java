@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Address.useCases;
 
 import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories.AddressRepository;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOWithOfficialCertificate;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.mapper.AddressMapper;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
@@ -23,24 +24,12 @@ public class GetAddressByBoundingBoxUseCase {
         this.addressMapper = addressMapper;
     }
 
-    public List<AddressDTOWithOfficialCertificate> execute(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude) {
+    public List<AddressDTO> execute(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude) {
         List<Address> addresses = addressRepository.findAddressesWithinBoundingBox(minLatitude, maxLatitude, minLongitude, maxLongitude);
-        List<AddressDTOWithOfficialCertificate> listAddressDTO = new ArrayList<>();
+        List<AddressDTO> listAddressDTO = new ArrayList<>();
         for (Address address : addresses) {
-            if (true) {
-                listAddressDTO.add(addressMapper.toDTOWithOfficialCertificate(address));
-            }
+            listAddressDTO.add(addressMapper.toDTO(address));
         }
         return listAddressDTO;
     }
-
-    private Boolean hasOfficialCertificates(Address address) {
-        for (Certificate certificate : address.getCertificates()) {
-            if (certificate.getCertificateType() == CertificateType.OFFICIAL) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

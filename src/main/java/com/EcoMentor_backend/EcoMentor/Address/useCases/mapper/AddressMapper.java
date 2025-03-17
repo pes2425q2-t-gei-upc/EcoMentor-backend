@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Address.useCases.mapper;
 
 import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOWithOfficialCertificate;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOWithoutCertificate;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
@@ -156,6 +157,24 @@ public class AddressMapper {
         return CertificateWithoutForeignEntitys.builder()
                 .certificateId(certificate.getCertificateId())
                 .certificateType(certificate.getCertificateType())
+                .build();
+    }
+
+
+    public AddressDTOWithoutCertificate toDTOWithoutCertificate(Address address) {
+        if (address == null) {
+            return null;
+        }
+        return AddressDTOWithoutCertificate.builder()
+                .addressId(address.getAddressId())
+                .addressName(address.getAddressName())
+                .addressNumber(address.getAddressNumber())
+                .zipcode(address.getZipcode())
+                .town(address.getTown())
+                .region(address.getRegion())
+                .province(address.getProvince())
+                .longitude((float) address.getLocation().getX())
+                .latitude((float) address.getLocation().getY())
                 .build();
     }
 
