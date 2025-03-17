@@ -34,7 +34,7 @@ public class BorrarOfficialCertificateDTO {
     private String climateZone;
 
 
-    private Integer cadastreMeters;
+    private float cadastreMeters;
 
     private Year buildingYear;
 

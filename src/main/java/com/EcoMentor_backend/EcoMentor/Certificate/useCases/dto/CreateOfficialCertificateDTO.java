@@ -25,7 +25,7 @@ public class CreateOfficialCertificateDTO extends CreateCertificateDTO {
     private String climateZone;
 
 
-    private Integer cadastreMeters;
+    private float cadastreMeters;
 
     private Year buildingYear;
 
