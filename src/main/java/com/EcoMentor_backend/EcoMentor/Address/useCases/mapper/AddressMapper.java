@@ -3,15 +3,24 @@ package com.EcoMentor_backend.EcoMentor.Address.useCases.mapper;
 import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
+import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import org.springframework.stereotype.Component;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Coordinate;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class AddressMapper {
-
+    private final CertificateRepository certificateRepository;
     private final GeometryFactory geometryFactory = new GeometryFactory();
+
+    public AddressMapper(CertificateRepository certificateRepository) {
+        this.certificateRepository = certificateRepository;
+    }
 
     // Entity to DTO conversion. The id field is included in the DTO.
     public AddressDTO toDTO(Address address) {
@@ -28,7 +37,9 @@ public class AddressMapper {
                 .province(address.getProvince())
                 .longitude((float) address.getLocation().getX())
                 .latitude((float) address.getLocation().getY())
-                .certificates(address.getCertificates()) // TODO: Change to CertificateDTO when available
+                .certificatesId(address.getCertificates().stream()
+                        .map(Certificate::getCertificateId)
+                        .collect(Collectors.toList()))
                 .build();
     }
 
@@ -38,6 +49,10 @@ public class AddressMapper {
             return null;
         }
         Point location = geometryFactory.createPoint(new Coordinate(dto.getLongitude(), dto.getLatitude()));
+        List<Certificate> certificates = dto.getCertificates().stream()
+                .map(certificateRepository::findCertificateByCertificateId)
+                .collect(Collectors.toList());
+
         return Address.builder()
                 .addressName(dto.getAddressName())
                 .addressNumber(dto.getAddressNumber())
@@ -46,7 +61,7 @@ public class AddressMapper {
                 .region(dto.getRegion())
                 .province(dto.getProvince())
                 .location(location)
-                .certificates(dto.getCertificates()) // TODO: Change to CertificateDTO when available
+                .certificates(certificates)
                 .build();
     }
 }

@@ -204,6 +204,7 @@ public class CertificateGetController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(certificates);
+
     }
 
 }

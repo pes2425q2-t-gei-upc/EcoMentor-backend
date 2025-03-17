@@ -37,23 +37,42 @@ public class AddressGetController {
     @GetMapping("/{addressId}")
     public ResponseEntity<AddressDTO> getAddress(@PathVariable Long addressId) {
         AddressDTO address = getAddressByAddressIdUseCase.execute(addressId);
+        if (address == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(address);
     }
     @GetMapping("/near")
     public ResponseEntity<List<AddressDTO>> getNearAddress(@RequestParam double radius, @RequestParam double latitude, @RequestParam double longitude) {
         List<AddressDTO> address = getNearAddressUseCase.execute(radius, latitude, longitude);
+
+        if (address.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(address);
     }
 
     @GetMapping("/province/{province}")
     public ResponseEntity<List<AddressDTO>> getAddressByProvince(@PathVariable String province) {
         List<AddressDTO> address = getAddressByProvinceUseCase.execute(province);
+
+
+        if (address.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(address);
     }
 
     @GetMapping("/town/{town}")
     public ResponseEntity<List<AddressDTO>> getAddressByTown(@PathVariable String town) {
         List<AddressDTO> address = getAddressByTownUseCase.execute(town);
+
+        if (address.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(address);
     }
 

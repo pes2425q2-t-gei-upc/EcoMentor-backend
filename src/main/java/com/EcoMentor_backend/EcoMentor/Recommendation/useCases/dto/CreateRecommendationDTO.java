@@ -1,15 +1,19 @@
 package com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto;
 
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class CreateRecommendationDTO {
+    private List<Certificate> certificates;
     private String name;
     private boolean canUpgradeIsolation;
     private float upgradedIsolation;
@@ -23,7 +27,7 @@ public class CreateRecommendationDTO {
     private float upgradedHeat;
     private float io;
     private float ir;
-    private float is;
+    private float iss;
     private float r;
     private float r0;
     private float upgradedICEE;

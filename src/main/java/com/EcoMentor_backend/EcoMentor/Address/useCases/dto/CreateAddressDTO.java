@@ -21,5 +21,5 @@ public class CreateAddressDTO {
     private String province;
     private float longitude;
     private float latitude;
-    private List<Certificate> certificates; //TODO Hay que cambiarlo por CertificateDTO cuando exista
+    private List<Long> certificates; //TODO Hay que cambiarlo por CertificateDTO cuando exista
 }
