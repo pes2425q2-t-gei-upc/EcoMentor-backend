@@ -43,7 +43,6 @@ public class AddressGetController {
     @GetMapping("/{addressId}")
     public ResponseEntity<AddressDTO> getAddress(@PathVariable Long addressId) {
         AddressDTO address = getAddressByAddressIdUseCase.execute(addressId);
-
         if (address == null) {
             return ResponseEntity.notFound().build();
         }
@@ -57,13 +56,13 @@ public class AddressGetController {
         if (address.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
         return ResponseEntity.ok(address);
     }
 
     @GetMapping("/province/{province}")
     public ResponseEntity<List<AddressDTO>> getAddressByProvince(@PathVariable String province) {
         List<AddressDTO> address = getAddressByProvinceUseCase.execute(province);
+
 
         if (address.isEmpty()) {
             return ResponseEntity.notFound().build();

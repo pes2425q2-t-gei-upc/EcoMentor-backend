@@ -2,7 +2,6 @@ package com.EcoMentor_backend.EcoMentor.Certificate.useCases;
 
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.OfficialCertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
@@ -14,21 +13,21 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GetCertificateByACSQualification {
+public class GetCertificateByGeothermalUseCase {
     private final OfficialCertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetCertificateByACSQualification(OfficialCertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateByGeothermalUseCase(OfficialCertificateRepository certificateRepository, CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }
 
-public List<CertificateDTO> execute(Qualification ACSQualification) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByAcsQualification(ACSQualification);
+    public List<CertificateDTO> execute(boolean geothermal) {
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByGeothermal(geothermal);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));
         }
         return certificateDTOS;
-}
+    }
 }

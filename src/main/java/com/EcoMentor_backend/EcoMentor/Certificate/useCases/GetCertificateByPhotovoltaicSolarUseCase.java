@@ -2,7 +2,6 @@ package com.EcoMentor_backend.EcoMentor.Certificate.useCases;
 
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.OfficialCertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
@@ -14,20 +13,21 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GetCertificateByHeatingQualification {
+public class GetCertificateByPhotovoltaicSolarUseCase {
     private final OfficialCertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetCertificateByHeatingQualification(OfficialCertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateByPhotovoltaicSolarUseCase(OfficialCertificateRepository certificateRepository, CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }
-    public List<CertificateDTO> execute(Qualification heatingQualification) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByHeatingQualification(heatingQualification);
-        List<CertificateDTO> certificateDTOs = new ArrayList<>();
+
+    public List<CertificateDTO> execute(boolean photovoltaicSolar) {
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByPhotovoltaicSolar(photovoltaicSolar);
+        List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
-            certificateDTOs.add(certificateMapper.toDTO(certificate));
+            certificateDTOS.add(certificateMapper.toDTO(certificate));
         }
-        return certificateDTOs;
+        return certificateDTOS;
     }
 }

@@ -14,21 +14,21 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GetCertificateByRefrigerationQualification {
+public class GetCertificateByACSQualificationUseCase {
     private final OfficialCertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetCertificateByRefrigerationQualification(OfficialCertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateByACSQualificationUseCase(OfficialCertificateRepository certificateRepository, CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }
 
-    public List<CertificateDTO> execute(Qualification RefrigerationQualification) {
-        List<OfficialCertificate> certificates = certificateRepository.findCertificateByRefrigerationQualification(RefrigerationQualification);
+public List<CertificateDTO> execute(Qualification ACSQualification) {
+        List<OfficialCertificate> certificates = certificateRepository.findCertificateByAcsQualification(ACSQualification);
         List<CertificateDTO> certificateDTOS = new ArrayList<>();
         for (OfficialCertificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTO(certificate));
         }
         return certificateDTOS;
-    }
+}
 }
