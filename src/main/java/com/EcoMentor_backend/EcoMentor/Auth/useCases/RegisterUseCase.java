@@ -2,7 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Auth.useCases;
 
 
 import com.EcoMentor_backend.EcoMentor.Auth.infrastructure.jwt.JwtTokenProvider;
-import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.AuthResponse;
+import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.AuthResponseDTO;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.useCases.CreateUserUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
@@ -18,10 +18,10 @@ public class RegisterUseCase {
     private final CreateUserUseCase createUserUseCase;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthResponse execute(CreateUserDTO registrationRequest) {
+    public AuthResponseDTO execute(CreateUserDTO registrationRequest) {
         User user = createUserUseCase.execute(registrationRequest);
 
-        return AuthResponse.builder()
+        return AuthResponseDTO.builder()
                         .token(jwtTokenProvider.getToken(user))
                         .build();
     }

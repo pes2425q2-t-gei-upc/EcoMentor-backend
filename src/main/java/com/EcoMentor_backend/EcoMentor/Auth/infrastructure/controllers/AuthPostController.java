@@ -3,7 +3,7 @@ package com.EcoMentor_backend.EcoMentor.Auth.infrastructure.controllers;
 
 import com.EcoMentor_backend.EcoMentor.Auth.useCases.LoginUseCase;
 import com.EcoMentor_backend.EcoMentor.Auth.useCases.RegisterUseCase;
-import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.AuthResponse;
+import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.AuthResponseDTO;
 import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.LoginDTO;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +25,13 @@ public class AuthPostController {
 
 
     @PostMapping(value="login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Validated LoginDTO loginDTO) {
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody @Validated LoginDTO loginDTO) {
         return ResponseEntity.ok(loginUseCase.execute(loginDTO));
     }
 
 
     @PostMapping(value = "register")
-    public ResponseEntity<AuthResponse> register( @RequestBody @Validated CreateUserDTO user) {
+    public ResponseEntity<AuthResponseDTO> register(@RequestBody @Validated CreateUserDTO user) {
         return ResponseEntity.ok(registerUseCase.execute(user));
     }
 }
