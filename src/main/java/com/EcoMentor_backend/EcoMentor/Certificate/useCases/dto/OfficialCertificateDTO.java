@@ -2,12 +2,14 @@ package com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.sql.Date;
 import java.time.Year;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder

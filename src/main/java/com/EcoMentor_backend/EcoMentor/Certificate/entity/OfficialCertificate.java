@@ -1,6 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.entity;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,7 @@ import java.time.Year;
 @SuperBuilder
 public class OfficialCertificate extends Certificate {
 
+    @Column(unique = true)
     @NotNull
     private String documentId;
     //TODO relation with address
