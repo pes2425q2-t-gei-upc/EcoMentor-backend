@@ -16,7 +16,7 @@ public class DeleteAddressUseCase {
 
     public void execute(Long addressId) {
         Address address = addressRepository.findByAddressId(addressId);
-        if(address == null) {
+        if (address == null) {
             throw new RuntimeException("Address not found");
         }
         addressRepository.delete(address);

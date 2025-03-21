@@ -20,7 +20,7 @@ public class GetAddressByAddressIdUseCase {
 
     public AddressDTO execute(Long addressId) {
         Address address = addressRepository.findByAddressId(addressId);
-        if(address == null) {
+        if (address == null) {
             throw new RuntimeException("Address not found");
         }
         return addressMapper.toDTO(address);

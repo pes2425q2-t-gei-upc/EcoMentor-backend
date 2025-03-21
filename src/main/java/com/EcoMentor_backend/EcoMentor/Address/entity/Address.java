@@ -1,18 +1,29 @@
 package com.EcoMentor_backend.EcoMentor.Address.entity;
 
-
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
+
+
 
 @Entity
 @Table(name = "address", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"addressName", "addressNumber"})
-})
+    @UniqueConstraint(columnNames = {"addressName", "addressNumber"
+        })})
+
 @Data
 @AllArgsConstructor //creates automatically a constructor with all arguments
 @NoArgsConstructor //creates automatically a constructor without any arguments
@@ -22,7 +33,6 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
-
     @NotNull
     private String addressName;
     @NotNull
@@ -42,4 +52,5 @@ public class Address {
     @OneToMany(mappedBy = "address")
     private List<Certificate> certificates;
     //TODO georefence?
+
 }

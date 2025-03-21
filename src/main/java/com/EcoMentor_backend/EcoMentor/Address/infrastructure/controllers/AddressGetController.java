@@ -1,14 +1,21 @@
 package com.EcoMentor_backend.EcoMentor.Address.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.*;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByAddressIdUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByBoundingBoxUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByProvinceUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByTownUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetNearAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOWithOfficialCertificate;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 @Validated
@@ -22,8 +29,11 @@ public class AddressGetController {
     private final GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase;
 
 
-    public AddressGetController(GetAddressByAddressIdUseCase getAddressByAddressIdUseCase, GetAllAddressUseCase getAllAddressUseCase, GetAddressByProvinceUseCase getAddressByProvinceUseCase,
-                                GetNearAddressUseCase getNearAddressUseCase, GetAddressByTownUseCase getAddressByTownUseCase,
+    public AddressGetController(GetAddressByAddressIdUseCase getAddressByAddressIdUseCase,
+                                GetAllAddressUseCase getAllAddressUseCase,
+                                GetAddressByProvinceUseCase getAddressByProvinceUseCase,
+                                GetNearAddressUseCase getNearAddressUseCase,
+                                GetAddressByTownUseCase getAddressByTownUseCase,
                                 GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase) {
 
         this.getAddressByAddressIdUseCase = getAddressByAddressIdUseCase;
@@ -49,8 +59,12 @@ public class AddressGetController {
 
         return ResponseEntity.ok(address);
     }
+
     @GetMapping("/near")
-    public ResponseEntity<List<AddressDTO>> getNearAddress(@RequestParam double radius, @RequestParam double latitude, @RequestParam double longitude) {
+    public ResponseEntity<List<AddressDTO>> getNearAddress(@RequestParam double radius,
+                                                           @RequestParam double latitude,
+                                                           @RequestParam double longitude) {
+
         List<AddressDTO> address = getNearAddressUseCase.execute(radius, latitude, longitude);
 
         if (address.isEmpty()) {
@@ -83,10 +97,12 @@ public class AddressGetController {
     }
 
     @GetMapping("/BoundingBox")
-    public ResponseEntity<List<AddressDTO>> getOfficialCertificatesByAddressBoundingBox(@RequestParam double minLatitude, @RequestParam double maxLatitude,
-                                                                                                               @RequestParam double minLongitude, @RequestParam double maxLongitude) {
+    public ResponseEntity<List<AddressDTO>> getOfficialCertificatesByAddressBoundingBox(
+                                            @RequestParam double minLatitude, @RequestParam double maxLatitude,
+                                            @RequestParam double minLongitude, @RequestParam double maxLongitude) {
 
-        List<AddressDTO> address = getAddressByBoundingBoxUseCase.execute(minLatitude, maxLatitude, minLongitude, maxLongitude);
+        List<AddressDTO> address = getAddressByBoundingBoxUseCase.execute(minLatitude, maxLatitude,
+                                                                        minLongitude, maxLongitude);
         if (address.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

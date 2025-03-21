@@ -19,6 +19,7 @@ public class AddressPostController {
     public AddressPostController(CreateAddressUseCase createAddressUseCase) {
         this.createAddressUseCase = createAddressUseCase;
     }
+
     @PostMapping
     public ResponseEntity<Long> createAddress(@RequestBody @Validated CreateAddressDTO createAddressDTO) {
         Long id = createAddressUseCase.execute(createAddressDTO);
