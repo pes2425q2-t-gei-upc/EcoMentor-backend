@@ -1,8 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto;
 
-import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
 import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
 import com.fasterxml.jackson.annotation.JsonInclude;

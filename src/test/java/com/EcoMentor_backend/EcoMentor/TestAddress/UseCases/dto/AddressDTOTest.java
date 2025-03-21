@@ -2,7 +2,7 @@ package com.EcoMentor_backend.EcoMentor.TestAddress.UseCases.dto;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
-import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitys;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -31,7 +31,7 @@ public class AddressDTOTest {
                 .province("Test Province")
                 .longitude(10.0f)
                 .latitude(20.0f)
-                .certificates(Collections.singletonList(new CertificateWithoutForeignEntitys()))
+                .certificates(Collections.singletonList(new CertificateWithoutForeignEntitiesDTO()))
                 .build();
 
         // Verify the AddressDTO fields
@@ -46,6 +46,6 @@ public class AddressDTOTest {
         assertEquals(20.0f, addressDTO.getLatitude());
         assertNotNull(addressDTO.getCertificates());
         assertEquals(1, addressDTO.getCertificates().size());
-        assertEquals(new CertificateWithoutForeignEntitys(), addressDTO.getCertificates().get(0));
+        assertEquals(new CertificateWithoutForeignEntitiesDTO(), addressDTO.getCertificates().get(0));
     }
 }

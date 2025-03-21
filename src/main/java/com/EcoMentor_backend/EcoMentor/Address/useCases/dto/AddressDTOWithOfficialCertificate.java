@@ -23,5 +23,5 @@ public class AddressDTOWithOfficialCertificate {
     private String province;
     private float longitude;
     private float latitude;
-    private List<OfficialCertificateWFE> certificates;
+    private List<OfficialCertificateWFEDTO> certificates;
 }

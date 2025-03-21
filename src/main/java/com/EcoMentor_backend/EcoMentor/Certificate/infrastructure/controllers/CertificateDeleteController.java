@@ -23,7 +23,7 @@ public class CertificateDeleteController {
     public ResponseEntity<Void> deleteCertificate(@PathVariable Long certificateId){
         try {
             deleteCertificateUseCase.execute(certificateId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.noContent().build();
         }
         catch (RuntimeException e) { //! Hay que modificarlo por una exception personalizada
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

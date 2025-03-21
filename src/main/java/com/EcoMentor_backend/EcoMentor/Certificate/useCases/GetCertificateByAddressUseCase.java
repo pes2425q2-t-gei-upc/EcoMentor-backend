@@ -2,7 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Certificate.useCases;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
-import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +21,11 @@ public class GetCertificateByAddressUseCase {
         this.certificateMapper = certificateMapper;
     }
 
-    public List<CertificateDTO> execute(Long addressId) {
+    public List<CertificateWithoutForeignEntitiesDTO> execute(Long addressId) {
         List<Certificate> certificates = certificateRepository.findCertificateByAddress_AddressId(addressId);
-        List<CertificateDTO> certificateDTOS = new ArrayList<>();
+        List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
         for (Certificate certificate : certificates) {
-            certificateDTOS.add(certificateMapper.toDTO(certificate));
+            certificateDTOS.add(certificateMapper.toDTOW(certificate));
         }
         return certificateDTOS;
     }
