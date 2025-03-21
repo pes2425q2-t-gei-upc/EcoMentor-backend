@@ -13,14 +13,15 @@ public class GetCertificateByCertificateIdWFEUseCase {
     private final CertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetCertificateByCertificateIdWFEUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateByCertificateIdWFEUseCase(CertificateRepository certificateRepository,
+                                                   CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }
 
     public CertificateWithoutForeignEntitiesDTO execute(Long certificateId) {
         Certificate certificate = certificateRepository.findCertificateByCertificateId(certificateId);
-        if(certificate == null) {
+        if (certificate == null) {
             throw new RuntimeException("Certificate not found");
         }
         return certificateMapper.toDTOW(certificate);

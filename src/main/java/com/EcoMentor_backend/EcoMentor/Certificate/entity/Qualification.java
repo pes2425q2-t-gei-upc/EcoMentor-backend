@@ -15,5 +15,7 @@ public enum Qualification {
 
     private final int value;
 
-    Qualification(int value) {this.value = value;}
+    Qualification(int value) {
+        this.value = value;
+    }
 }

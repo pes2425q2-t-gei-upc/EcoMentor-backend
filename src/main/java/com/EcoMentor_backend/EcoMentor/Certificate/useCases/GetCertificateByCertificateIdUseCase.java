@@ -13,14 +13,15 @@ public class GetCertificateByCertificateIdUseCase {
     private final CertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetCertificateByCertificateIdUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateByCertificateIdUseCase(CertificateRepository certificateRepository,
+                                                CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }
 
     public CertificateDTO execute(Long certificateId) {
         Certificate certificate = certificateRepository.findCertificateByCertificateId(certificateId);
-        if(certificate == null) {
+        if (certificate == null) {
             throw new RuntimeException("Certificate not found");
         }
         return certificateMapper.toDTO(certificate);

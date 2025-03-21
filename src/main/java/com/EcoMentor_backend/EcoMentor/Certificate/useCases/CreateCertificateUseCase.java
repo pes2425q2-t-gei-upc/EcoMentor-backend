@@ -2,12 +2,12 @@ package com.EcoMentor_backend.EcoMentor.Certificate.useCases;
 
 import com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories.AddressRepository;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.AddCertificateToAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.CreateAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.CreateAddressUseCase;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +21,8 @@ public class CreateCertificateUseCase {
     private final AddressRepository addressRepository;
 
     public CreateCertificateUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper,
-                                    CreateAddressUseCase createAddressUseCase, AddCertificateToAddressUseCase addCertificateToAddressUseCase,
+                                    CreateAddressUseCase createAddressUseCase,
+                                    AddCertificateToAddressUseCase addCertificateToAddressUseCase,
                                     AddressRepository addressRepository) {
 
         this.addCertificateToAddressUseCase = addCertificateToAddressUseCase;
@@ -34,11 +35,12 @@ public class CreateCertificateUseCase {
     public void execute(CreateCertificateDTO certificateDTO) {
         CreateAddressDTO createAddressDTO = certificateDTO.getCreateAddressDTO();
         Long id;
-        if (addressRepository.existsAddressByAddressNameAndAddressNumber(createAddressDTO.getAddressName(), createAddressDTO.getAddressNumber())) {
+        if (addressRepository.existsAddressByAddressNameAndAddressNumber(createAddressDTO.getAddressName(),
+                createAddressDTO.getAddressNumber())) {
 
-            id = addressRepository.findAddressByAddressNameAndAddressNumber(createAddressDTO.getAddressName(),createAddressDTO.getAddressNumber()).getAddressId();
-        }
-        else {
+            id = addressRepository.findAddressByAddressNameAndAddressNumber(createAddressDTO.getAddressName(),
+                    createAddressDTO.getAddressNumber()).getAddressId();
+        } else {
             id = createAddressUseCase.execute(createAddressDTO);
         }
         Certificate certificate = certificateMapper.toEntity(certificateDTO);

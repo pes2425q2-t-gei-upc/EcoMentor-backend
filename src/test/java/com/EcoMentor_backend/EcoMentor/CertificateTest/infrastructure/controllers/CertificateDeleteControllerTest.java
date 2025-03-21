@@ -1,5 +1,9 @@
 package com.EcoMentor_backend.EcoMentor.CertificateTest.infrastructure.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers.CertificateDeleteController;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.DeleteCertificateUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,9 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
+
 
 public class CertificateDeleteControllerTest {
 

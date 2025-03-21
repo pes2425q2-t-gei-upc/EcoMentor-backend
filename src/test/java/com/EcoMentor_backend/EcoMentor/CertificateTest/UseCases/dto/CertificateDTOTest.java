@@ -1,18 +1,21 @@
 package com.EcoMentor_backend.EcoMentor.CertificateTest.UseCases.dto;
 
-import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOWithoutCertificate;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+
 
 public class CertificateDTOTest {
 

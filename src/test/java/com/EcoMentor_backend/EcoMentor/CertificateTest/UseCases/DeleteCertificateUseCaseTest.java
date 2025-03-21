@@ -1,5 +1,10 @@
 package com.EcoMentor_backend.EcoMentor.CertificateTest.UseCases;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.DeleteCertificateUseCase;
@@ -9,8 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+
 
 public class DeleteCertificateUseCaseTest {
 

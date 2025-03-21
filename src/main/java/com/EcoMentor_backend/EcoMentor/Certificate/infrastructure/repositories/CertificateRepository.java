@@ -1,20 +1,22 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+
 
 @Repository
-public interface CertificateRepository extends JpaRepository<Certificate,String>, CustomCertificateRepository {
+public interface CertificateRepository extends JpaRepository<Certificate, String>, CustomCertificateRepository {
 
     Certificate findCertificateByCertificateId(Long certificateId);
-    List<Certificate> findCertificateByAddress_AddressId(Long addressId);
+
+    List<Certificate> findCertificateByAddressAddressId(Long addressId);
+
     List<Certificate> findAll();
 
-    List<Certificate> findCertificateByParameter( String parameter, Object val);
+    List<Certificate> findCertificateByParameter(String parameter, Object val);
 
     List<Certificate> findCertificateBySetOfValues(String parameter, List<Object> values);
 
