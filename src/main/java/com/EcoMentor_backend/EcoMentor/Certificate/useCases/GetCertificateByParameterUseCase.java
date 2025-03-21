@@ -12,17 +12,18 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GetAllCertificatesUseCase {
+public class GetCertificateByParameterUseCase {
     private final CertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetAllCertificatesUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateByParameterUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }
 
-    public List<CertificateWithoutForeignEntitiesDTO> execute() {
-        List<Certificate> certificates = certificateRepository.findAll();
+    public List<CertificateWithoutForeignEntitiesDTO> execute(String parameter, String value) {
+        Object correctValue = certificateRepository.convertToCorrectType(parameter, value);
+        List<Certificate> certificates = certificateRepository.findCertificateByParameter(parameter, correctValue);
         List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
         for (Certificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTOW(certificate));

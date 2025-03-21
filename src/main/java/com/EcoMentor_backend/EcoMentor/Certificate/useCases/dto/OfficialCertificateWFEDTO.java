@@ -1,22 +1,24 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto;
 
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.sql.Date;
 import java.time.Year;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class OfficialCertificateWFE {
-    private Long certificateId;
-    private CertificateType certificateType;
+public class OfficialCertificateWFEDTO extends CertificateWithoutForeignEntitiesDTO {
+
     private String documentId;
 
 
@@ -28,7 +30,7 @@ public class OfficialCertificateWFE {
     private String climateZone;
 
 
-    private float cadastreMeters;
+    private Integer cadastreMeters;
 
     private Year buildingYear;
 

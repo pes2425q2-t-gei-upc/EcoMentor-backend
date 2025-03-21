@@ -8,9 +8,8 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.OfficialCertificateRepository;
-import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitys;
-import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateWFE;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateWFEDTO;
 import org.springframework.stereotype.Component;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -22,13 +21,11 @@ import java.util.stream.Collectors;
 @Component
 public class AddressMapper {
     private final CertificateRepository certificateRepository;
-    private final OfficialCertificateRepository officialCertificateRepository;
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
 
-    public AddressMapper(CertificateRepository certificateRepository, OfficialCertificateRepository officialCertificateRepository) {
+    public AddressMapper(CertificateRepository certificateRepository) {
         this.certificateRepository = certificateRepository;
-        this.officialCertificateRepository = officialCertificateRepository;
     }
 
     // Entity to DTO conversion. The id field is included in the DTO.
@@ -104,13 +101,13 @@ public class AddressMapper {
     }
 
 
-    public OfficialCertificateWFE OfficialCertificateWFEToDTO(OfficialCertificate certificate) {
+    public OfficialCertificateWFEDTO OfficialCertificateWFEToDTO(OfficialCertificate certificate) {
         if (certificate == null) {
             System.out.println("Certificate is null");
             return null;
         }
         System.out.println("Certificate is not null");
-        return OfficialCertificateWFE.builder()
+        return OfficialCertificateWFEDTO.builder()
                 .certificateId(certificate.getCertificateId())
                 .certificateType(certificate.getCertificateType())
                 .documentId(certificate.getDocumentId())
@@ -150,11 +147,11 @@ public class AddressMapper {
     }
 
 
-    public CertificateWithoutForeignEntitys CertificateWFEToDTO(Certificate certificate) {
+    public CertificateWithoutForeignEntitiesDTO CertificateWFEToDTO(Certificate certificate) {
         if (certificate == null) {
             return null;
         }
-        return CertificateWithoutForeignEntitys.builder()
+        return CertificateWithoutForeignEntitiesDTO.builder()
                 .certificateId(certificate.getCertificateId())
                 .certificateType(certificate.getCertificateType())
                 .build();

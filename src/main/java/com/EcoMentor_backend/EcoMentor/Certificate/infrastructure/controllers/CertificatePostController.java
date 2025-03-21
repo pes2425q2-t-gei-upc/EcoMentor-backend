@@ -1,24 +1,26 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.CreateCertificateUseCase;
-import com.EcoMentor_backend.EcoMentor.Certificate.useCases.CreateOfficialCertificateUseCase;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateBySetOfValuesUseCase;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateCertificateDTO;
-import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateOfficialCertificateDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Validated
 @RequestMapping("/api/certificate")
 public class CertificatePostController {
     private final CreateCertificateUseCase createCertificateUseCase;
-    private final CreateOfficialCertificateUseCase createOfficialCertificateUseCase;
+    private final GetCertificateBySetOfValuesUseCase getCertificateBySetOfValuesUseCase;
 
-    public CertificatePostController(CreateCertificateUseCase createCertificateUseCase, CreateOfficialCertificateUseCase createOfficialCertificateUseCase) {
+    public CertificatePostController(CreateCertificateUseCase createCertificateUseCase, GetCertificateBySetOfValuesUseCase getCertificateBySetOfValuesUseCase) {
         this.createCertificateUseCase = createCertificateUseCase;
-        this.createOfficialCertificateUseCase = createOfficialCertificateUseCase;
+        this.getCertificateBySetOfValuesUseCase = getCertificateBySetOfValuesUseCase;
     }
 
     @PostMapping
@@ -27,10 +29,17 @@ public class CertificatePostController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/official_certificate")
-    public ResponseEntity<Void> createOfficialCertificate(@RequestBody @Validated CreateOfficialCertificateDTO officialCertificate) {
-        createOfficialCertificateUseCase.execute(officialCertificate);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PostMapping("/setOfValues")
+    public ResponseEntity<List<CertificateWithoutForeignEntitiesDTO>> getCertificateBySetOfValues( @RequestParam String parameter,
+                                                                                           @RequestBody List<Object> values) {
+        List<CertificateWithoutForeignEntitiesDTO> certificates = getCertificateBySetOfValuesUseCase.execute(parameter, values);
+        if (certificates.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.ok(certificates);
+        }
     }
+
 
 }
