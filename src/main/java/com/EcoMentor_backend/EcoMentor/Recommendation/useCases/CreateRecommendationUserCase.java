@@ -14,7 +14,8 @@ public class CreateRecommendationUserCase {
     private final RecommendationMapper recommendationMapper;
 
 
-    public CreateRecommendationUserCase(RecommendationRepository recommendationRepository, RecommendationMapper recommendationMapper) {
+    public CreateRecommendationUserCase(RecommendationRepository recommendationRepository,
+                                        RecommendationMapper recommendationMapper) {
         this.recommendationRepository = recommendationRepository;
         this.recommendationMapper = recommendationMapper;
     }

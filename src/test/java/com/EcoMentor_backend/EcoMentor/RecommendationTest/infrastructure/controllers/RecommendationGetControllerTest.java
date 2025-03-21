@@ -1,9 +1,14 @@
 package com.EcoMentor_backend.EcoMentor.RecommendationTest.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GetRecommendationByIdUserCase;
-import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GetAllRecommendationsUserCase;
-import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.controllers.RecommendationGetController;
+import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GetAllRecommendationsUserCase;
+import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GetRecommendationByIdUserCase;
+import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,11 +17,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Collections;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+
+
 
 public class RecommendationGetControllerTest {
 
@@ -60,7 +63,8 @@ public class RecommendationGetControllerTest {
     @Test
     void getRecommendationByIdNotFound() {
         Long recommendationId = 1L;
-        when(getRecommendationByIdUserCase.execute(recommendationId)).thenThrow(new RuntimeException("Recommendation not found"));
+        when(getRecommendationByIdUserCase.execute(recommendationId))
+                .thenThrow(new RuntimeException("Recommendation not found"));
 
         try {
             recommendationGetController.getRecommendation(recommendationId);

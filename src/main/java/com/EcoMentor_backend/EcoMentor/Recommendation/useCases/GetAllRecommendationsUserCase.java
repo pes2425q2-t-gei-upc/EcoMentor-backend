@@ -1,14 +1,15 @@
 package com.EcoMentor_backend.EcoMentor.Recommendation.useCases;
 
 import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
+import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.repositories.RecommendationRepository;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.mapper.RecommendationMapper;
-import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.repositories.RecommendationRepository;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Service
 @Transactional
@@ -16,7 +17,8 @@ public class GetAllRecommendationsUserCase {
     private final RecommendationRepository recommendationRepository;
     private final RecommendationMapper recommendationMapper;
 
-    public GetAllRecommendationsUserCase(RecommendationRepository recommendationRepository, RecommendationMapper recommendationMapper) {
+    public GetAllRecommendationsUserCase(RecommendationRepository recommendationRepository,
+                                         RecommendationMapper recommendationMapper) {
         this.recommendationRepository = recommendationRepository;
         this.recommendationMapper = recommendationMapper;
     }

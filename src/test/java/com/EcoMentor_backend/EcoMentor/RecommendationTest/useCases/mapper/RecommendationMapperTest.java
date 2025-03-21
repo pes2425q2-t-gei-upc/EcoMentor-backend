@@ -1,19 +1,20 @@
 package com.EcoMentor_backend.EcoMentor.RecommendationTest.useCases.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.CreateRecommendationDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.mapper.RecommendationMapper;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class RecommendationMapperTest {
 
@@ -32,21 +33,21 @@ public class RecommendationMapperTest {
                 .certificates(Collections.singletonList(new Certificate()))
                 .name("Valid Recommendation")
                 .canUpgradeIsolation(true)
-                .UpgradedIsolation(10.0f)
+                .upgradedIsolation(10.0f)
                 .canUpgradeWindows(true)
-                .UpgradedWindows(20.0f)
+                .upgradedWindows(20.0f)
                 .canUpgradeSolarPanels(true)
-                .UpgradedSolarPanels(30.0f)
+                .upgradedSolarPanels(30.0f)
                 .canUpgradeBombHeat(true)
-                .UpgradedBombHeat(40.0f)
+                .upgradedBombHeat(40.0f)
                 .canUpgradeHeat(true)
-                .UpgradedHeat(50.0f)
-                .Io(1.0f)
-                .Ir(2.0f)
-                .Iss(3.0f)
-                .R(4.0f)
-                .R0(5.0f)
-                .UpgradedICEE(6.0f)
+                .upgradedHeat(50.0f)
+                .io(1.0f)
+                .ir(2.0f)
+                .iss(3.0f)
+                .r1(4.0f)
+                .r0(5.0f)
+                .upgradedICEE(6.0f)
                 .totalPrice(1000.0f)
                 .build();
 
@@ -77,7 +78,7 @@ public class RecommendationMapperTest {
                 .io(1.0f)
                 .ir(2.0f)
                 .iss(3.0f)
-                .r(4.0f)
+                .r1(4.0f)
                 .r0(5.0f)
                 .upgradedICEE(6.0f)
                 .totalPrice(1000.0f)

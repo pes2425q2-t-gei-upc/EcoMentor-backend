@@ -1,8 +1,9 @@
 package com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GetRecommendationByIdUserCase;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GetAllRecommendationsUserCase;
+import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GetRecommendationByIdUserCase;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 @Validated
@@ -19,7 +19,8 @@ public class RecommendationGetController {
     private final GetRecommendationByIdUserCase getRecommendationByIdUserCase;
     private final GetAllRecommendationsUserCase getAllRecommendationsUserCase;
 
-    public RecommendationGetController(GetRecommendationByIdUserCase getRecommendationByIdUserCase, GetAllRecommendationsUserCase getAllRecommendationsUserCase) {
+    public RecommendationGetController(GetRecommendationByIdUserCase getRecommendationByIdUserCase,
+                                       GetAllRecommendationsUserCase getAllRecommendationsUserCase) {
         this.getRecommendationByIdUserCase = getRecommendationByIdUserCase;
         this.getAllRecommendationsUserCase = getAllRecommendationsUserCase;
     }

@@ -1,7 +1,11 @@
 package com.EcoMentor_backend.EcoMentor.RecommendationTest.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.DeleteRecommendationUserCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+
 import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.controllers.RecommendationDeleteController;
+import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.DeleteRecommendationUserCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,9 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
+
 
 public class RecommendationDeleteControllerTest {
 
@@ -40,7 +42,8 @@ public class RecommendationDeleteControllerTest {
     @Test
     void deleteRecommendationNotFound() {
         Long recommendationId = 1L;
-        doThrow(new RuntimeException("Recommendation not found")).when(deleteRecommendationUserCase).execute(recommendationId);
+        doThrow(new RuntimeException("Recommendation not found"))
+                .when(deleteRecommendationUserCase).execute(recommendationId);
 
         try {
             recommendationDeleteController.deleteRecommendation(recommendationId);
