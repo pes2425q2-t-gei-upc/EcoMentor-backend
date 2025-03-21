@@ -1,15 +1,15 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.useCases;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Service
 @Transactional
@@ -17,7 +17,8 @@ public class GetCertificateBySetOfValuesUseCase {
     private final CertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetCertificateBySetOfValuesUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateBySetOfValuesUseCase(CertificateRepository certificateRepository,
+                                              CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }

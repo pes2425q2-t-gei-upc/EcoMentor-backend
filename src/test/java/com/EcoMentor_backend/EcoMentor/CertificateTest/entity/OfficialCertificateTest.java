@@ -1,10 +1,12 @@
 package com.EcoMentor_backend.EcoMentor.CertificateTest.entity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
-import org.junit.jupiter.api.Test;
 import java.time.Year;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class OfficialCertificateTest {
 

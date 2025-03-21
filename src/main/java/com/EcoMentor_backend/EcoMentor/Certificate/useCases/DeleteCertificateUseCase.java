@@ -10,11 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeleteCertificateUseCase {
     private final CertificateRepository certificateRepository;
 
-    public DeleteCertificateUseCase(CertificateRepository certificateRepository) { this.certificateRepository = certificateRepository; }
+    public DeleteCertificateUseCase(CertificateRepository certificateRepository) {
+        this.certificateRepository = certificateRepository;
+    }
 
     public void execute(Long certificateId) {
         Certificate certificate = certificateRepository.findCertificateByCertificateId(certificateId);
-        if(certificate == null) {
+        if (certificate == null) {
             throw new RuntimeException("Certificate not found");
         }
         certificateRepository.delete(certificate);

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @Validated
 @RequestMapping("/api/certificate")
@@ -19,13 +20,13 @@ public class CertificateDeleteController {
     public CertificateDeleteController(DeleteCertificateUseCase deleteCertificateUseCase) {
         this.deleteCertificateUseCase = deleteCertificateUseCase;
     }
+
     @DeleteMapping("/{certificateId}")
-    public ResponseEntity<Void> deleteCertificate(@PathVariable Long certificateId){
+    public ResponseEntity<Void> deleteCertificate(@PathVariable Long certificateId) {
         try {
             deleteCertificateUseCase.execute(certificateId);
             return ResponseEntity.noContent().build();
-        }
-        catch (RuntimeException e) { //! Hay que modificarlo por una exception personalizada
+        } catch (RuntimeException e) { //! Hay que modificarlo por una exception personalizada
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

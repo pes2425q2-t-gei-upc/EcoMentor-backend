@@ -12,13 +12,13 @@ import lombok.experimental.SuperBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "certificateType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = CreateOfficialCertificateDTO.class, name = "OFFICIAL"),
+    @JsonSubTypes.Type(value = CreateOfficialCertificateDTO.class, name = "OFFICIAL"),
 })
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
 public class CertificateWithoutForeignEntitiesDTO {
-        private Long certificateId;
-        private CertificateType certificateType;
+    private Long certificateId;
+    private CertificateType certificateType;
 }

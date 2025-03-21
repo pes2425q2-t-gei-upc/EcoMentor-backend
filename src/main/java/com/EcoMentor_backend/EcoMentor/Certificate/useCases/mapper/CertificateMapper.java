@@ -4,11 +4,17 @@ import com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories.Addre
 import com.EcoMentor_backend.EcoMentor.Address.useCases.mapper.AddressMapper;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
-import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.*;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateOfficialCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateWFEDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.mapper.RecommendationMapper;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
+
 
 @Component
 public class CertificateMapper {
@@ -17,7 +23,8 @@ public class CertificateMapper {
     private final RecommendationMapper recommendationMapper;
     private final AddressRepository addressRepository;
 
-    public CertificateMapper(AddressMapper addressMapper, AddressRepository addressRepository, RecommendationMapper recommendationMapper) {
+    public CertificateMapper(AddressMapper addressMapper, AddressRepository addressRepository,
+                             RecommendationMapper recommendationMapper) {
         this.recommendationMapper = recommendationMapper;
         this.addressMapper = addressMapper;
         this.addressRepository = addressRepository;
@@ -65,8 +72,7 @@ public class CertificateMapper {
                     .energeticRehabilitation(officialCertificate.isEnergeticRehabilitation())
                     .entryDate(officialCertificate.getEntryDate())
                     .build();
-        }
-        else {
+        } else {
             return CertificateWithoutForeignEntitiesDTO.builder()
                     .certificateId(certificate.getCertificateId())
                     .certificateType(certificate.getCertificateType())
@@ -84,7 +90,8 @@ public class CertificateMapper {
                     .certificateId(officialCertificate.getCertificateId())
                     .addressDTO(addressMapper.toDTOWithoutCertificate(officialCertificate.getAddress()))
                     .certificateType(officialCertificate.getCertificateType())
-                    .recommendations(officialCertificate.getRecommendations().stream().map(recommendationMapper::toDTO).collect(Collectors.toList()))
+                    .recommendations(officialCertificate.getRecommendations().stream()
+                            .map(recommendationMapper::toDTO).collect(Collectors.toList()))
                     .documentId(officialCertificate.getDocumentId())
                     .floor(officialCertificate.getFloor())
                     .door(officialCertificate.getDoor())
@@ -118,13 +125,13 @@ public class CertificateMapper {
                     .energeticRehabilitation(officialCertificate.isEnergeticRehabilitation())
                     .entryDate(officialCertificate.getEntryDate())
                     .build();
-        }
-        else {
+        } else {
             return CertificateDTO.builder()
                     .certificateId(certificate.getCertificateId())
-                    .addressDTO(addressMapper.toDTOWithoutCertificate (certificate.getAddress()))
+                    .addressDTO(addressMapper.toDTOWithoutCertificate(certificate.getAddress()))
                     .certificateType(certificate.getCertificateType())
-                    .recommendations(certificate.getRecommendations().stream().map(recommendationMapper::toDTO).collect(Collectors.toList()))
+                    .recommendations(certificate.getRecommendations().stream().map(recommendationMapper::toDTO)
+                            .collect(Collectors.toList()))
                     .build();
         }
 
@@ -134,9 +141,10 @@ public class CertificateMapper {
         if (dto == null) {
             return null;
         }
-        if(dto instanceof CreateOfficialCertificateDTO createOfficialCertificateDTO) {
+        if (dto instanceof CreateOfficialCertificateDTO createOfficialCertificateDTO) {
             return OfficialCertificate.builder()
-                    .address(addressRepository.findByAddressId(addressMapper.toEntity(createOfficialCertificateDTO.getCreateAddressDTO()).getAddressId()))
+                    .address(addressRepository.findByAddressId(addressMapper.toEntity(createOfficialCertificateDTO
+                            .getCreateAddressDTO()).getAddressId()))
                     .certificateType(createOfficialCertificateDTO.getCertificateType())
                     .recommendations(createOfficialCertificateDTO.getRecommendations())
                     .documentId(createOfficialCertificateDTO.getDocumentId())
@@ -146,7 +154,8 @@ public class CertificateMapper {
                     .cadastreMeters(createOfficialCertificateDTO.getCadastreMeters())
                     .buildingYear(createOfficialCertificateDTO.getBuildingYear())
                     .buildingUse(createOfficialCertificateDTO.getBuildingUse())
-                    .nonRenewablePrimaryQualification(createOfficialCertificateDTO.getNonRenewablePrimaryQualification())
+                    .nonRenewablePrimaryQualification(createOfficialCertificateDTO
+                            .getNonRenewablePrimaryQualification())
                     .nonRenewablePrimaryEnergy(createOfficialCertificateDTO.getNonRenewablePrimaryEnergy())
                     .co2Qualification(createOfficialCertificateDTO.getCo2Qualification())
                     .co2Emissions(createOfficialCertificateDTO.getCo2Emissions())
@@ -172,10 +181,10 @@ public class CertificateMapper {
                     .energeticRehabilitation(createOfficialCertificateDTO.isEnergeticRehabilitation())
                     .entryDate(createOfficialCertificateDTO.getEntryDate())
                     .build();
-        }
-        else {
+        } else {
             return Certificate.builder()
-                    .address(addressRepository.findByAddressId(addressMapper.toEntity(dto.getCreateAddressDTO()).getAddressId()))
+                    .address(addressRepository.findByAddressId(addressMapper.toEntity(dto.getCreateAddressDTO())
+                            .getAddressId()))
                     .certificateType(dto.getCertificateType())
                     .recommendations(dto.getRecommendations())
                     .build();

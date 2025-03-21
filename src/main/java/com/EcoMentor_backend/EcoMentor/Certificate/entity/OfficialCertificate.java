@@ -3,15 +3,22 @@ package com.EcoMentor_backend.EcoMentor.Certificate.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
+import java.sql.Date;
+import java.time.Year;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.sql.Date;
-import java.time.Year;
+
 
 @Entity
 @Table(name = "officialCertificate")

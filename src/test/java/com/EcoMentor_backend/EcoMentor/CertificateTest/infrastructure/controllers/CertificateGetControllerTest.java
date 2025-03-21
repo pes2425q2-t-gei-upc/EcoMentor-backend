@@ -1,21 +1,24 @@
 package com.EcoMentor_backend.EcoMentor.CertificateTest.infrastructure.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers.CertificateGetController;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetAllCertificatesUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByCertificateIdUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+
+
 
 public class CertificateGetControllerTest {
 

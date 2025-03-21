@@ -4,11 +4,11 @@ import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import java.time.Year;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 
-import java.time.Year;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Repository
 public class CustomCertificateRepositoryImpl implements CustomCertificateRepository {
@@ -58,11 +58,11 @@ public class CustomCertificateRepositoryImpl implements CustomCertificateReposit
             case "nonRenewablePrimaryQualification", "co2Qualification", "lightingQualification",
                  "heatingQualification", "acsQualification", "refrigerationQualification":
                 return Qualification.valueOf(value);
-            case "electricVehicle", "solarThermal","photovoltaicSolar", "biomass","districtNet",
-                 "geothermal","energeticRehabilitation":
+            case "electricVehicle", "solarThermal", "photovoltaicSolar", "biomass", "districtNet",
+                 "geothermal", "energeticRehabilitation":
                 return Boolean.parseBoolean(value);
-            case "nonRenewablePrimaryEnergy", "co2Emissions", "finalEnergyConsumption", "annualCost"
-                    ,"insulation", "windowEfficiency", "heatingEmissions", "refrigerationEmissions",
+            case "nonRenewablePrimaryEnergy", "co2Emissions", "finalEnergyConsumption", "annualCost",
+                 "insulation", "windowEfficiency", "heatingEmissions", "refrigerationEmissions",
                     "lightingEmissions", "acsEmissions", "residentialUseVentilation":
                 return Float.parseFloat(value);
             default:
