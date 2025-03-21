@@ -1,6 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Address.useCases.dto;
 
-import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateWFE;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateWFEDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +22,5 @@ public class AddressDTOWithOfficialCertificate {
     private String province;
     private float longitude;
     private float latitude;
-    private List<OfficialCertificateWFE> certificates;
+    private List<OfficialCertificateWFEDTO> certificates;
 }

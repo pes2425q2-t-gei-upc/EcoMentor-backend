@@ -7,26 +7,22 @@ import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMa
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @Transactional
-public class GetAllCertificatesUseCase {
+public class GetCertificateByCertificateIdWFEUseCase {
     private final CertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetAllCertificatesUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateByCertificateIdWFEUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }
 
-    public List<CertificateWithoutForeignEntitiesDTO> execute() {
-        List<Certificate> certificates = certificateRepository.findAll();
-        List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
-        for (Certificate certificate : certificates) {
-            certificateDTOS.add(certificateMapper.toDTOW(certificate));
+    public CertificateWithoutForeignEntitiesDTO execute(Long certificateId) {
+        Certificate certificate = certificateRepository.findCertificateByCertificateId(certificateId);
+        if(certificate == null) {
+            throw new RuntimeException("Certificate not found");
         }
-        return certificateDTOS;
+        return certificateMapper.toDTOW(certificate);
     }
 }

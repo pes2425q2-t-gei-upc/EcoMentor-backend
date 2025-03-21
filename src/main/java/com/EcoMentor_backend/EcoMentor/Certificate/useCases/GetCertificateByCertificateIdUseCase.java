@@ -20,6 +20,9 @@ public class GetCertificateByCertificateIdUseCase {
 
     public CertificateDTO execute(Long certificateId) {
         Certificate certificate = certificateRepository.findCertificateByCertificateId(certificateId);
+        if(certificate == null) {
+            throw new RuntimeException("Certificate not found");
+        }
         return certificateMapper.toDTO(certificate);
     }
 }

@@ -12,17 +12,19 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GetAllCertificatesUseCase {
+public class GetCertificateByMinMaxRangeUseCase {
     private final CertificateRepository certificateRepository;
     private final CertificateMapper certificateMapper;
 
-    public GetAllCertificatesUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper) {
+    public GetCertificateByMinMaxRangeUseCase(CertificateRepository certificateRepository, CertificateMapper certificateMapper) {
         this.certificateRepository = certificateRepository;
         this.certificateMapper = certificateMapper;
     }
 
-    public List<CertificateWithoutForeignEntitiesDTO> execute() {
-        List<Certificate> certificates = certificateRepository.findAll();
+    public List<CertificateWithoutForeignEntitiesDTO> execute(String parameter , String minimum, String maximum) {
+        Object min = certificateRepository.convertToCorrectType(parameter, minimum);
+        Object max = certificateRepository.convertToCorrectType(parameter, maximum);
+        List<Certificate> certificates = certificateRepository.findCertificateByMinMaxRange(parameter, min, max);
         List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
         for (Certificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTOW(certificate));
