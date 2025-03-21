@@ -49,7 +49,7 @@ public class CustomCertificateRepositoryImpl implements CustomCertificateReposit
         switch (parameter) {
             case "certificateId", "address":
                 return Long.parseLong(value);
-            case "certificateType", "door", "climateZone", "documentId":
+            case "certificateType", "floor", "door", "climateZone", "documentId", "buildingUse":
                 return value;
             case "CadastreMeters":
                 return Integer.parseInt(value);
@@ -65,6 +65,8 @@ public class CustomCertificateRepositoryImpl implements CustomCertificateReposit
                  "insulation", "windowEfficiency", "heatingEmissions", "refrigerationEmissions",
                     "lightingEmissions", "acsEmissions", "residentialUseVentilation":
                 return Float.parseFloat(value);
+            case "entryDate":
+                return java.sql.Date.valueOf(value);
             default:
                 return null;
         }
