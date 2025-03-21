@@ -4,7 +4,6 @@ import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories.AddressRepository;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.mapper.AddressMapper;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,16 +20,15 @@ public class CreateAddressUseCase {
     }
 
     public Long execute(CreateAddressDTO createAddressDTO) {
-        if(addressRepository.existsAddressByAddressNameAndAddressNumber(createAddressDTO.getAddressName(), createAddressDTO.getAddressNumber())) {
-            Address address = addressRepository.findAddressByAddressNameAndAddressNumber(createAddressDTO.getAddressName(), createAddressDTO.getAddressNumber());
+        String addressName = createAddressDTO.getAddressName();
+        String addressNumber = createAddressDTO.getAddressNumber();
+        if (addressRepository.existsAddressByAddressNameAndAddressNumber(addressName, addressNumber)) {
+            Address address = addressRepository.findAddressByAddressNameAndAddressNumber(addressName, addressNumber);
             return address.getAddressId();
-        }
-        else {
+        } else {
             Address address = addressMapper.toEntity(createAddressDTO);
             addressRepository.save(address);
             return address.getAddressId();
         }
-
     }
-
 }

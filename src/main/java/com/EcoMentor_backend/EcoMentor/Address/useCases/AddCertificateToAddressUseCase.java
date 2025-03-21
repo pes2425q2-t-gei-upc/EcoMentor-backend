@@ -13,7 +13,8 @@ public class AddCertificateToAddressUseCase {
     private final AddressRepository addressRepository;
     private final CertificateRepository certificateRepository;
 
-    public AddCertificateToAddressUseCase(AddressRepository addressRepository, CertificateRepository certificateRepository) {
+    public AddCertificateToAddressUseCase(AddressRepository addressRepository,
+                                          CertificateRepository certificateRepository) {
         this.addressRepository = addressRepository;
         this.certificateRepository = certificateRepository;
     }
@@ -27,16 +28,11 @@ public class AddCertificateToAddressUseCase {
         if (address == null) {
             throw new IllegalArgumentException("Address not found");
         }
-        // Asigna la dirección al certificado (relación bidireccional)
         certificate.setAddress(address);
 
-        // Añade el certificado a la lista de la dirección
         address.getCertificates().add(certificate);
 
-        // Guarda ambos objetos
         certificateRepository.save(certificate);
         addressRepository.save(address);
     }
-
-
 }
