@@ -22,12 +22,15 @@ public class CreateAddressUseCase {
 
     public Long execute(CreateAddressDTO createAddressDTO) {
         if(addressRepository.existsAddressByAddressNameAndAddressNumber(createAddressDTO.getAddressName(), createAddressDTO.getAddressNumber())) {
-            throw new RuntimeException("Address already exists");
+            Address address = addressRepository.findAddressByAddressNameAndAddressNumber(createAddressDTO.getAddressName(), createAddressDTO.getAddressNumber());
+            return address.getAddressId();
+        }
+        else {
+            Address address = addressMapper.toEntity(createAddressDTO);
+            addressRepository.save(address);
+            return address.getAddressId();
         }
 
-        Address address = addressMapper.toEntity(createAddressDTO);
-        addressRepository.save(address);
-        return address.getAddressId();
     }
 
 }

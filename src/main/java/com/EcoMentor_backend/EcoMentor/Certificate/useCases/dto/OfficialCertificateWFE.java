@@ -1,10 +1,7 @@
-package com.EcoMentor_backend.EcoMentor.Certificate.entity;
+package com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,18 +10,15 @@ import lombok.experimental.SuperBuilder;
 import java.sql.Date;
 import java.time.Year;
 
-@Entity
-@Table(name = "officialCertificate")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class OfficialCertificate extends Certificate {
-
-    @Column(unique = true)
-    @NotNull
+public class OfficialCertificateWFE {
+    private Long certificateId;
+    private CertificateType certificateType;
     private String documentId;
-    //TODO relation with address
+
 
     private String floor;
 
@@ -35,8 +29,6 @@ public class OfficialCertificate extends Certificate {
 
 
     private float cadastreMeters;
-
-    //TODO change to year class or smth?
 
     private Year buildingYear;
 

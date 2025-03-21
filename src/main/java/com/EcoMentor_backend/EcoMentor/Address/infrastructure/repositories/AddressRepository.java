@@ -23,6 +23,17 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     """, nativeQuery = true)
     List<Address> findAddressesWithinDistance(@Param("point") Point point, @Param("radius") double radius);
 
+    @Query(value = """
+    SELECT * FROM address
+    WHERE ST_Within(location, ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude, :maxLatitude, 4326))
+    """, nativeQuery = true)
+    List<Address> findAddressesWithinBoundingBox(
+            @Param("minLatitude") double minLatitude,
+            @Param("maxLatitude") double maxLatitude,
+            @Param("minLongitude") double minLongitude,
+            @Param("maxLongitude") double maxLongitude
+    );
 
 
+    Address findAddressByAddressNameAndAddressNumber(String addressName, String addressNumber);
 }

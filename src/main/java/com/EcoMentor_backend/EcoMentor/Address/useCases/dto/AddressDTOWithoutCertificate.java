@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddressDTO {
+public class AddressDTOWithoutCertificate {
     private Long addressId;
     private String addressName;
     private String addressNumber;
@@ -22,5 +22,4 @@ public class AddressDTO {
     private String province;
     private float longitude;
     private float latitude;
-    private List<CertificateWithoutForeignEntitys> certificates;
 }

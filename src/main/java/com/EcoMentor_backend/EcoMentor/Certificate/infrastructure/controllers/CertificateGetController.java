@@ -4,6 +4,7 @@ package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.*;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,26 +17,27 @@ public class CertificateGetController {
     private final GetCertificateByAddressUseCase getCertificateByAddressUseCase;
     private final GetCertificateByClimateZoneUseCase getCertificateByClimateZoneUseCase;
     private final GetCertificateByNonRenewablePrimaryQualificationUseCase getCertificateByNonRenewablePrimaryQualificationUseCase;
-    private final GetCertificateByCo2Qualification getCertificateByCo2Emissions;
-    private final GetCertificateByACSQualification getCertificateByACSQualification;
-    private final GetCertificateByHeatingQualification getCertificateByHeatingQualification;
-    private final GetCertificateByLightingQualification getCertificateByLightingQualification;
-    private final GetCertificateByRefrigerationQualification getCertificateByRefrigerationQualification;
-    private final GetCertificateBySolarThermal getCertificateBySolarThermal;
-    private final GetCertificateByPhotovoltaicSolar getCertificateByPhotovoltaicSolar;
-    private final GetCertificateByEnergeticRehabilitation getCertificateByEnergeticRehabilitation;
-    private final GetCertificateByDistrictNet getCertificateByDistrictNet;
-    private final GetCertificateByElectricVehicle getCertificateByElectricVehicle;
-    private final GetCertificateByGeothermal getCertificateByGeothermal;
-    private final GetCertificateByBiomass getCertificateByBiomass;
+    private final GetCertificateByCo2QualificationUseCase getCertificateByCo2Emissions;
+    private final GetCertificateByACSQualificationUseCase getCertificateByACSQualification;
+    private final GetCertificateByHeatingQualificationUseCase getCertificateByHeatingQualification;
+    private final GetCertificateByLightingQualificationUseCase getCertificateByLightingQualification;
+    private final GetCertificateByRefrigerationQualificationUseCase getCertificateByRefrigerationQualification;
+    private final GetCertificateBySolarThermalUseCase getCertificateBySolarThermal;
+    private final GetCertificateByPhotovoltaicSolarUseCase getCertificateByPhotovoltaicSolar;
+    private final GetCertificateByEnergeticRehabilitationUseCase getCertificateByEnergeticRehabilitation;
+    private final GetCertificateByDistrictNetUseCase getCertificateByDistrictNet;
+    private final GetCertificateByElectricVehicleUseCase getCertificateByElectricVehicle;
+    private final GetCertificateByGeothermalUseCase getCertificateByGeothermal;
+    private final GetCertificateByBiomassUseCase getCertificateByBiomass;
+    private final GetOfficialCertificataByCertificateIdUseCase getOfficialCertificateByIdUseCase;
 
     public CertificateGetController(GetAllCertificatesUseCase getAllCertificatesUseCase, GetCertificateByCertificateIdUseCase getCertificateByIdUseCase, GetCertificateByAddressUseCase getCertificateByAddressUseCase, GetCertificateByClimateZoneUseCase getCertificateByClimateZoneUseCase
     , GetCertificateByNonRenewablePrimaryQualificationUseCase getCertificateByNonRenewablePrimaryQualificationUseCase
-    , GetCertificateByCo2Qualification getCertificateByCo2Emissions, GetCertificateByACSQualification getCertificateByACSQualification, GetCertificateByHeatingQualification getCertificateByHeatingQualification
-    , GetCertificateByLightingQualification getCertificateByLightingQualification, GetCertificateByRefrigerationQualification getCertificateByRefrigerationQualification
-    , GetCertificateBySolarThermal getCertificateBySolarThermal, GetCertificateByPhotovoltaicSolar getCertificateByPhotovoltaicSolar, GetCertificateByEnergeticRehabilitation getCertificateByEnergeticRehabilitation
-    , GetCertificateByDistrictNet getCertificateByDistrictNet, GetCertificateByElectricVehicle getCertificateByElectricVehicle, GetCertificateByGeothermal getCertificateByGeothermal
-    , GetCertificateByBiomass getCertificateByBiomass) {
+    , GetCertificateByCo2QualificationUseCase getCertificateByCo2Emissions, GetCertificateByACSQualificationUseCase getCertificateByACSQualification, GetCertificateByHeatingQualificationUseCase getCertificateByHeatingQualification
+    , GetCertificateByLightingQualificationUseCase getCertificateByLightingQualification, GetCertificateByRefrigerationQualificationUseCase getCertificateByRefrigerationQualification
+    , GetCertificateBySolarThermalUseCase getCertificateBySolarThermal, GetCertificateByPhotovoltaicSolarUseCase getCertificateByPhotovoltaicSolar, GetCertificateByEnergeticRehabilitationUseCase getCertificateByEnergeticRehabilitation
+    , GetCertificateByDistrictNetUseCase getCertificateByDistrictNet, GetCertificateByElectricVehicleUseCase getCertificateByElectricVehicle, GetCertificateByGeothermalUseCase getCertificateByGeothermal
+    , GetCertificateByBiomassUseCase getCertificateByBiomass, GetOfficialCertificataByCertificateIdUseCase getOfficialCertificateByIdUseCase) {
         this.getAllCertificatesUseCase = getAllCertificatesUseCase;
         this.getCertificateByIdUseCase = getCertificateByIdUseCase;
         this.getCertificateByAddressUseCase = getCertificateByAddressUseCase;
@@ -53,6 +55,7 @@ public class CertificateGetController {
         this.getCertificateByElectricVehicle = getCertificateByElectricVehicle;
         this.getCertificateByGeothermal = getCertificateByGeothermal;
         this.getCertificateByBiomass = getCertificateByBiomass;
+        this.getOfficialCertificateByIdUseCase = getOfficialCertificateByIdUseCase;
     }
 
     @GetMapping

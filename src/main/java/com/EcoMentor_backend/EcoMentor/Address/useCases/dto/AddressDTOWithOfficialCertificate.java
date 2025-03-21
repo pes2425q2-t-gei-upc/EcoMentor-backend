@@ -1,6 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Address.useCases.dto;
 
-import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitys;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateWFE;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddressDTO {
+public class AddressDTOWithOfficialCertificate {
     private Long addressId;
     private String addressName;
     private String addressNumber;
@@ -22,5 +22,5 @@ public class AddressDTO {
     private String province;
     private float longitude;
     private float latitude;
-    private List<CertificateWithoutForeignEntitys> certificates;
+    private List<OfficialCertificateWFE> certificates;
 }
