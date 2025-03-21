@@ -33,12 +33,6 @@ public class CreateCertificateUseCaseTest {
     @Mock
     private AddressRepository addressRepository;
 
-    @Mock
-    private Certificate certificate;
-
-    @Mock
-    private CreateCertificateDTO createCertificateDTO;
-
     @InjectMocks
     private CreateCertificateUseCase createCertificateUseCase;
 
@@ -49,6 +43,9 @@ public class CreateCertificateUseCaseTest {
 
     @Test
     public void testExecute() {
+        CreateCertificateDTO createCertificateDTO = mock(CreateCertificateDTO.class);
+        Certificate certificate = mock(Certificate.class);
+
         when(certificateMapper.toEntity(createCertificateDTO)).thenReturn(certificate);
         when(addressRepository.existsAddressByAddressNameAndAddressNumber(anyString(), anyString())).thenReturn(false);
         when(createAddressUseCase.execute(any())).thenReturn(1L);
