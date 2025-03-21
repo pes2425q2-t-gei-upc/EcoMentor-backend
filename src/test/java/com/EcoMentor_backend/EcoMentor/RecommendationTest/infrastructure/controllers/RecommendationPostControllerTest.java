@@ -1,8 +1,11 @@
 package com.EcoMentor_backend.EcoMentor.RecommendationTest.infrastructure.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.controllers.RecommendationPostController;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.CreateRecommendationUserCase;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.CreateRecommendationDTO;
-import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.controllers.RecommendationPostController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,8 +14,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class RecommendationPostControllerTest {
 
@@ -42,7 +43,8 @@ public class RecommendationPostControllerTest {
     @Test
     void createRecommendationWithInvalidData() {
         CreateRecommendationDTO createRecommendationDTO = new CreateRecommendationDTO();
-        when(createRecommendationUserCase.execute(createRecommendationDTO)).thenThrow(new RuntimeException("Invalid data"));
+        when(createRecommendationUserCase.execute(createRecommendationDTO))
+                .thenThrow(new RuntimeException("Invalid data"));
 
         try {
             recommendationPostController.createRecommendation(createRecommendationDTO);

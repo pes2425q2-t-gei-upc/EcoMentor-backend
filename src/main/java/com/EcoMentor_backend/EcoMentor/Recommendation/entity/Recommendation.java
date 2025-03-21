@@ -1,15 +1,19 @@
 package com.EcoMentor_backend.EcoMentor.Recommendation.entity;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "recommendation")
@@ -33,49 +37,49 @@ public class Recommendation {
     private boolean canUpgradeIsolation;
 
     @NotNull
-    private float UpgradedIsolation;
+    private float upgradedIsolation;
 
     @NotNull
     private boolean canUpgradeWindows;
 
     @NotNull
-    private float UpgradedWindows;
+    private float upgradedWindows;
 
     @NotNull
     private boolean canUpgradeSolarPanels;
 
     @NotNull
-    private float UpgradedSolarPanels;
+    private float upgradedSolarPanels;
 
     @NotNull
     private boolean canUpgradeBombHeat;
 
     @NotNull
-    private float UpgradedBombHeat;
+    private float upgradedBombHeat;
 
     @NotNull
     private boolean canUpgradeHeat;
 
     @NotNull
-    private float UpgradedHeat;
+    private float upgradedHeat;
 
     @NotNull
-    private float Io;
+    private float io;
 
     @NotNull
-    private float Ir;
+    private float ir;
 
     @NotNull
-    private float Iss;
+    private float iss;
 
     @NotNull
-    private float R;
+    private float r1;
 
     @NotNull
-    private float R0;
+    private float r0;
 
     @NotNull
-    private float UpgradedICEE;
+    private float upgradedICEE;
 
     @NotNull
     private float totalPrice;

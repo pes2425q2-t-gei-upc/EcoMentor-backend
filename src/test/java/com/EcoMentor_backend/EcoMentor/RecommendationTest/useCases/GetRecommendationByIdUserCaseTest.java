@@ -1,5 +1,9 @@
 package com.EcoMentor_backend.EcoMentor.RecommendationTest.useCases;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
 import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
 import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.repositories.RecommendationRepository;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GetRecommendationByIdUserCase;
@@ -11,9 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 public class GetRecommendationByIdUserCaseTest {
 

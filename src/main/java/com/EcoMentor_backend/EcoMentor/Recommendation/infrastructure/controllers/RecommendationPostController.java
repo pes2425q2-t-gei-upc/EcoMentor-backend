@@ -21,7 +21,8 @@ public class RecommendationPostController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createRecommendation(@RequestBody @Validated CreateRecommendationDTO recommendationDTO) {
+    public ResponseEntity<Long> createRecommendation(@RequestBody @Validated
+                                                         CreateRecommendationDTO recommendationDTO) {
         Long id = createRecommendationUserCase.execute(recommendationDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }

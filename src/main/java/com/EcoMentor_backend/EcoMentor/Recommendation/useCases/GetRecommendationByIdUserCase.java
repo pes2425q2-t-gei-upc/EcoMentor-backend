@@ -13,14 +13,15 @@ public class GetRecommendationByIdUserCase {
     private final RecommendationRepository recommendationRepository;
     private final RecommendationMapper recommendationMapper;
 
-    public GetRecommendationByIdUserCase(RecommendationRepository recommendationRepository, RecommendationMapper recommendationMapper) {
+    public GetRecommendationByIdUserCase(RecommendationRepository recommendationRepository,
+                                         RecommendationMapper recommendationMapper) {
         this.recommendationRepository = recommendationRepository;
         this.recommendationMapper = recommendationMapper;
     }
 
     public RecommendationDTO execute(Long recommendationId) {
         Recommendation recommendation = recommendationRepository.findByRecommendationId(recommendationId);
-        if(recommendation == null) {
+        if (recommendation == null) {
             throw new RuntimeException("Recommendation not found");
         }
         return recommendationMapper.toDTO(recommendation);

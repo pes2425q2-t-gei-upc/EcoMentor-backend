@@ -1,13 +1,14 @@
 package com.EcoMentor_backend.EcoMentor.RecommendationTest.useCases.dto;
 
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
-import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
-import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
+import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
+import java.util.Collections;
+import org.junit.jupiter.api.Test;
+
+
 
 public class RecommendationDTOTest {
 
@@ -30,7 +31,7 @@ public class RecommendationDTOTest {
                 .io(1.0f)
                 .ir(2.0f)
                 .iss(3.0f)
-                .r(4.0f)
+                .r1(4.0f)
                 .r0(5.0f)
                 .upgradedICEE(6.0f)
                 .totalPrice(1000.0f)
@@ -62,7 +63,7 @@ public class RecommendationDTOTest {
                 .io(0.0f)
                 .ir(0.0f)
                 .iss(0.0f)
-                .r(0.0f)
+                .r1(0.0f)
                 .r0(0.0f)
                 .upgradedICEE(0.0f)
                 .totalPrice(0.0f)
