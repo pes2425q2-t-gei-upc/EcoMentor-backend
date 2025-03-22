@@ -10,6 +10,7 @@ import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateCertificat
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateOfficialCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateWFEDTO;
+import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.repositories.RecommendationRepository;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.mapper.RecommendationMapper;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ public class CertificateMapper {
     private final AddressMapper addressMapper;
     private final RecommendationMapper recommendationMapper;
     private final AddressRepository addressRepository;
+
 
     public CertificateMapper(AddressMapper addressMapper, AddressRepository addressRepository,
                              RecommendationMapper recommendationMapper) {

@@ -1,13 +1,22 @@
 package com.EcoMentor_backend.EcoMentor.User.useCases.mapper;
 
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class UserMapper {
 
+    private final CertificateMapper certificateMapper;
+
+
+    public UserMapper(CertificateMapper certificateMapper) {
+        this.certificateMapper = certificateMapper;
+    }
     // Entity to DTO conversion. The id field is included in the DTO.
     public UserDTO toDTO(User user) {
         if (user == null) {
@@ -18,6 +27,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .id(user.getId())
+                .certificateDTOList(user.getCertificates().stream().map(certificateMapper::toDTO).collect(Collectors.toList()))
                 .build();
     }
 

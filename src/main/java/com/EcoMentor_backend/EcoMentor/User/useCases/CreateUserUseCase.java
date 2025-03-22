@@ -21,13 +21,15 @@ public class CreateUserUseCase {
     private final PasswordEncoder passwordEncoder;
 
     public User execute(CreateUserDTO userDTO) {
-       if (userRepository.existsByEmail(userDTO.getEmail())) {
-           throw new RuntimeException("User already exists");
-       }
-       User user = userMapper.toEntity(userDTO);
-       user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-       userRepository.save(user);
-       System.out.println("User created " + user);
-       return user;
+
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new RuntimeException("User already exists");
+        }
+
+        User user = userMapper.toEntity(userDTO);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        userRepository.save(user);
+        System.out.println("User created " + user);
+        return user;
     }
 }
