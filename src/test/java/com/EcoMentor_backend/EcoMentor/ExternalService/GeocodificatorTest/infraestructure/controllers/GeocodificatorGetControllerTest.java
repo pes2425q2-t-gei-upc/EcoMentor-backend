@@ -11,6 +11,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
@@ -29,23 +32,26 @@ void setUp() {
 }
 
 @Test
-void getLonLatByCityNameReturnsCoordinatesForValidCityName() {
+void getLonLatByCityNameReturnsCoordinatesListForValidCityName() {
     String cityName = "Barcelona";
-    CoordinatesDTO coordinatesDTO = new CoordinatesDTO(2.1734f, 41.3851f);
-    when(getLonLatByCityNameUseCase.execute(cityName)).thenReturn(coordinatesDTO);
+    int size = 1;
+    CoordinatesDTO coordinatesDTO = new CoordinatesDTO("Barcelona", 2.1734f, 41.3851f);
+    when(getLonLatByCityNameUseCase.execute(cityName, size)).thenReturn(Collections.singletonList(coordinatesDTO));
 
-    ResponseEntity<CoordinatesDTO> response = geocodificatorGetController.getLonLatByCityNameUseCase(cityName);
+    ResponseEntity<List<CoordinatesDTO>> response = geocodificatorGetController.getLonLatByCityNameUseCase(cityName, size);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(coordinatesDTO, response.getBody());
+    assertEquals(1, response.getBody().size());
+    assertEquals(coordinatesDTO, response.getBody().get(0));
 }
 
 @Test
 void getLonLatByCityNameReturnsNotFoundForInvalidCityName() {
     String cityName = "InvalidCity";
-    when(getLonLatByCityNameUseCase.execute(cityName)).thenReturn(null);
+    int size = 1;
+    when(getLonLatByCityNameUseCase.execute(cityName, size)).thenReturn(null);
 
-    ResponseEntity<CoordinatesDTO> response = geocodificatorGetController.getLonLatByCityNameUseCase(cityName);
+    ResponseEntity<List<CoordinatesDTO>> response = geocodificatorGetController.getLonLatByCityNameUseCase(cityName, size);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     assertNull(response.getBody());
@@ -54,9 +60,10 @@ void getLonLatByCityNameReturnsNotFoundForInvalidCityName() {
 @Test
 void getLonLatByCityNameHandlesEmptyCityName() {
     String cityName = "";
-    when(getLonLatByCityNameUseCase.execute(cityName)).thenReturn(null);
+    int size = 1;
+    when(getLonLatByCityNameUseCase.execute(cityName, size)).thenReturn(null);
 
-    ResponseEntity<CoordinatesDTO> response = geocodificatorGetController.getLonLatByCityNameUseCase(cityName);
+    ResponseEntity<List<CoordinatesDTO>> response = geocodificatorGetController.getLonLatByCityNameUseCase(cityName, size);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     assertNull(response.getBody());
@@ -65,11 +72,27 @@ void getLonLatByCityNameHandlesEmptyCityName() {
 @Test
 void getLonLatByCityNameHandlesNullCityName() {
     String cityName = null;
-    when(getLonLatByCityNameUseCase.execute(cityName)).thenReturn(null);
+    int size = 1;
+    when(getLonLatByCityNameUseCase.execute(cityName, size)).thenReturn(null);
 
-    ResponseEntity<CoordinatesDTO> response = geocodificatorGetController.getLonLatByCityNameUseCase(cityName);
+    ResponseEntity<List<CoordinatesDTO>> response = geocodificatorGetController.getLonLatByCityNameUseCase(cityName, size);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     assertNull(response.getBody());
+}
+
+@Test
+void getLonLatByCityNameReturnsLimitedNumberOfCoordinates() {
+    String cityName = "CityWithManyResults";
+    int size = 1;
+    CoordinatesDTO coordinatesDTO1 = new CoordinatesDTO("Location1", 2.1734f, 41.3851f);
+    CoordinatesDTO coordinatesDTO2 = new CoordinatesDTO("Location2", 2.1744f, 41.3861f);
+    when(getLonLatByCityNameUseCase.execute(cityName, size)).thenReturn(Collections.singletonList(coordinatesDTO1));
+
+    ResponseEntity<List<CoordinatesDTO>> response = geocodificatorGetController.getLonLatByCityNameUseCase(cityName, size);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(1, response.getBody().size());
+    assertEquals(coordinatesDTO1, response.getBody().get(0));
 }
 }
