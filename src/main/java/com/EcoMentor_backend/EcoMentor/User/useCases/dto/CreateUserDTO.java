@@ -1,11 +1,16 @@
 package com.EcoMentor_backend.EcoMentor.User.useCases.dto;
+
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+
 
 @Data
 @AllArgsConstructor

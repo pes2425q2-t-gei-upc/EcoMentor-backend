@@ -1,9 +1,13 @@
 package com.EcoMentor_backend.EcoMentor.User.useCases.dto;
 
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+
 
 @Data
 @AllArgsConstructor
@@ -14,4 +18,5 @@ public class UserDTO {
     private long id;
     private String email;
     private String password;
+    private List<CertificateDTO> certificateDTOList;
 }

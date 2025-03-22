@@ -19,7 +19,7 @@ public class DeleteUserUseCase {
     public void execute(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);
-        System.out.println("User with "+ id +" has been deleted");
+        System.out.println("User with " + id + " has been deleted");
     }
 
 }

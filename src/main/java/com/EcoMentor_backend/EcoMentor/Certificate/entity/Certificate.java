@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Certificate.entity;
 
 import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
+import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,4 +52,7 @@ public class Certificate {
     )
     private List<Recommendation> recommendations;
     //TODO decide definitive data structure for recommendations
+
+    @ManyToMany(mappedBy = "certificates")
+    private List<User> users;
 }
