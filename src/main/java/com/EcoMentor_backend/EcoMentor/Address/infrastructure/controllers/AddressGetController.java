@@ -7,6 +7,7 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByTownUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetNearAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -97,11 +98,11 @@ public class AddressGetController {
     }
 
     @GetMapping("/BoundingBox")
-    public ResponseEntity<List<AddressDTO>> getOfficialCertificatesByAddressBoundingBox(
+    public ResponseEntity<List<AddressDTOSimple>> getOfficialCertificatesByAddressBoundingBox(
                                             @RequestParam double minLatitude, @RequestParam double maxLatitude,
                                             @RequestParam double minLongitude, @RequestParam double maxLongitude) {
 
-        List<AddressDTO> address = getAddressByBoundingBoxUseCase.execute(minLatitude, maxLatitude,
+        List<AddressDTOSimple> address = getAddressByBoundingBoxUseCase.execute(minLatitude, maxLatitude,
                                                                         minLongitude, maxLongitude);
         if (address.isEmpty()) {
             return ResponseEntity.notFound().build();

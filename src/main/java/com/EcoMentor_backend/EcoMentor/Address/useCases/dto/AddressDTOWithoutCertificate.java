@@ -1,6 +1,5 @@
 package com.EcoMentor_backend.EcoMentor.Address.useCases.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

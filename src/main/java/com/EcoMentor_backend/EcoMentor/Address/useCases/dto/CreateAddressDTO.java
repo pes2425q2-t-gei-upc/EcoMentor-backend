@@ -1,12 +1,11 @@
 package com.EcoMentor_backend.EcoMentor.Address.useCases.dto;
 
-
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -21,5 +20,5 @@ public class CreateAddressDTO {
     private String province;
     private float longitude;
     private float latitude;
-    private List<Long> certificates; //TODO Hay que cambiarlo por CertificateDTO cuando exista
+    private List<Long> certificates;
 }
