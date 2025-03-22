@@ -45,8 +45,8 @@ public class GetLonLatByCityNameUseCase {
 
 
                     if (coordinates.size() >= 2) {
-                        float longitude = (float) coordinates.get(0).asDouble();
-                        float latitude = (float) coordinates.get(1).asDouble();
+                        float longitude = (float) coordinates.get(1).asDouble();
+                        float latitude = (float) coordinates.get(0).asDouble();
 
 
                         String name = properties.path("nom").asText();
