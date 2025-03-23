@@ -49,9 +49,6 @@ public class UpdateUserUseCaseTest {
     void throwsExceptionWhenUserNotFound(){
         Long invalidId = 1L;
         UpdateUserDTO updateUserDTO = new UpdateUserDTO("new-name");
-
-        when(userRepository.findUserById(invalidId)).thenReturn(null);
-
         assertThrows( RuntimeException.class, () -> updateUserUseCase.execute(invalidId, updateUserDTO));
 
     }
