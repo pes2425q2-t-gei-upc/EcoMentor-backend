@@ -5,6 +5,8 @@ import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +18,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,7 +40,8 @@ public class Certificate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long certificateId; //TODO change to UUIDV7
 
-    @NotNull
+    @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false)
     private CertificateType certificateType;
 
     @ManyToOne
@@ -54,5 +58,5 @@ public class Certificate {
     //TODO decide definitive data structure for recommendations
 
     @ManyToMany(mappedBy = "certificates")
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 }

@@ -1,6 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.User.infrastructure.controllers;
 
 import com.EcoMentor_backend.EcoMentor.User.useCases.AddCertificateToUserUseCase;
+import com.EcoMentor_backend.EcoMentor.User.useCases.AddOfficialCertificateToUserByDocumentIdUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.CreateUserUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserPostController {
     private final CreateUserUseCase createUserUseCase;
     private final AddCertificateToUserUseCase addCertificateToUserUseCase;
+    private final AddOfficialCertificateToUserByDocumentIdUseCase addOfficialCertificateToUserByDocumentIdUseCase;
 
     public UserPostController(CreateUserUseCase createUserUseCase,
-                              AddCertificateToUserUseCase addCertificateToUserUseCase) {
+                              AddCertificateToUserUseCase addCertificateToUserUseCase,
+                              AddOfficialCertificateToUserByDocumentIdUseCase
+                                      addOfficialCertificateToUserByDocumentIdUseCase) {
         this.createUserUseCase = createUserUseCase;
         this.addCertificateToUserUseCase = addCertificateToUserUseCase;
+        this.addOfficialCertificateToUserByDocumentIdUseCase = addOfficialCertificateToUserByDocumentIdUseCase;
     }
 
     @PostMapping
@@ -36,6 +41,13 @@ public class UserPostController {
     @PostMapping("/{userId}/certificates/{certificateId}")
     public ResponseEntity<Void> addCertificateToUser(@PathVariable Long userId, @PathVariable Long certificateId) {
         addCertificateToUserUseCase.execute(userId, certificateId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/{userId}/official-certificates/{documentId}")
+    public ResponseEntity<Void> addOfficialCertificateToUser(@PathVariable Long userId,
+                                                             @PathVariable String documentId) {
+        addOfficialCertificateToUserByDocumentIdUseCase.execute(userId, documentId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

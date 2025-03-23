@@ -17,8 +17,9 @@ import lombok.experimental.SuperBuilder;
 
 
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "certificateType")
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
+        property = "certificateType", visible = true)
 @JsonSubTypes({
     @JsonSubTypes.Type(value = CreateOfficialCertificateDTO.class, name = "OFFICIAL"),
 })
@@ -27,7 +28,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class CreateCertificateDTO {
-    private Long certificateId;
     private CertificateType certificateType;
     private CreateAddressDTO createAddressDTO;
     private List<Recommendation> recommendations = new ArrayList<>();

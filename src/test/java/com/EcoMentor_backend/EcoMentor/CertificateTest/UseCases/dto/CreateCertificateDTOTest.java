@@ -35,14 +35,12 @@ public class CreateCertificateDTOTest {
         List<Recommendation> recommendations = List.of(recommendation);
 
         CreateCertificateDTO dto = CreateCertificateDTO.builder()
-                .certificateId(1L)
                 .certificateType(CertificateType.OFFICIAL)
                 .createAddressDTO(createAddressDTO)
                 .recommendations(recommendations)
                 .build();
 
         assertNotNull(dto);
-        assertEquals(1L, dto.getCertificateId());
         assertEquals(CertificateType.OFFICIAL, dto.getCertificateType());
         assertEquals(createAddressDTO, dto.getCreateAddressDTO());
         assertEquals(1, dto.getRecommendations().size());
