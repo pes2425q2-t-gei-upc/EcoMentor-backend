@@ -1,5 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto;
 
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.sql.Date;
@@ -12,13 +13,14 @@ import lombok.experimental.SuperBuilder;
 
 
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
 public class OfficialCertificateWFEDTO extends CertificateWithoutForeignEntitiesDTO {
+    private CertificateType certificateType;
 
     private String documentId;
 
@@ -31,7 +33,7 @@ public class OfficialCertificateWFEDTO extends CertificateWithoutForeignEntities
     private String climateZone;
 
 
-    private Integer cadastreMeters;
+    private float cadastreMeters;
 
     private Year buildingYear;
 

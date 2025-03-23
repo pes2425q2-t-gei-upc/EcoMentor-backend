@@ -17,7 +17,6 @@ public class CreateOfficialCertificateDTOTest {
     @Test
     public void testCreateOfficialCertificateDTOCreation() {
         CreateOfficialCertificateDTO dto = CreateOfficialCertificateDTO.builder()
-                .certificateId(1L)
                 .certificateType(CertificateType.OFFICIAL)
                 .documentId("DOC123")
                 .climateZone("Zone1")
@@ -51,7 +50,6 @@ public class CreateOfficialCertificateDTOTest {
                 .build();
 
         assertNotNull(dto);
-        assertEquals(1L, dto.getCertificateId());
         assertEquals(CertificateType.OFFICIAL, dto.getCertificateType());
         assertEquals("DOC123", dto.getDocumentId());
         assertEquals("Zone1", dto.getClimateZone());
