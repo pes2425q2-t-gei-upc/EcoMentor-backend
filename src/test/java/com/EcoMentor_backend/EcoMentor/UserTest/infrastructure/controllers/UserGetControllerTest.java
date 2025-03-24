@@ -5,10 +5,7 @@ import static org.mockito.Mockito.when;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.controllers.UserGetController;
-import com.EcoMentor_backend.EcoMentor.User.useCases.GetAllUsersUseCase;
-import com.EcoMentor_backend.EcoMentor.User.useCases.GetByEmailUseCase;
-import com.EcoMentor_backend.EcoMentor.User.useCases.GetUserByIdUseCase;
-import com.EcoMentor_backend.EcoMentor.User.useCases.GetUsersCertificatesUseCase;
+import com.EcoMentor_backend.EcoMentor.User.useCases.*;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +29,9 @@ class UserGetControllerTest {
 
     @Mock
     private GetUsersCertificatesUseCase getUsersCertificatesUseCase;
+
+    @Mock
+    private GetSelfUseCase getSelfUseCase;
 
     @InjectMocks
     private UserGetController userGetController;
@@ -78,6 +78,18 @@ class UserGetControllerTest {
         when(getUserByIdUseCase.execute(id)).thenReturn(user);
 
         UserDTO result = userGetController.getUserById(id);
+
+        assertEquals(user, result);
+    }
+
+    @Test
+    void getSelfReturnsUser() {
+        String token = "valid-token";
+        String authorizationHeader = "Bearer " + token;
+        UserDTO user = new UserDTO();
+        when(getSelfUseCase.execute(token)).thenReturn(user);
+
+        UserDTO result = userGetController.getMe(authorizationHeader);
 
         assertEquals(user, result);
     }
