@@ -1,15 +1,17 @@
 package com.EcoMentor_backend.EcoMentor.User.infrastructure.controllers;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
-import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.useCases.GetAllUsersUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.GetByEmailUseCase;
+import com.EcoMentor_backend.EcoMentor.User.useCases.GetSelfUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.GetUserByIdUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.GetUsersCertificatesUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;
 import java.util.List;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,14 +23,17 @@ public class UserGetController {
     private final GetByEmailUseCase getByEmailUseCase;
     private final GetUserByIdUseCase getUserByIdUseCase;
     private final GetUsersCertificatesUseCase getUsersCertificatesUseCase;
+    private final GetSelfUseCase getSelfUseCase;
 
     public UserGetController(GetAllUsersUseCase getAllUsersUseCase, GetByEmailUseCase getByEmailUseCase,
                              GetUserByIdUseCase getUserByIdUseCase,
-                             GetUsersCertificatesUseCase getUsersCertificatesUseCase) {
+                             GetUsersCertificatesUseCase getUsersCertificatesUseCase,
+                             GetSelfUseCase getSelfUseCase) {
         this.getAllUsersUseCase = getAllUsersUseCase;
         this.getByEmailUseCase = getByEmailUseCase;
         this.getUserByIdUseCase = getUserByIdUseCase;
         this.getUsersCertificatesUseCase = getUsersCertificatesUseCase;
+        this.getSelfUseCase = getSelfUseCase;
     }
 
     @GetMapping
@@ -49,5 +54,14 @@ public class UserGetController {
     @GetMapping("/{id}/certificates")
     public List<CertificateDTO> getUsersCertificates(@PathVariable Long id) {
         return getUsersCertificatesUseCase.execute(id);
+    }
+
+    @GetMapping("/me")
+    public UserDTO getMe(@RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new BadCredentialsException("Invalid token");
+        }
+        String token = authorizationHeader.substring(7);
+        return getSelfUseCase.execute(token);
     }
 }
