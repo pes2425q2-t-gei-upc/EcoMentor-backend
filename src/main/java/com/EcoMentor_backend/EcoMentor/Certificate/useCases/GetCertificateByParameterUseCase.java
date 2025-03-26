@@ -23,9 +23,13 @@ public class GetCertificateByParameterUseCase {
         this.certificateMapper = certificateMapper;
     }
 
-    public List<CertificateWithoutForeignEntitiesDTO> execute(String parameter, String value) {
+    public List<CertificateWithoutForeignEntitiesDTO> execute(String parameter, String value, double minLatitude,
+                                                              double maxLatitude, double minLongitude,
+                                                              double maxLongitude) {
         Object correctValue = certificateRepository.convertToCorrectType(parameter, value);
-        List<Certificate> certificates = certificateRepository.findCertificateByParameter(parameter, correctValue);
+        List<Certificate> certificates = certificateRepository.findCertificateByParameter(parameter, correctValue,
+                minLatitude, maxLatitude, minLongitude, maxLongitude);
+
         List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
         for (Certificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTOW(certificate));

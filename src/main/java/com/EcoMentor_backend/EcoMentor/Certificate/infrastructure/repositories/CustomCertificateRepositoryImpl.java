@@ -20,10 +20,23 @@ public class CustomCertificateRepositoryImpl implements CustomCertificateReposit
     }
 
     @Override
-    public List<Certificate> findCertificateByParameter(String parameter, Object value) {
-        String jpql = "SELECT c FROM Certificate c WHERE c." + parameter + " = :value";
+    public List<Certificate> findCertificateByParameter(String parameter, Object value, double minLatitude,
+                                                        double maxLatitude, double minLongitude,
+                                                        double maxLongitude) {
+
+        String jpql = "SELECT c FROM  Certificate c"
+                + " JOIN c.address a"
+                + " WHERE c." + parameter + " = :value "
+                + "AND ST_Within(a.location, ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude,"
+                + " :maxLatitude, 4326))";
+
         Query query = entityManager.createQuery(jpql);
         query.setParameter("value", value);
+        query.setParameter("minLatitude", minLatitude);
+        query.setParameter("maxLatitude", maxLatitude);
+        query.setParameter("minLongitude", minLongitude);
+        query.setParameter("maxLongitude", maxLongitude);
+
         return query.getResultList();
     }
 

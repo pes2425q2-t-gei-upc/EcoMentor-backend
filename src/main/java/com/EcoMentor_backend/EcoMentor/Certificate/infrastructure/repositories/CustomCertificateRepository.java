@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomCertificateRepository {
-    List<Certificate> findCertificateByParameter(String parameter, Object value);
+    List<Certificate> findCertificateByParameter(String parameter, Object value, double minLatitude,
+                                                 double maxLatitude, double minLongitude,
+                                                 double maxLongitude);
 
     List<Certificate> findCertificateBySetOfValues(String parameter, List<Object> values);
 

@@ -16,7 +16,9 @@ public interface CertificateRepository extends JpaRepository<Certificate, String
 
     List<Certificate> findAll();
 
-    List<Certificate> findCertificateByParameter(String parameter, Object val);
+    List<Certificate> findCertificateByParameter(String parameter, Object val, double minLatitude,
+                                                 double maxLatitude, double minLongitude,
+                                                 double maxLongitude);
 
     List<Certificate> findCertificateBySetOfValues(String parameter, List<Object> values);
 

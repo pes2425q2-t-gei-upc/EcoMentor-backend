@@ -61,8 +61,14 @@ public class CertificateGetController {
 
     @GetMapping("/parameter")
     public List<CertificateWithoutForeignEntitiesDTO> getCertificateByParameter(@RequestParam String parameter,
-                                                                                @RequestParam String value) {
-        return getCertificateByParameterUseCase.execute(parameter, value);
+                                                                                @RequestParam String value,
+                                                                                @RequestParam double minLatitude,
+                                                                                @RequestParam double maxLatitude,
+                                                                                @RequestParam double minLongitude,
+                                                                                @RequestParam double maxLongitude) {
+
+        return getCertificateByParameterUseCase.execute(parameter, value, minLatitude, maxLatitude, minLongitude,
+                maxLongitude);
     }
 
     @GetMapping("/range")
