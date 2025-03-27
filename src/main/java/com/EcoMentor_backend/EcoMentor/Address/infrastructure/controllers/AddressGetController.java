@@ -1,11 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.Address.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByAddressIdUseCase;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByBoundingBoxUseCase;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByProvinceUseCase;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByTownUseCase;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllAddressUseCase;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.GetNearAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.*;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
 import java.util.List;
@@ -28,6 +24,7 @@ public class AddressGetController {
     private final GetAddressByProvinceUseCase getAddressByProvinceUseCase;
     private final GetAddressByTownUseCase getAddressByTownUseCase;
     private final GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase;
+    private final GetFilterAddressUseCase getFilterAddressUseCase;
 
 
     public AddressGetController(GetAddressByAddressIdUseCase getAddressByAddressIdUseCase,
@@ -35,7 +32,8 @@ public class AddressGetController {
                                 GetAddressByProvinceUseCase getAddressByProvinceUseCase,
                                 GetNearAddressUseCase getNearAddressUseCase,
                                 GetAddressByTownUseCase getAddressByTownUseCase,
-                                GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase) {
+                                GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase,
+                                GetFilterAddressUseCase getFilterAddressUseCase) {
 
         this.getAddressByAddressIdUseCase = getAddressByAddressIdUseCase;
         this.getAddressByProvinceUseCase = getAddressByProvinceUseCase;
@@ -43,6 +41,7 @@ public class AddressGetController {
         this.getNearAddressUseCase = getNearAddressUseCase;
         this.getAddressByTownUseCase = getAddressByTownUseCase;
         this.getAddressByBoundingBoxUseCase = getAddressByBoundingBoxUseCase;
+        this.getFilterAddressUseCase = getFilterAddressUseCase;
     }
 
     @GetMapping
@@ -110,6 +109,25 @@ public class AddressGetController {
 
         return ResponseEntity.ok(address);
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<AddressDTOSimple>> getAddressByFilter(@RequestParam String parameter,
+                                                               @RequestParam String value,
+                                                               @RequestParam double minLatitude,
+                                                               @RequestParam double maxLatitude,
+                                                               @RequestParam double minLongitude,
+                                                               @RequestParam double maxLongitude) {
+
+        List<AddressDTOSimple> address = getFilterAddressUseCase.execute(parameter, value, minLatitude, maxLatitude,
+                                                                    minLongitude, maxLongitude);
+
+        if (address.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(address);
+    }
+
+
 
 
 }
