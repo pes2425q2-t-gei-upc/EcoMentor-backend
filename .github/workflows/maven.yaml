@@ -1,0 +1,71 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: CI
+
+on:
+  push:
+    branches: [ "main", "dev", "ci_pipeline" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  setup-build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Open JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          architecture: 'x64'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Run Docker Container
+        id: run-container
+        run: docker compose up -d
+
+      - name: Clean Project
+        run: mvn clean
+      - name: Validate Project
+        run: mvn validate
+      - name: Compile Project
+        run: mvn compile
+
+      - name: Test Project
+        id: test
+        run: mvn test
+
+
+      - name: Stop Docker Container
+        if: always()
+        run: docker compose down -v
+
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Super-linter
+        uses: super-linter/super-linter/slim@v7.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: origin/main
+          DISABLE_ERRORS: true
+          OUTPUT_FOLDER: linter_report
+          OUTPUT_DETAILS: detailed
+          IGNORE_GENERATED_FILES: true
+          IGNORE_GITIGNORED_FILES: true
+          VALIDATE_GIT_COMMITLINT: false

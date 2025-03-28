@@ -1,0 +1,133 @@
+package com.EcoMentor_backend.EcoMentor.Address.infrastructure.controllers;
+
+import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.*;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
+import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+@RestController
+@Validated
+@RequestMapping("/api/address")
+public class AddressGetController {
+    private final GetAddressByAddressIdUseCase getAddressByAddressIdUseCase;
+    private final GetAllAddressUseCase getAllAddressUseCase;
+    private final GetNearAddressUseCase getNearAddressUseCase;
+    private final GetAddressByProvinceUseCase getAddressByProvinceUseCase;
+    private final GetAddressByTownUseCase getAddressByTownUseCase;
+    private final GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase;
+    private final GetFilterAddressUseCase getFilterAddressUseCase;
+
+
+    public AddressGetController(GetAddressByAddressIdUseCase getAddressByAddressIdUseCase,
+                                GetAllAddressUseCase getAllAddressUseCase,
+                                GetAddressByProvinceUseCase getAddressByProvinceUseCase,
+                                GetNearAddressUseCase getNearAddressUseCase,
+                                GetAddressByTownUseCase getAddressByTownUseCase,
+                                GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase,
+                                GetFilterAddressUseCase getFilterAddressUseCase) {
+
+        this.getAddressByAddressIdUseCase = getAddressByAddressIdUseCase;
+        this.getAddressByProvinceUseCase = getAddressByProvinceUseCase;
+        this.getAllAddressUseCase = getAllAddressUseCase;
+        this.getNearAddressUseCase = getNearAddressUseCase;
+        this.getAddressByTownUseCase = getAddressByTownUseCase;
+        this.getAddressByBoundingBoxUseCase = getAddressByBoundingBoxUseCase;
+        this.getFilterAddressUseCase = getFilterAddressUseCase;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AddressDTO>> getAllAddress() {
+        List<AddressDTO> address = getAllAddressUseCase.execute();
+        return ResponseEntity.ok(address);
+    }
+
+    @GetMapping("/{addressId}")
+    public ResponseEntity<AddressDTO> getAddress(@PathVariable Long addressId) {
+        AddressDTO address = getAddressByAddressIdUseCase.execute(addressId);
+        if (address == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(address);
+    }
+
+    @GetMapping("/near")
+    public ResponseEntity<List<AddressDTO>> getNearAddress(@RequestParam double radius,
+                                                           @RequestParam double latitude,
+                                                           @RequestParam double longitude) {
+
+        List<AddressDTO> address = getNearAddressUseCase.execute(radius, latitude, longitude);
+
+        if (address.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(address);
+    }
+
+    @GetMapping("/province/{province}")
+    public ResponseEntity<List<AddressDTO>> getAddressByProvince(@PathVariable String province) {
+        List<AddressDTO> address = getAddressByProvinceUseCase.execute(province);
+
+
+        if (address.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(address);
+    }
+
+    @GetMapping("/town/{town}")
+    public ResponseEntity<List<AddressDTO>> getAddressByTown(@PathVariable String town) {
+        List<AddressDTO> address = getAddressByTownUseCase.execute(town);
+
+        if (address.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(address);
+    }
+
+    @GetMapping("/BoundingBox")
+    public ResponseEntity<List<AddressDTOSimple>> getOfficialCertificatesByAddressBoundingBox(
+                                            @RequestParam double minLatitude, @RequestParam double maxLatitude,
+                                            @RequestParam double minLongitude, @RequestParam double maxLongitude) {
+
+        List<AddressDTOSimple> address = getAddressByBoundingBoxUseCase.execute(minLatitude, maxLatitude,
+                                                                        minLongitude, maxLongitude);
+        if (address.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(address);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<AddressDTOSimple>> getAddressByFilter(@RequestParam String parameter,
+                                                               @RequestParam String value,
+                                                               @RequestParam double minLatitude,
+                                                               @RequestParam double maxLatitude,
+                                                               @RequestParam double minLongitude,
+                                                               @RequestParam double maxLongitude) {
+
+        List<AddressDTOSimple> address = getFilterAddressUseCase.execute(parameter, value, minLatitude, maxLatitude,
+                                                                    minLongitude, maxLongitude);
+
+        if (address.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(address);
+    }
+
+
+
+
+}
