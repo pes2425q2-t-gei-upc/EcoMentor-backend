@@ -24,7 +24,7 @@ public class AuthPostController {
     private final LoginUseCase loginUseCase;
 
 
-    @PostMapping(value="login")
+    @PostMapping(value = "login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody @Validated LoginDTO loginDTO) {
         return ResponseEntity.ok(loginUseCase.execute(loginDTO));
     }

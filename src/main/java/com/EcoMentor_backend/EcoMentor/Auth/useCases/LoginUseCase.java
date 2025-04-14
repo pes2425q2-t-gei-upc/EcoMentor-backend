@@ -25,7 +25,8 @@ public class LoginUseCase {
 
     public AuthResponseDTO execute(LoginDTO login) throws BadCredentialsException {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getEmail(),
+                    login.getPassword()));
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Invalid username or password");
         } catch (UsernameNotFoundException e) {
@@ -33,7 +34,8 @@ public class LoginUseCase {
         } catch (Exception e) {
             throw new RuntimeException("Authentication failed: " + e.getMessage(), e);
         }
-        UserDetails user = userRepository.findByEmail(login.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserDetails user = userRepository.findByEmail(login.getEmail()).orElseThrow(
+                () -> new UsernameNotFoundException("User not found"));
         String token = jwtTokenProvider.getToken(user);
         return AuthResponseDTO.builder()
                 .token(token)
