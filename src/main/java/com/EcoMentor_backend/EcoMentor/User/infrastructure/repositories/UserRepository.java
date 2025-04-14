@@ -1,5 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories;
 
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import java.util.List;
 import java.util.Optional;
