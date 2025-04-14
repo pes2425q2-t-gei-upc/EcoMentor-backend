@@ -27,6 +27,12 @@ public class AddCertificateToUserUseCase {
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
+
+        if (user.getCertificates().contains(certificate)) {
+            throw new IllegalArgumentException("User already has this certificate");
+        }
+
+        
         certificate.getUsers().add(user);
         user.getCertificates().add(certificate);
 
