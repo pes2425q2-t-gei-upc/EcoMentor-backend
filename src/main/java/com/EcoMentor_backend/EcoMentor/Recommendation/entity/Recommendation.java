@@ -34,53 +34,21 @@ public class Recommendation {
     private String name;
 
     @NotNull
-    private boolean canUpgradeIsolation;
+    private String description;
 
     @NotNull
-    private float upgradedIsolation;
-
-    @NotNull
-    private boolean canUpgradeWindows;
-
-    @NotNull
-    private float upgradedWindows;
-
-    @NotNull
-    private boolean canUpgradeSolarPanels;
-
-    @NotNull
-    private float upgradedSolarPanels;
-
-    @NotNull
-    private boolean canUpgradeBombHeat;
-
-    @NotNull
-    private float upgradedBombHeat;
-
-    @NotNull
-    private boolean canUpgradeHeat;
-
-    @NotNull
-    private float upgradedHeat;
-
-    @NotNull
-    private float io;
-
-    @NotNull
-    private float ir;
-
-    @NotNull
-    private float iss;
-
-    @NotNull
-    private float r1;
-
-    @NotNull
-    private float r0;
+    private String recommendationType; // e.g., "Insulation", "Windows", "Solar", etc.
 
     @NotNull
     private float upgradedICEE;
 
     @NotNull
+    private float upgradePercentage;
+
+    @NotNull
+    private float upgradedAnualCost;
+
+    @NotNull
     private float totalPrice;
+
 }
