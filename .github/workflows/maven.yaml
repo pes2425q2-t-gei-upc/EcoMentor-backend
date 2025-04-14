@@ -54,5 +54,5 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Run Checkstyle
-        run: mvn verify -Dorg.checkstyle.google.severity=error
+      - name: Run Checkstyle Only
+        run: mvn checkstyle:check -Pcheckstyle-only -Dorg.checkstyle.google.severity=error
