@@ -55,4 +55,4 @@ jobs:
           cache: 'maven'
 
       - name: Run Checkstyle
-        run: mvn verify -Dorg.checkstyle.google.severity=error
+        run: mvn checkstyle:check -Pcheckstyle-only -Dorg.checkstyle.google.severity=error
