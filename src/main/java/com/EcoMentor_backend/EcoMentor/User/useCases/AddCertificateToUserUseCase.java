@@ -32,7 +32,7 @@ public class AddCertificateToUserUseCase {
             throw new IllegalArgumentException("User already has this certificate");
         }
 
-        
+
         certificate.getUsers().add(user);
         user.getCertificates().add(certificate);
 

@@ -1,7 +1,12 @@
 package com.EcoMentor_backend.EcoMentor.Address.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.*;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByAddressIdUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByBoundingBoxUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByProvinceUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByTownUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetFilterAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetNearAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
 import java.util.List;

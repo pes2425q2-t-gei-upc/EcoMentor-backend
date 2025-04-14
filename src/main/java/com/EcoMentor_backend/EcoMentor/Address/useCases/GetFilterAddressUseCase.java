@@ -4,10 +4,9 @@ import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories.AddressRepository;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.mapper.AddressMapper;
+import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

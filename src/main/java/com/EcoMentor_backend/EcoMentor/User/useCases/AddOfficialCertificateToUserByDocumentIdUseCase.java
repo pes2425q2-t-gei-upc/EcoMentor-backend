@@ -13,8 +13,7 @@ public class AddOfficialCertificateToUserByDocumentIdUseCase {
     private final UserRepository userRepository;
     private final OfficialCertificateRepository officialCertificateRepository;
 
-    public AddOfficialCertificateToUserByDocumentIdUseCase(UserRepository userRepository,
-                                                           OfficialCertificateRepository
+    public AddOfficialCertificateToUserByDocumentIdUseCase(UserRepository userRepository, OfficialCertificateRepository
                                                                    officialCertificateRepository) {
         this.userRepository = userRepository;
         this.officialCertificateRepository = officialCertificateRepository;
