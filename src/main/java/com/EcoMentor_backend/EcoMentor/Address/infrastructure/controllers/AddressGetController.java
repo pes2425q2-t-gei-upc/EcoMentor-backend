@@ -12,6 +12,9 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.GetNearAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOBestQualification;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -138,13 +141,30 @@ public class AddressGetController {
         return ResponseEntity.ok(address);
     }
 
+
+    @Tag(name = "Best building certifications by area", description = "Endpoints to query addresses")
     @GetMapping("/bestQualification")
+    @Operation(
+            summary = "Get addresses with the best qualification",
+            description = "Returns a list of addresses optionally filtered by town or"
+                    + " zipcode or latitude/longitude and radius."
+    )
     public ResponseEntity<List<AddressDTOBestQualification>> getAddressByBestQualification(
-                                                                       @RequestParam(required = false) String town,
-                                                                       @RequestParam(required = false) Integer zipcode,
-                                                                       @RequestParam(required = false) Double latitude,
-                                                                       @RequestParam(required = false) Double longitude,
-                                                                       @RequestParam(required = false) Integer radius) {
+            @Parameter(description = "City name", example = "Barcelona")
+            @RequestParam(required = false) String town,
+
+            @Parameter(description = "Zipcode", example = "08001")
+            @RequestParam(required = false) Integer zipcode,
+
+            @Parameter(description = "Latitude for geographic search", example = "41.3851")
+            @RequestParam(required = false) Double latitude,
+
+            @Parameter(description = "Length for geographic search", example = "2.1734")
+            @RequestParam(required = false) Double longitude,
+
+            @Parameter(description = "Search radius in kilometers", example = "5")
+            @RequestParam(required = false) Integer radius) {
+
 
 
         List<AddressDTOBestQualification> address = getAddressByBestQualification.execute(town, zipcode, latitude,
