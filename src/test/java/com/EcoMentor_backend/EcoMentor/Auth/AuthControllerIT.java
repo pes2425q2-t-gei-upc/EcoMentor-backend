@@ -31,26 +31,29 @@ public class AuthControllerIT {
 
     @Test
     void registerAndLoginShouldReturnToken() throws Exception {
+        // Crear un nuevo usuario con los datos necesarios
         CreateUserDTO newUser = new CreateUserDTO("mockedUser", "test@example.com", "Password123");
         String requestBody = objectMapper.writeValueAsString(newUser);
 
-        // Perform call to the auth/register endpoint and test return
-
+        // Realizar la solicitud de registro
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists());
+                .andExpect(jsonPath("$.token").exists()); // Verificar que se devuelve un token
 
-        LoginDTO loginRequest = new LoginDTO( "test@example.com", "password123");
+        // Iniciar sesión con el mismo email y la misma contraseña (asegúrate que la contraseña coincide)
+        LoginDTO loginRequest = new LoginDTO("test@example.com", "Password123"); // Asegúrate de que la contraseña coincida
         String loginBody = objectMapper.writeValueAsString(loginRequest);
 
+        // Realizar la solicitud de login
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginBody))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists());
+                .andExpect(jsonPath("$.token").exists()); // Verificar que se devuelve un token
     }
+
 
     @Test
     void loginWithInvalidCredentialsShouldReturnUnauthorized() throws Exception {

@@ -6,9 +6,11 @@ import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWitho
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -25,6 +27,9 @@ public class GetCertificateBySetOfValuesUseCase {
 
     public List<CertificateWithoutForeignEntitiesDTO> execute(String parameter, List<Object> values) {
         List<Certificate> certificates = certificateRepository.findCertificateBySetOfValues(parameter, values);
+        if (certificates.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Certificate not found");
+        }
         List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
         for (Certificate certificate : certificates) {
             certificateDTOS.add(certificateMapper.toDTOW(certificate));
