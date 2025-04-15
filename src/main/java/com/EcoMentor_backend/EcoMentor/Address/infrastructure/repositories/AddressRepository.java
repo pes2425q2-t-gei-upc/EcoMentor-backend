@@ -45,4 +45,6 @@ public interface AddressRepository extends JpaRepository<Address, Long>, CustomA
 
 
     Address findAddressByAddressNameAndAddressNumber(String addressName, String addressNumber);
+
+    List<Address> findByZipcode(Integer zipcode);
 }

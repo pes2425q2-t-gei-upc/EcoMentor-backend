@@ -1,6 +1,8 @@
 package com.EcoMentor_backend.EcoMentor.Address.infrastructure.controllers;
 
+
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByAddressIdUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByBestQualificationUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByBoundingBoxUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByProvinceUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByTownUseCase;
@@ -8,6 +10,7 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetFilterAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetNearAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOBestQualification;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,7 @@ public class AddressGetController {
     private final GetAddressByTownUseCase getAddressByTownUseCase;
     private final GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase;
     private final GetFilterAddressUseCase getFilterAddressUseCase;
+    private final GetAddressByBestQualificationUseCase getAddressByBestQualification;
 
 
     public AddressGetController(GetAddressByAddressIdUseCase getAddressByAddressIdUseCase,
@@ -38,7 +42,8 @@ public class AddressGetController {
                                 GetNearAddressUseCase getNearAddressUseCase,
                                 GetAddressByTownUseCase getAddressByTownUseCase,
                                 GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase,
-                                GetFilterAddressUseCase getFilterAddressUseCase) {
+                                GetFilterAddressUseCase getFilterAddressUseCase,
+                                GetAddressByBestQualificationUseCase getAddressByBestQualification) {
 
         this.getAddressByAddressIdUseCase = getAddressByAddressIdUseCase;
         this.getAddressByProvinceUseCase = getAddressByProvinceUseCase;
@@ -47,6 +52,7 @@ public class AddressGetController {
         this.getAddressByTownUseCase = getAddressByTownUseCase;
         this.getAddressByBoundingBoxUseCase = getAddressByBoundingBoxUseCase;
         this.getFilterAddressUseCase = getFilterAddressUseCase;
+        this.getAddressByBestQualification = getAddressByBestQualification;
     }
 
     @GetMapping
@@ -130,6 +136,24 @@ public class AddressGetController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(address);
+    }
+
+    @GetMapping("/bestQualification")
+    public ResponseEntity<List<AddressDTOBestQualification>> getAddressByBestQualification(
+                                                                       @RequestParam(required = false) String town,
+                                                                       @RequestParam(required = false) Integer zipcode,
+                                                                       @RequestParam(required = false) Double latitude,
+                                                                       @RequestParam(required = false) Double longitude,
+                                                                       @RequestParam(required = false) Integer radius) {
+
+
+        List<AddressDTOBestQualification> address = getAddressByBestQualification.execute(town, zipcode, latitude,
+                                                                                                    longitude, radius);
+        if (address.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(address);
+
     }
 
 

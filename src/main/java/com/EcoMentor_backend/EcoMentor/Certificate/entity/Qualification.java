@@ -38,4 +38,14 @@ public enum Qualification {
             throw new RuntimeException("Valor inválido para Qualification: " + value);
         }
     }
+
+    public static Qualification fromValue(int value) {
+        for (Qualification q : Qualification.values()) {
+            if (q.getValue() == value) {
+                return q;
+            }
+        }
+        throw new IllegalArgumentException("Valor inválido para Qualification: " + value);
+    }
+
 }
