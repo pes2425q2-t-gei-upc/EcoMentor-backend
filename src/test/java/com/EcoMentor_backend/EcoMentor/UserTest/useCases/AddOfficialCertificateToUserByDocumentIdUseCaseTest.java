@@ -1,6 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.UserTest.useCases;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.never;
@@ -18,9 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 
 public class AddOfficialCertificateToUserByDocumentIdUseCaseTest {
@@ -59,13 +58,17 @@ public class AddOfficialCertificateToUserByDocumentIdUseCaseTest {
     }
 
     @Test
-    void executeThrowsExceptionWhenOfficialCertificateNotFound() {
+    void executeThrowsNotFoundWhenOfficialCertificateNotFound() {
         Long userId = 1L;
         String documentId = "DOC123456";
 
         when(officialCertificateRepository.findOfficialCertificateByDocumentId(documentId)).thenReturn(null);
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(userId, documentId));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            useCase.execute(userId, documentId);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
 
         verify(officialCertificateRepository).findOfficialCertificateByDocumentId(documentId);
         verify(userRepository, never()).findById(anyLong());
@@ -73,8 +76,10 @@ public class AddOfficialCertificateToUserByDocumentIdUseCaseTest {
         verify(userRepository, never()).save(any());
     }
 
+
+
     @Test
-    void executeThrowsExceptionWhenUserNotFound() {
+    void executeThrowsNotFoundWhenUserNotFound() {
         Long userId = 1L;
         String documentId = "DOC123456";
         OfficialCertificate officialCertificate = new OfficialCertificate();
@@ -83,11 +88,17 @@ public class AddOfficialCertificateToUserByDocumentIdUseCaseTest {
                 .thenReturn(officialCertificate);
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(userId, documentId));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            useCase.execute(userId, documentId);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertTrue(exception.getReason().contains("User not found"));
 
         verify(officialCertificateRepository).findOfficialCertificateByDocumentId(documentId);
         verify(userRepository).findById(userId);
         verify(officialCertificateRepository, never()).save(any());
         verify(userRepository, never()).save(any());
     }
+
 }

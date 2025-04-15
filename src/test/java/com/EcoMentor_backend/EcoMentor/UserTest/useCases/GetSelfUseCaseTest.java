@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 
@@ -65,6 +66,6 @@ public class GetSelfUseCaseTest {
         String invalid = "invalid-username";
         when(jwtTokenProvider.getUsernameFromToken(token)).thenReturn(invalid);
 
-        assertThrows( UsernameNotFoundException.class, () -> getSelfUseCase.execute(token));
+        assertThrows(ResponseStatusException.class, () -> getSelfUseCase.execute(token));
     }
 }

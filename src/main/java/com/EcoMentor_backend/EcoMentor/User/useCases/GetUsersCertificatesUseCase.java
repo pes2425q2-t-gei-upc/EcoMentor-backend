@@ -6,9 +6,10 @@ import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -23,7 +24,8 @@ public class GetUsersCertificatesUseCase {
     }
 
     public List<CertificateDTO> execute(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "User not found"));
         return user.getCertificates().stream()
                 .map(certificateMapper::toDTO)
                 .collect(Collectors.toList());
