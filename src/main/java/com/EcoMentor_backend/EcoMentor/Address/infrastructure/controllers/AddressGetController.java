@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,8 +60,10 @@ public class AddressGetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AddressDTO>> getAllAddress() {
-        List<AddressDTO> address = getAllAddressUseCase.execute();
+    public ResponseEntity<Page<AddressDTO>> getAllAddress(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size,
+                                                          @RequestParam(defaultValue = "addressId") String sort) {
+        Page<AddressDTO> address = getAllAddressUseCase.execute(page, size, sort);
         return ResponseEntity.ok(address);
     }
 

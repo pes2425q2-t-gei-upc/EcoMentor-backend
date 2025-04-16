@@ -22,7 +22,8 @@ public class GetByEmailUseCase {
     }
 
     public UserDTO execute(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "User not found"));
         return userMapper.toDTO(user);
     }

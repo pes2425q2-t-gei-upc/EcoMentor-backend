@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
@@ -42,16 +43,19 @@ public class AddressGetControllerTest {
     }
 
     @Test
-    public void testGetAllAddress() {
-        AddressDTO addressDTO = new AddressDTO();
-        List<AddressDTO> addressList = Collections.singletonList(addressDTO);
+    public void testGetAllAddressWithPagination() {
+        int page = 0;
+        int size = 10;
+        String sort = "addressId";
 
-        when(getAllAddressUseCase.execute()).thenReturn(addressList);
+        Page<AddressDTO> addressPage = mock(Page.class);
 
-        ResponseEntity<List<AddressDTO>> response = addressGetController.getAllAddress();
+        when(getAllAddressUseCase.execute(page, size, sort)).thenReturn(addressPage);
 
-        assertEquals(ResponseEntity.ok(addressList), response);
-        verify(getAllAddressUseCase).execute();
+        ResponseEntity<Page<AddressDTO>> response = addressGetController.getAllAddress(page, size, sort);
+
+        assertEquals(ResponseEntity.ok(addressPage), response);
+        verify(getAllAddressUseCase).execute(page, size, sort);
     }
 
     @Test

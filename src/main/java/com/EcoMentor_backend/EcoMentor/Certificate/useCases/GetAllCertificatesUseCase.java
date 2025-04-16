@@ -4,8 +4,10 @@ import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +24,10 @@ public class GetAllCertificatesUseCase {
         this.certificateMapper = certificateMapper;
     }
 
-    public List<CertificateWithoutForeignEntitiesDTO> execute() {
-        List<Certificate> certificates = certificateRepository.findAll();
-        List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
-        for (Certificate certificate : certificates) {
-            certificateDTOS.add(certificateMapper.toDTOW(certificate));
-        }
-        return certificateDTOS;
+    public Page<CertificateWithoutForeignEntitiesDTO> execute(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Certificate> certificatesPage = certificateRepository.findAll(pageable);
+
+        return certificatesPage.map(certificateMapper::toDTOW);
     }
 }
