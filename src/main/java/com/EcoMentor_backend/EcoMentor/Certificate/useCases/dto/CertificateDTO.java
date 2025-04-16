@@ -4,7 +4,6 @@ package com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOWithoutCertificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
-import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -16,9 +15,8 @@ import lombok.experimental.SuperBuilder;
 
 
 
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
-        property = "certificateType", visible = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "certificateType")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = CreateOfficialCertificateDTO.class, name = "OFFICIAL"),
 })
