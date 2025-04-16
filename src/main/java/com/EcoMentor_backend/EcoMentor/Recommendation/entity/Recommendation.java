@@ -40,7 +40,7 @@ public class Recommendation {
     private String recommendationType; // e.g., "Insulation", "Windows", "Solar", etc.
 
     @NotNull
-    private float upgradedICEE;
+    private String upgradedICEE;
 
     @NotNull
     private float upgradePercentage;
