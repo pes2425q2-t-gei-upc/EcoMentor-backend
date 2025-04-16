@@ -13,7 +13,7 @@ public class CreateRecommendationDTO {
     private String name;
     private String description;
     private String recommendationType;
-    private float upgradedICEE;
+    private String upgradedICEE;
     private float upgradePercentage;
     private float upgradedAnualCost;
     private float totalPrice;
