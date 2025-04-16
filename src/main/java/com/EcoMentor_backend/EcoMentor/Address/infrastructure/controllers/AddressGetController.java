@@ -7,11 +7,13 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByBoundingBoxU
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByProvinceUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByTownUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAverageValuesInAZonUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetFilterAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetNearAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOBestQualification;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AverageValuesDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,6 +40,7 @@ public class AddressGetController {
     private final GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase;
     private final GetFilterAddressUseCase getFilterAddressUseCase;
     private final GetAddressByBestQualificationUseCase getAddressByBestQualification;
+    private final GetAverageValuesInAZonUseCase getAverageValuesInAZonUseCase;
 
 
     public AddressGetController(GetAddressByAddressIdUseCase getAddressByAddressIdUseCase,
@@ -47,7 +50,8 @@ public class AddressGetController {
                                 GetAddressByTownUseCase getAddressByTownUseCase,
                                 GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase,
                                 GetFilterAddressUseCase getFilterAddressUseCase,
-                                GetAddressByBestQualificationUseCase getAddressByBestQualification) {
+                                GetAddressByBestQualificationUseCase getAddressByBestQualification,
+                                GetAverageValuesInAZonUseCase getAverageValuesInAZonUseCase) {
 
         this.getAddressByAddressIdUseCase = getAddressByAddressIdUseCase;
         this.getAddressByProvinceUseCase = getAddressByProvinceUseCase;
@@ -57,6 +61,7 @@ public class AddressGetController {
         this.getAddressByBoundingBoxUseCase = getAddressByBoundingBoxUseCase;
         this.getFilterAddressUseCase = getFilterAddressUseCase;
         this.getAddressByBestQualification = getAddressByBestQualification;
+        this.getAverageValuesInAZonUseCase = getAverageValuesInAZonUseCase;
     }
 
     @GetMapping
@@ -177,6 +182,19 @@ public class AddressGetController {
         }
         return ResponseEntity.ok(address);
 
+    }
+
+    @GetMapping("/averageValues")
+    public ResponseEntity<AverageValuesDTO> getAverageValuesInAZon(
+            @RequestParam Double latitude,
+            @RequestParam Double longitude,
+            @RequestParam Integer radius) {
+
+        AverageValuesDTO address = getAverageValuesInAZonUseCase.execute(latitude, longitude, radius);
+        if (address == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(address);
     }
 
 
