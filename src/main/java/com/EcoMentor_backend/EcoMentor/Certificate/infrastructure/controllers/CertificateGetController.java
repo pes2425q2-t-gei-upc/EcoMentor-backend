@@ -1,7 +1,5 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers;
 
-
-
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetAllCertificatesUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByCertificateIdUseCase;
@@ -11,6 +9,8 @@ import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByPara
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,8 +45,15 @@ public class CertificateGetController {
     }
 
     @GetMapping
-    public List<CertificateWithoutForeignEntitiesDTO> getAllCertificateUseCase() {
-        return getAllCertificatesUseCase.execute();
+    public ResponseEntity<Page<CertificateWithoutForeignEntitiesDTO>> getAllCertificateUseCase(
+                                                                    @RequestParam(defaultValue = "0") int pageNo,
+                                                                    @RequestParam(defaultValue = "10") int pageSize,
+                                                        @RequestParam(defaultValue = "certificateId") String sortBy) {
+
+        Page<CertificateWithoutForeignEntitiesDTO> certificateDTOS =
+                getAllCertificatesUseCase.execute(pageNo, pageSize, sortBy);
+
+        return ResponseEntity.ok(certificateDTOS);
     }
 
     @GetMapping("/{certificateId}")
