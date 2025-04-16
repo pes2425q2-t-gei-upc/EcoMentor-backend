@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.controllers.UserDeleteController;
 import com.EcoMentor_backend.EcoMentor.User.useCases.DeleteUserUseCase;
+import com.EcoMentor_backend.EcoMentor.User.useCases.RemoveCertificateFromUserUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +22,9 @@ public class UserDeleteControllerTest {
 
     @Mock
     private DeleteUserUseCase deleteUserUseCase;
+
+    @Mock
+    private RemoveCertificateFromUserUseCase removeCertificateFromUserUseCase;
 
     @InjectMocks
     private UserDeleteController userDeleteController;
@@ -49,5 +53,13 @@ public class UserDeleteControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(deleteUserUseCase).execute(1L);
+    }
+
+    @Test
+    void removeCertificateFromUserSuccessfully() throws Exception {
+        mockMvc.perform(delete("/api/users/{userId}/certificates/{certificateId}", 1L, 100L))
+                .andExpect(status().isOk());
+
+        verify(removeCertificateFromUserUseCase).execute(1L, 100L);
     }
 }
