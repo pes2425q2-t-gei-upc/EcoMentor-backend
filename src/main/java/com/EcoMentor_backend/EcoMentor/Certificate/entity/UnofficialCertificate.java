@@ -1,26 +1,24 @@
-package com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto;
+package com.EcoMentor_backend.EcoMentor.Certificate.entity;
 
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
-import com.fasterxml.jackson.annotation.JsonInclude;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.sql.Date;
 import java.time.Year;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Entity
 @Data
-@EqualsAndHashCode(callSuper = true)
+@Table(name = "unofficialCertificate")
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class OfficialCertificateDTO extends CertificateDTO {
-    private String documentId;
-
+public class UnofficialCertificate extends Certificate {
 
     private String floor;
 
@@ -30,7 +28,9 @@ public class OfficialCertificateDTO extends CertificateDTO {
     private String climateZone;
 
 
-    private Float cadastreMeters;
+    //private float cadastreMeters;
+
+    //TODO change to year class or smth?
 
     private Year buildingYear;
 
@@ -110,5 +110,5 @@ public class OfficialCertificateDTO extends CertificateDTO {
     private boolean energeticRehabilitation;
 
 
-    private Date entryDate;
+    private Date creationDate;
 }
