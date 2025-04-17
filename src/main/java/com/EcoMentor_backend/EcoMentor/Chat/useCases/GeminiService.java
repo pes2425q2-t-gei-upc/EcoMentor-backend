@@ -1,7 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Chat.useCases;
 
-import io.github.cdimascio.dotenv.Dotenv;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,11 +11,12 @@ public class GeminiService {
     private final String geminiEndpoint;
     private final String apiKey;
 
-    @Autowired
-    public GeminiService(Dotenv dotenv, RestTemplate restTemplate) {
-        this.apiKey = dotenv.get("GEMINI_API_KEY");
-        this.geminiEndpoint = dotenv.get("GEMINI_API_ENDPOINT");
+    public GeminiService(RestTemplate restTemplate,
+                         @Value("${gemini.api-endpoint}") String geminiEndpoint,
+                         @Value("${gemini.api-key}") String apiKey) {
         this.restTemplate = restTemplate;
+        this.geminiEndpoint = geminiEndpoint;
+        this.apiKey = apiKey;
     }
 
 

@@ -10,6 +10,9 @@ jobs:
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
+    env:
+      GEMINI_API_KEY: "fake-key"  # Valor falso
+      GEMINI_API_ENDPOINT: "https://fake-endpoint"  # Valor falso
     steps:
       - uses: actions/checkout@v4
 
