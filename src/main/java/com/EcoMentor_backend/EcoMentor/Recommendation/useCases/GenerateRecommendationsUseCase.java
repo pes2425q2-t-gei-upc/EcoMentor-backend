@@ -179,6 +179,154 @@ public class GenerateRecommendationsUseCase {
             );
         }
 
+        // Solar térmico
+        if (!certificate.isSolarThermal()) {
+            recommendations.add(
+                    Recommendation.builder()
+                            .name("Install solar thermal system")
+                            .description("Cover at least 70% of DHW demand with solar thermal energy.")
+                            .recommendationType("SOLAR_THERMAL")
+                            .upgradePercentage(25.0f)
+                            .upgradedICEE("B")
+                            .upgradedAnualCost(certificate.getAnnualCost() * 0.75f)
+                            .totalPrice(3500)
+                            .build()
+            );
+        }
+
+        // Red de calor urbano
+        if (!certificate.isDistrictNet()) {
+            recommendations.add(
+                    Recommendation.builder()
+                            .name("Connect to urban heat network")
+                            .description("Reduce CO₂ emissions by 2.5–3.2× compared to conventional boilers.")
+                            .recommendationType("DISTRICT_HEATING")
+                            .upgradePercentage(18.0f)
+                            .upgradedICEE("B")
+                            .upgradedAnualCost(certificate.getAnnualCost() * 0.82f)
+                            .totalPrice(2000)
+                            .build()
+            );
+        }
+
+        // Geotermia
+        if (!certificate.isGeothermal()) {
+            recommendations.add(
+                    Recommendation.builder()
+                            .name("Install geothermal system")
+                            .description("Provide 15–20% of the annual thermal demand through underground exchangers.")
+                            .recommendationType("GEOTHERMAL")
+                            .upgradePercentage(20.0f)
+                            .upgradedICEE("A")
+                            .upgradedAnualCost(certificate.getAnnualCost() * 0.8f)
+                            .totalPrice(12000)
+                            .build()
+            );
+        }
+
+        // Carga vehículo eléctrico
+        if (!certificate.isElectricVehicle()) {
+            recommendations.add(
+                    Recommendation.builder()
+                            .name("Install EV charging point")
+                            .description("Level 2 domestic charging point (240V) to reduce "
+                                    + "the carbon footprint of transport by 25%.")
+                            .recommendationType("EV_CHARGING")
+                            .upgradePercentage(0f)
+                            .upgradedICEE(certificate.getAnnualCost() > 0 ? "A" : "B")
+                            .upgradedAnualCost(certificate.getAnnualCost() + 100)
+                            .totalPrice(800)
+                            .build()
+            );
+        }
+
+        // Recuperación de calor en ventilación
+        if (certificate.getResidentialUseVentilation() > 0) {
+            recommendations.add(
+                    Recommendation.builder()
+                            .name("Install heat recovery unit")
+                            .description("Savings of 15–30% on heating with an energy recovery ventilation system.")
+                            .recommendationType("VENTILATION")
+                            .upgradePercentage(10.0f)
+                            .upgradedICEE("B")
+                            .upgradedAnualCost(certificate.getAnnualCost() * 0.88f)
+                            .totalPrice(2500)
+                            .build()
+            );
+        }
+
+        // Optimización de refrigeración
+        if (certificate.getRefrigerationEmissions() > 10) {
+            recommendations.add(
+                    Recommendation.builder()
+                            .name("Upgrade cooling system")
+                            .description("Replace with VRF or high efficiency reversible pump.")
+                            .recommendationType("REFRIGERATION")
+                            .upgradePercentage(15.0f)
+                            .upgradedICEE("B")
+                            .upgradedAnualCost(certificate.getAnnualCost() * 0.9f)
+                            .totalPrice(6000)
+                            .build()
+            );
+        }
+
+        // Agua caliente sanitaria
+        if (certificate.getAcsEmissions() > 10) {
+            recommendations.add(
+                    Recommendation.builder()
+                            .name("Optimize hot water")
+                            .description("Switch to a heat pump for DHW or improve pipe insulation.")
+                            .recommendationType("WATER_HEATING")
+                            .upgradePercentage(15.0f)
+                            .upgradedICEE("A")
+                            .upgradedAnualCost(certificate.getAnnualCost() * 0.85f)
+                            .totalPrice(4500)
+                            .build()
+            );
+        }
+
+        // Rehabilitación energética profunda
+        if (!certificate.isEnergeticRehabilitation()) {
+            recommendations.add(
+                    Recommendation.builder()
+                            .name("Deep energy rehabilitation")
+                            .description("Consumption reduction of >30% with comprehensive "
+                                    + "improvement of the envelope and systems.")
+                            .recommendationType("REHABILITATION")
+                            .upgradePercentage(35.0f)
+                            .upgradedICEE("A")
+                            .upgradedAnualCost(certificate.getAnnualCost() * 0.65f)
+                            .totalPrice(15000)
+                            .build()
+            );
+        }
+
+        // Retro‑comisionado
+        recommendations.add(
+                Recommendation.builder()
+                        .name("Retro-commissioning of systems")
+                        .description("~15% energy savings with retro-commissioning and adjustments to existing plant.")
+                        .recommendationType("COMMISSIONING")
+                        .upgradePercentage(15.0f)
+                        .upgradedICEE("B")
+                        .upgradedAnualCost(certificate.getAnnualCost() * 0.85f)
+                        .totalPrice(2000)
+                        .build()
+        );
+
+        // Control inteligente
+        recommendations.add(
+                Recommendation.builder()
+                        .name("Implement smart control and home automation")
+                        .description("Improve air conditioning and lighting management, estimated savings of 5%.")
+                        .recommendationType("SMART_CONTROL")
+                        .upgradePercentage(5.0f)
+                        .upgradedICEE("B")
+                        .upgradedAnualCost(certificate.getAnnualCost() * 0.95f)
+                        .totalPrice(1500)
+                        .build()
+        );
+
         return recommendations;
     }
 }
