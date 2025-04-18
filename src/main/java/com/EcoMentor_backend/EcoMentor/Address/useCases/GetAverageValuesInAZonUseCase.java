@@ -7,7 +7,6 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AverageValuesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -39,100 +38,82 @@ public class GetAverageValuesInAZonUseCase {
             addresses.addAll(nearbyAddresses);
         }
 
-        int nonRenewable = 0;
-        int co2 = 0;
-        int heating = 0;
-        int refrigeration = 0;
-        int acs = 0;
-        int lighting = 0;
-        int numNonRenewable = 0;
-        int numCo2 = 0;
-        int numHeating = 0;
-        int numRefrigeration = 0;
-        int numAcs = 0;
-        int numLighting = 0;
+        float insulation = 0;
+        float nonRenewable = 0;
+        float co2 = 0;
+        float heating = 0;
+        float finalEnergyConsumption = 0;
+        float refrigeration = 0;
+        float acs = 0;
+        float lighting = 0;
+        float windowEfficiency = 0;
+        float numInsulation = 0;
+        float numNonRenewable = 0;
+        float numCo2 = 0;
+        float numHeating = 0;
+        float numRefrigeration = 0;
+        float numAcs = 0;
+        float numLighting = 0;
+        float numFinalEnergyConsumption = 0;
+        float numWindowEfficiency = 0;
 
         for (Address address : addresses) {
             for (Certificate certificate : address.getCertificates()) {
                 if (certificate.getCertificateType() == CertificateType.OFFICIAL) {
                     OfficialCertificate officialCertificate = (OfficialCertificate) certificate;
 
-                    Integer nonRenewableValue = getNonRenewable(officialCertificate);
+                    float insulationValue = officialCertificate.getInsulation();
+                    insulation += insulationValue;
+                    numInsulation++;
+
+                    float nonRenewableValue = officialCertificate.getNonRenewablePrimaryEnergy();
                     nonRenewable += nonRenewableValue;
                     numNonRenewable++;
 
+                    float finalEnergyConsumptionValue = officialCertificate.getFinalEnergyConsumption();
+                    finalEnergyConsumption += finalEnergyConsumptionValue;
+                    numFinalEnergyConsumption++;
 
-                    Integer co2Value = getCo2(officialCertificate);
+                    float co2Value = officialCertificate.getCo2Emissions();
                     co2 += co2Value;
                     numCo2++;
 
-                    Integer heatingValue = getHeating(officialCertificate);
+                    float heatingValue = officialCertificate.getHeatingEmissions();
                     heating += heatingValue;
                     numHeating++;
 
-                    Integer refrigerationValue = getRefrigeration(officialCertificate);
+                    float refrigerationValue = officialCertificate.getRefrigerationEmissions();
                     refrigeration += refrigerationValue;
                     numRefrigeration++;
 
 
-                    Integer acsValue = getAcs(officialCertificate);
+                    float acsValue = officialCertificate.getAcsEmissions();
                     acs += acsValue;
                     numAcs++;
 
 
-                    Integer lightingValue = getLighting(officialCertificate);
+                    float lightingValue = officialCertificate.getLightingEmissions();
                     lighting += lightingValue;
                     numLighting++;
+
+                    float windowEfficiencyValue = officialCertificate.getWindowEfficiency();
+                    windowEfficiency += windowEfficiencyValue;
+                    numWindowEfficiency++;
                 }
             }
         }
 
         return AverageValuesDTO.builder()
-                .nonRenewablePrimaryQualification(numNonRenewable > 0 ? Qualification.fromValue(
-                        nonRenewable / numNonRenewable) : null)
-                .co2Qualification(numCo2 > 0 ? Qualification.fromValue(co2 / numCo2) : null)
-                .heatingQualification(numHeating > 0 ? Qualification.fromValue(heating / numHeating) : null)
-                .refrigerationQualification(numRefrigeration > 0 ? Qualification.fromValue(
-                        refrigeration / numRefrigeration) : null)
-                .acsQualification(numAcs > 0 ? Qualification.fromValue(acs / numAcs) : null)
-                .lightingQualification(numLighting > 0 ? Qualification.fromValue(lighting / numLighting) : null)
+                .insulation(insulation / numInsulation)
+                .finalEnergyConsumption(finalEnergyConsumption / numFinalEnergyConsumption)
+                .nonRenewablePrimaryEmissions(nonRenewable / numNonRenewable)
+                .co2Emissions(co2 / numCo2)
+                .heatingEmissions(heating / numHeating)
+                .refrigerationEmissions(refrigeration / numRefrigeration)
+                .acsEmissions(acs / numAcs)
+                .lightingEmissions(lighting / numLighting)
+                .windowEfficiency(windowEfficiency / numWindowEfficiency)
                 .build();
-    }
-
-    private Integer getNonRenewable(OfficialCertificate certificate) {
-        return certificate.getNonRenewablePrimaryQualification() != null
-                ? certificate.getNonRenewablePrimaryQualification().getValue()
-                : 0;
-    }
-
-    private Integer getCo2(OfficialCertificate certificate) {
-        return certificate.getCo2Qualification() != null
-                ? certificate.getCo2Qualification().getValue()
-                : 0;
-    }
-
-    private Integer getHeating(OfficialCertificate certificate) {
-        return certificate.getHeatingQualification() != null
-                ? certificate.getHeatingQualification().getValue()
-                : 0;
-    }
-
-    private Integer getRefrigeration(OfficialCertificate certificate) {
-        return certificate.getRefrigerationQualification() != null
-                ? certificate.getRefrigerationQualification().getValue()
-                : 0;
-    }
-
-    private Integer getAcs(OfficialCertificate certificate) {
-        return certificate.getAcsQualification() != null
-                ? certificate.getAcsQualification().getValue()
-                : 0;
-    }
-
-    private Integer getLighting(OfficialCertificate certificate) {
-        return certificate.getLightingQualification() != null
-                ? certificate.getLightingQualification().getValue()
-                : 0;
     }
 
 }
