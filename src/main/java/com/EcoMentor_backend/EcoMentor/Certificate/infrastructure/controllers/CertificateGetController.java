@@ -6,8 +6,10 @@ import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByCert
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByCertificateIdWFEUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByMinMaxRangeUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByParameterUseCase;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateRecommendationsUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
+import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ public class CertificateGetController {
     private final GetCertificateByParameterUseCase getCertificateByParameterUseCase;
     private final GetCertificateByMinMaxRangeUseCase getCertificateByMinMaxRangeUseCase;
     private final GetCertificateByCertificateIdWFEUseCase getCertificateByCertificateIdWithoutUseCase;
+    private final GetCertificateRecommendationsUseCase getCertificateRecommendationsUseCase;
 
     public CertificateGetController(GetCertificateByParameterUseCase getCertificateByParameterUseCase,
                                     GetAllCertificatesUseCase getAllCertificatesUseCase,
@@ -35,13 +38,15 @@ public class CertificateGetController {
                                     GetCertificateByAddressUseCase getCertificateByAddressUseCase,
                                     GetCertificateByMinMaxRangeUseCase getCertificateByMinMaxRangeUseCase,
                                     GetCertificateByCertificateIdWFEUseCase
-                                            getCertificateByCertificateIdWithoutUseCase) {
+                                            getCertificateByCertificateIdWithoutUseCase,
+                                    GetCertificateRecommendationsUseCase getCertificateRecommendationsUseCase) {
         this.getAllCertificatesUseCase = getAllCertificatesUseCase;
         this.getCertificateByIdUseCase = getCertificateByIdUseCase;
         this.getCertificateByAddressUseCase = getCertificateByAddressUseCase;
         this.getCertificateByParameterUseCase = getCertificateByParameterUseCase;
         this.getCertificateByMinMaxRangeUseCase = getCertificateByMinMaxRangeUseCase;
         this.getCertificateByCertificateIdWithoutUseCase = getCertificateByCertificateIdWithoutUseCase;
+        this.getCertificateRecommendationsUseCase = getCertificateRecommendationsUseCase;
     }
 
     @GetMapping
@@ -88,6 +93,14 @@ public class CertificateGetController {
     public CertificateWithoutForeignEntitiesDTO getCertificateByCertificateIdWithoutUseCase(@PathVariable Long
                                                                                                         certificateId) {
         return getCertificateByCertificateIdWithoutUseCase.execute(certificateId);
+    }
+
+    @GetMapping("/{certificateId}/recommendations")
+    public ResponseEntity<List<RecommendationDTO>> getCertificateRecommendations(
+            @PathVariable Long certificateId) {
+        List<RecommendationDTO> recommendations =
+                getCertificateRecommendationsUseCase.execute(certificateId);
+        return ResponseEntity.ok(recommendations);
     }
 
 }
