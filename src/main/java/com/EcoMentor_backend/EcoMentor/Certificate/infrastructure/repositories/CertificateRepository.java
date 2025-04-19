@@ -25,4 +25,5 @@ public interface CertificateRepository extends JpaRepository<Certificate, String
     List<Certificate> findCertificateByMinMaxRange(String parameter, Object min, Object max);
 
     Object convertToCorrectType(String parameter, String value);
+
 }

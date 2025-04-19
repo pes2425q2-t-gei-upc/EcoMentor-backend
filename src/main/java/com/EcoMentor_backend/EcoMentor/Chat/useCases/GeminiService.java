@@ -29,20 +29,11 @@ public class GeminiService {
         this.model        = "gemini-2.0-flash";
     }
 
-    public String generateContent(String userPrompt) {
+    public String generateContent(List<Map<String, Object>> contents) {
         String url = String.format("%s/models/%s:generateContent?key=%s",
                 endpoint, model, apiKey);
 
-
-        Map<String, Object> part = Map.of("text", userPrompt);
-
-        Map<String, Object> content = Map.of(
-                "role", "user",
-                "parts", List.of(part)
-        );
-
-        Map<String, Object> body = Map.of("contents", List.of(content));
-
+        Map<String, Object> body = Map.of("contents", contents);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -55,11 +46,11 @@ public class GeminiService {
         }
 
         @SuppressWarnings("unchecked")
-        List<Map<String, Object>> candidates = (List<Map<String, Object>>) response.getBody().get("candidates");
-        if (candidates == null || candidates.isEmpty()) {
-            return "";
-        }
-        return candidates.get(0).get("content").toString();
+        List<Map<String, Object>> candidates =
+                (List<Map<String, Object>>) response.getBody().get("candidates");
+        return candidates.isEmpty()
+                ? ""
+                : candidates.get(0).get("content").toString();
     }
 }
 

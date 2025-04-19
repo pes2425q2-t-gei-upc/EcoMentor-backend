@@ -5,6 +5,9 @@ import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.repositories.ChatRep
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,17 +25,36 @@ public class ChatUseCase {
         this.userRepository = userRepository;
     }
 
-    public ChatResponseDTO execute(String message, Long userId, String chatName) {
-        String answer = gemini.generateContent(message);
-        LocalDateTime now = LocalDateTime.now();
+    public ChatResponseDTO execute(String message, Long userId, String chatName, LocalDateTime now) {
 
         if (!userRepository.existsById(userId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
+        List<Chat> history = repo.findByUserIdAndChatNameOrderByTimestampAsc(userId, chatName);
+
+        List<Map<String, Object>> contents = new ArrayList<>();
+        for (Chat c : history) {
+            contents.add(Map.of(
+                    "role", "user",
+                    "parts", List.of(Map.of("text", c.getMessage()))
+            ));
+            contents.add(Map.of(
+                    "role", "model",
+                    "parts", List.of(Map.of("text", c.getResponse()))
+            ));
+        }
+        contents.add(Map.of(
+                "role", "user",
+                "parts", List.of(Map.of("text", message))
+        ));
+
+        String answer = gemini.generateContent(contents);
+
         if (answer.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error generating response");
         }
+
 
 
         Chat chat = Chat.builder()
