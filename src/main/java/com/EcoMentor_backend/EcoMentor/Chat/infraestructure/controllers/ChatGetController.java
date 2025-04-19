@@ -9,4 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/chat")
 public class ChatGetController {
  //todo: implement the get methods for the chat
+
+
+
 }

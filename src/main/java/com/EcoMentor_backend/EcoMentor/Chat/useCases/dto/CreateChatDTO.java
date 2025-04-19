@@ -14,6 +14,9 @@ public class CreateChatDTO {
     private Long userId;
 
     @NotBlank
+    private String chatName;
+
+    @NotBlank
     private String message;
 }
 
