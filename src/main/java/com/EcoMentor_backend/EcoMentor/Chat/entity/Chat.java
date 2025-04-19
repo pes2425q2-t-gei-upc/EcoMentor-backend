@@ -18,6 +18,8 @@ public class Chat {
 
     private Long userId;
 
+    private String chatName;
+
     private String message;
 
     private String response;

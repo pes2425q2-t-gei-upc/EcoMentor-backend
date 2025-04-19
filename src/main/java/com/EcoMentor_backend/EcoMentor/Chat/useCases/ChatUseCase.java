@@ -22,8 +22,8 @@ public class ChatUseCase {
         this.userRepository = userRepository;
     }
 
-    public ChatResponseDTO execute(String messaje, Long userId) {
-        String answer = gemini.generateContent(messaje);
+    public ChatResponseDTO execute(String message, Long userId, String chatName) {
+        String answer = gemini.generateContent(message);
         LocalDateTime now = LocalDateTime.now();
 
         if (!userRepository.existsById(userId)) {
@@ -37,15 +37,16 @@ public class ChatUseCase {
 
         Chat chat = Chat.builder()
                 .userId(userId)
-                .message(messaje)
+                .message(message)
                 .response(answer)
                 .timestamp(now)
+                .chatName(chatName)
                 .build();
 
         repo.save(chat);
 
         return ChatResponseDTO.builder()
-                .message(messaje)
+                .message(message)
                 .response(answer)
                 .timestamp(now)
                 .build();
