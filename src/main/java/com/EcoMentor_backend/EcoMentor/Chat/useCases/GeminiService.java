@@ -2,7 +2,6 @@ package com.EcoMentor_backend.EcoMentor.Chat.useCases;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
