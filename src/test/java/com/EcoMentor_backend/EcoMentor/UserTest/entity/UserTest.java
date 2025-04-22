@@ -3,10 +3,8 @@ package com.EcoMentor_backend.EcoMentor.UserTest.entity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
-import com.EcoMentor_backend.EcoMentor.User.entity.Role;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +30,6 @@ public class UserTest {
                 .name("John Doe")
                 .email("john.doe@example.com")
                 .password("password")
-                .role(Role.USER)
                 .certificates(new ArrayList<>())
                 .build();
     }
@@ -44,7 +41,6 @@ public class UserTest {
         assertEquals("John Doe", user.getName());
         assertEquals("john.doe@example.com", user.getEmail());
         assertEquals("password", user.getPassword());
-        assertEquals(Role.USER, user.getRole());
         assertTrue(user.getCertificates().isEmpty());
     }
 

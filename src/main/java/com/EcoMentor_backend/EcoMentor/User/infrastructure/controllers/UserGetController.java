@@ -10,6 +10,7 @@ import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +41,7 @@ public class UserGetController {
     }
 
     @GetMapping
+    @PreAuthorize("(hasRole('ROLE_ADMIN'))")
     public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(defaultValue = "0") int page,
                                                     @RequestParam(defaultValue = "10") int size,
                                                     @RequestParam(defaultValue = "name") String sort) {
@@ -49,11 +51,13 @@ public class UserGetController {
     }
 
     @GetMapping("/email/{email}")
+    @PreAuthorize("(hasRole('ROLE_ADMIN'))")
     public UserDTO getUserByEmail(@PathVariable String email) {
         return getByEmailUseCase.execute(email);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("(hasRole('ROLE_ADMIN'))")
     public UserDTO getUserById(@PathVariable long id) {
         return getUserByIdUseCase.execute(id);
     }

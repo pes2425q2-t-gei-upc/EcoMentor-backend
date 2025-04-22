@@ -13,6 +13,7 @@ import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.Recommendatio
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,28 +51,32 @@ public class CertificateGetController {
     }
 
     @GetMapping
+    @PreAuthorize("(hasRole('ROLE_USER') or hasRole('ROLE_ADMIN'))")
     public ResponseEntity<Page<CertificateWithoutForeignEntitiesDTO>> getAllCertificateUseCase(
-                                                                    @RequestParam(defaultValue = "0") int pageNo,
-                                                                    @RequestParam(defaultValue = "10") int pageSize,
-                                                        @RequestParam(defaultValue = "certificateId") String sortBy) {
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "10") int size,
+                                                        @RequestParam(defaultValue = "certificateId") String sort) {
 
         Page<CertificateWithoutForeignEntitiesDTO> certificateDTOS =
-                getAllCertificatesUseCase.execute(pageNo, pageSize, sortBy);
+                getAllCertificatesUseCase.execute(page, size, sort);
 
         return ResponseEntity.ok(certificateDTOS);
     }
 
     @GetMapping("/{certificateId}")
+    @PreAuthorize("(hasRole('ROLE_USER') or hasRole('ROLE_ADMIN'))")
     public CertificateDTO getCertificateByIdUseCase(@PathVariable Long certificateId) {
         return getCertificateByIdUseCase.execute(certificateId);
     }
 
     @GetMapping("/address/{addressId}")
+    @PreAuthorize("(hasRole('ROLE_USER') or hasRole('ROLE_ADMIN'))")
     public List<CertificateWithoutForeignEntitiesDTO> getCertificateByAddressUseCase(@PathVariable Long addressId) {
         return getCertificateByAddressUseCase.execute(addressId);
     }
 
     @GetMapping("/parameter")
+    @PreAuthorize("(hasRole('ROLE_USER') or hasRole('ROLE_ADMIN'))")
     public List<CertificateWithoutForeignEntitiesDTO> getCertificateByParameter(@RequestParam String parameter,
                                                                                 @RequestParam String value,
                                                                                 @RequestParam double minLatitude,
@@ -84,18 +89,21 @@ public class CertificateGetController {
     }
 
     @GetMapping("/range")
+    @PreAuthorize("(hasRole('ROLE_USER') or hasRole('ROLE_ADMIN'))")
     public List<CertificateWithoutForeignEntitiesDTO> getCertificateByMinMaxRange(
             @RequestParam String parameter, @RequestParam String min, @RequestParam String max) {
         return getCertificateByMinMaxRangeUseCase.execute(parameter, min, max);
     }
 
     @GetMapping("/wfe/{certificateId}")
+    @PreAuthorize("(hasRole('ROLE_USER') or hasRole('ROLE_ADMIN'))")
     public CertificateWithoutForeignEntitiesDTO getCertificateByCertificateIdWithoutUseCase(@PathVariable Long
                                                                                                         certificateId) {
         return getCertificateByCertificateIdWithoutUseCase.execute(certificateId);
     }
 
     @GetMapping("/{certificateId}/recommendations")
+    @PreAuthorize("(hasRole('ROLE_USER') or hasRole('ROLE_ADMIN'))")
     public ResponseEntity<List<RecommendationDTO>> getCertificateRecommendations(
             @PathVariable Long certificateId) {
         List<RecommendationDTO> recommendations =

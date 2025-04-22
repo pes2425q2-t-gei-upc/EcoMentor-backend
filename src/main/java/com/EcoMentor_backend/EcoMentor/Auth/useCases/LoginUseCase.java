@@ -9,10 +9,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +41,14 @@ public class LoginUseCase {
         UserDetails user = userRepository.findByEmail(login.getEmail()).orElseThrow(
                 () -> new UsernameNotFoundException("User not found"));
         String token = jwtTokenProvider.getToken(user);
+
+        Set<String> roles = user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)  // Convert GrantedAuthority to String
+                .collect(Collectors.toSet());
+
         return AuthResponseDTO.builder()
                 .token(token)
+                .roles(roles)
                 .build();
 
     }

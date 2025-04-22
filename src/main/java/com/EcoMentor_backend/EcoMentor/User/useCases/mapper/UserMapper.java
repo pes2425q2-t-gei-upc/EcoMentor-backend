@@ -1,6 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.User.useCases.mapper;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
+import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;
@@ -29,6 +30,7 @@ public class UserMapper {
                 .id(user.getId())
                 .certificateDTOList(user.getCertificates().stream().map(certificateMapper::toDTO)
                         .collect(Collectors.toList()))
+                .roles(user.getRoles().stream().map((Role::getName)).collect(Collectors.toList()))
                 .build();
     }
 
@@ -41,6 +43,7 @@ public class UserMapper {
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
+
                 .build();
     }
 

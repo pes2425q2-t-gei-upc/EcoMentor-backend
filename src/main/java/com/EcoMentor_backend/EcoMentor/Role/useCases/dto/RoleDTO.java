@@ -1,17 +1,15 @@
-package com.EcoMentor_backend.EcoMentor.Auth.useCases.dto;
+package com.EcoMentor_backend.EcoMentor.Role.useCases.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthResponseDTO {
-    String token;
-    Set<String> roles;
+public class RoleDTO {
+    private Long id;
+    private String name;
 }
