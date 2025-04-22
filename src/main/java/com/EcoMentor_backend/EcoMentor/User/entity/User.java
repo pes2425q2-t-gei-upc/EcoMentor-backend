@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.User.entity;
 
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
+import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 

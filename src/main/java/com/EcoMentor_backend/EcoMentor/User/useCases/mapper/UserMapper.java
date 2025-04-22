@@ -1,7 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.User.useCases.mapper;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
-import com.EcoMentor_backend.EcoMentor.User.entity.Role;
+import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;

@@ -1,4 +1,4 @@
-package com.EcoMentor_backend.EcoMentor.User.entity;
+package com.EcoMentor_backend.EcoMentor.Role.entity;
 
 
 import jakarta.persistence.*;
@@ -6,21 +6,18 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "roles")
 public class Role {
 
-
-    @Getter
-    @Setter
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
-    private Long roleId;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @NaturalId
-    @Getter
-    @Setter
     @Column(length = 60, unique = true)
     private RoleName name;
 

@@ -1,4 +1,4 @@
-package com.EcoMentor_backend.EcoMentor.User.entity;
+package com.EcoMentor_backend.EcoMentor.Role.entity;
 
 public enum RoleName {
     ROLE_ADMIN,
