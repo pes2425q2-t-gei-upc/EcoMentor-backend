@@ -3,6 +3,7 @@ package com.EcoMentor_backend.EcoMentor.Chat.entity;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Builder
 @Document(collection = "chats")
+@Getter
 public class Chat {
     @Id
     private String id;

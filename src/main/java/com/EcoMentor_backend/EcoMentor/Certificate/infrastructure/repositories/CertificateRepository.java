@@ -30,6 +30,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, String
 
     Object convertToCorrectType(String parameter, String value);
 
+
     @Query("SELECT c FROM Certificate c JOIN c.users u WHERE c.certificateId = :certificateId AND u.id = :userId")
     Optional<Certificate> findByIdAndUserId(@Param("certificateId") Long certificateId, @Param("userId") Long userId);
 }
