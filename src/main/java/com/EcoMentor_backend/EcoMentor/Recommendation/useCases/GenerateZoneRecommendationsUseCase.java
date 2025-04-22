@@ -37,7 +37,7 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Obtener valores medios de la zona
         AverageValuesDTO averages = averageValuesUseCase.execute(certificate.getAddress().getLocation().getY(),
-                certificate.getAddress().getLocation().getX(), radius);
+                certificate.getAddress().getLocation().getX(), radius * 1000);
 
         List<Recommendation> recommendations = generateByZone(certificate, averages);
 
@@ -57,6 +57,7 @@ public class GenerateZoneRecommendationsUseCase {
         List<RecommendationDTO> dtoList = new ArrayList<>();
         for (Recommendation recommendation : recommendations) {
             RecommendationDTO dto = new RecommendationDTO();
+            dto.setRecommendationId(recommendation.getRecommendationId());
             dto.setName(recommendation.getName());
             dto.setDescription(recommendation.getDescription());
             dto.setRecommendationType(recommendation.getRecommendationType());
@@ -76,9 +77,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (certificate.getInsulation() < avg.getInsulation()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Improve insulation")
-                            .description("Install better insulation materials in walls"
-                                    + " and ceilings to match neighborhood standards.")
+                            .name("1")
+                            .description("1")
                             .recommendationType("INSULATION")
                             .upgradePercentage((avg.getInsulation() - certificate.getInsulation())
                                     * 100 / avg.getInsulation())
@@ -93,9 +93,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (!certificate.isPhotovoltaicSolar()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Install solar panels")
-                            .description("Install photovoltaic solar panels "
-                                    + "to exceed local average renewable production.")
+                            .name("2")
+                            .description("2")
                             .recommendationType("SOLAR")
                             .upgradePercentage(20.0f)
                             .upgradedICEE("A")
@@ -109,8 +108,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (certificate.getWindowEfficiency() < avg.getWindowEfficiency()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Improve window efficiency")
-                            .description("Replace windows to reach the area's average thermal performance.")
+                            .name("3")
+                            .description("3")
                             .recommendationType("WINDOWS")
                             .upgradePercentage((avg.getWindowEfficiency() - certificate.getWindowEfficiency())
                                     * 100 / avg.getWindowEfficiency())
@@ -125,8 +124,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (certificate.getHeatingEmissions() > avg.getHeatingEmissions()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Install heat pump")
-                            .description("Install a heat pump to reduce heating emissions below neighborhood average.")
+                            .name("4")
+                            .description("4")
                             .recommendationType("HEAT_PUMP")
                             .upgradePercentage((certificate.getHeatingEmissions() - avg.getHeatingEmissions())
                                     * 100 / avg.getHeatingEmissions())
@@ -141,8 +140,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (!certificate.isBiomass() && certificate.getHeatingEmissions() > avg.getHeatingEmissions()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Implement biomass system")
-                            .description("Install a biomass system to align with local renewable heating practices.")
+                            .name("5")
+                            .description("5")
                             .recommendationType("BIOMASS")
                             .upgradePercentage(12.0f)
                             .upgradedICEE("A")
@@ -156,8 +155,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (certificate.getFinalEnergyConsumption() > avg.getFinalEnergyConsumption()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Optimize HVAC system")
-                            .description("Upgrade HVAC to meet or beat the area's average energy use.")
+                            .name("6")
+                            .description("6")
                             .recommendationType("HVAC")
                             .upgradePercentage((certificate.getFinalEnergyConsumption()
                                     - avg.getFinalEnergyConsumption()) * 100 / avg.getFinalEnergyConsumption())
@@ -172,8 +171,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (certificate.getLightingEmissions() > avg.getLightingEmissions()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Improve lighting")
-                            .description("Upgrade to LED lighting to reduce emissions to neighborhood levels.")
+                            .name("7")
+                            .description("7")
                             .recommendationType("LIGHTING")
                             .upgradePercentage((certificate.getLightingEmissions() - avg.getLightingEmissions())
                                     * 100 / avg.getLightingEmissions())
@@ -188,8 +187,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (!certificate.isSolarThermal()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Install solar thermal system")
-                            .description("Cover at least 70% of DHW demand with solar thermal energy.")
+                            .name("8")
+                            .description("8")
                             .recommendationType("SOLAR_THERMAL")
                             .upgradePercentage(25.0f)
                             .upgradedICEE("B")
@@ -203,8 +202,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (!certificate.isDistrictNet()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Connect to urban heat network")
-                            .description("Reduce CO₂ emissions by 2.5–3.2× compared to conventional boilers.")
+                            .name("9")
+                            .description("9")
                             .recommendationType("DISTRICT_HEATING")
                             .upgradePercentage(18.0f)
                             .upgradedICEE("B")
@@ -218,8 +217,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (!certificate.isGeothermal()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Install geothermal system")
-                            .description("Provide 15–20% of the annual thermal demand through underground exchangers.")
+                            .name("10")
+                            .description("10")
                             .recommendationType("GEOTHERMAL")
                             .upgradePercentage(20.0f)
                             .upgradedICEE("A")
@@ -233,9 +232,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (!certificate.isElectricVehicle()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Install EV charging point")
-                            .description("Level 2 domestic charging point (240V) to reduce "
-                                    + "the carbon footprint of transport by 25%.")
+                            .name("11")
+                            .description("11")
                             .recommendationType("EV_CHARGING")
                             .upgradePercentage(0f)
                             .upgradedICEE(certificate.getAnnualCost() > 0 ? "A" : "B")
@@ -249,8 +247,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (certificate.getResidentialUseVentilation() > 0) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Install heat recovery unit")
-                            .description("Savings of 15–30% on heating with an energy recovery ventilation system.")
+                            .name("12")
+                            .description("12")
                             .recommendationType("VENTILATION")
                             .upgradePercentage(10.0f)
                             .upgradedICEE("B")
@@ -264,8 +262,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (certificate.getRefrigerationEmissions() > avg.getRefrigerationEmissions()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Upgrade cooling system")
-                            .description("Replace cooling to achieve average refrigeration efficiency.")
+                            .name("13")
+                            .description("13")
                             .recommendationType("REFRIGERATION")
                             .upgradePercentage((certificate.getRefrigerationEmissions()
                                     - avg.getRefrigerationEmissions()) * 100 / avg.getRefrigerationEmissions())
@@ -280,8 +278,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (certificate.getAcsEmissions() > avg.getAcsEmissions()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Optimize hot water")
-                            .description("Improve DHW system to meet local energy use benchmarks.")
+                            .name("14")
+                            .description("14")
                             .recommendationType("WATER_HEATING")
                             .upgradePercentage((certificate.getAcsEmissions() - avg.getAcsEmissions())
                                     * 100 / avg.getAcsEmissions())
@@ -296,9 +294,8 @@ public class GenerateZoneRecommendationsUseCase {
         if (!certificate.isEnergeticRehabilitation()) {
             recommendations.add(
                     Recommendation.builder()
-                            .name("Deep energy rehabilitation")
-                            .description("Consumption reduction of >30% with comprehensive "
-                                    + "improvement of the envelope and systems.")
+                            .name("15")
+                            .description("15")
                             .recommendationType("REHABILITATION")
                             .upgradePercentage(35.0f)
                             .upgradedICEE("A")
@@ -311,8 +308,8 @@ public class GenerateZoneRecommendationsUseCase {
         // Retro‑comisionado
         recommendations.add(
                 Recommendation.builder()
-                        .name("Retro-commissioning of systems")
-                        .description("~15% energy savings with retro-commissioning and adjustments to existing plant.")
+                        .name("16")
+                        .description("16")
                         .recommendationType("COMMISSIONING")
                         .upgradePercentage(15.0f)
                         .upgradedICEE("B")
@@ -324,8 +321,8 @@ public class GenerateZoneRecommendationsUseCase {
         // Control inteligente
         recommendations.add(
                 Recommendation.builder()
-                        .name("Implement smart control and home automation")
-                        .description("Improve air conditioning and lighting management, estimated savings of 5%.")
+                        .name("17")
+                        .description("17")
                         .recommendationType("SMART_CONTROL")
                         .upgradePercentage(5.0f)
                         .upgradedICEE("B")
