@@ -18,7 +18,7 @@ public class DeleteRoleUseCase {
     }
 
     public void execute(Long id) {
-        Role role = roleRepository.findById(id).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+        Role role = roleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Role not found"));
         roleRepository.delete(role);
         System.out.println("Role deleted successfully");

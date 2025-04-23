@@ -4,11 +4,12 @@ import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import com.EcoMentor_backend.EcoMentor.Role.infrastructure.repositories.RoleRepository;
 import com.EcoMentor_backend.EcoMentor.Role.useCases.dto.RoleDTO;
 import com.EcoMentor_backend.EcoMentor.Role.useCases.mapper.RoleMapper;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @Transactional
