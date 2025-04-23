@@ -6,6 +6,7 @@ import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.Role.infrastructure.repositories.RoleRepository;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import com.EcoMentor_backend.EcoMentor.User.useCases.BlockUserUseCase;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -32,7 +34,7 @@ public class BlockUserUseCaseTest {
     private BlockUserUseCase blockUserUseCase;
 
     @Test
-    void executeSuccessfullyBlocksUser() {
+    void executeSuccessfullyBlocksUser() throws MessagingException, IOException {
         Long userId = 1L;
         User user = new User();
         Role blockedRole = new Role();
