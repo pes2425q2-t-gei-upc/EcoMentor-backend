@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChatResponseDTO {
-    private String message;
-    private String response;
-    private LocalDateTime timestamp;
-    private boolean isSuspicious;
+public class BanAndTimeDTO {
+    LocalDateTime banEndTime;
+    boolean isBanned;
 }
