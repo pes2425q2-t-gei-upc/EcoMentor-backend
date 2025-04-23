@@ -5,6 +5,8 @@ import com.EcoMentor_backend.EcoMentor.Auth.infrastructure.jwt.JwtTokenProvider;
 import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.AuthResponseDTO;
 import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.LoginDTO;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,8 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor

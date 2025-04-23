@@ -21,7 +21,7 @@ public class RoleDeleteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRole(@PathVariable Long id){
+    public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         try {
             deleteRoleUseCase.execute(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
