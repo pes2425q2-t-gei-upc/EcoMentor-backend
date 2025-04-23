@@ -10,7 +10,7 @@ sudo systemctl stop mongod || true
 
 # Levantar los contenedores con Docker Compose
 echo "Levantando contenedores con Docker Compose..."
-docker compose up -d
+docker compose up -d postgres mongo
 
 # Verificar el estado de los contenedores
 echo "Verificando el estado de los contenedores Docker..."
