@@ -29,18 +29,24 @@ public class GenerateRecommendationsUseCase {
         OfficialCertificate certificate = certificateRepository.findById(certificateId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Certificate not found"));
 
+        // Limpiar las recomendaciones existentes del certificado
+        certificate.getRecommendations().clear();
+
         List<Recommendation> recommendations = generate(certificate);
 
         for (Recommendation recommendation : recommendations) {
             if (recommendation.getCertificates() == null) {
                 recommendation.setCertificates(new ArrayList<>());
             }
-            recommendation.getCertificates().add(certificate);
-            certificate.getRecommendations().add(recommendation);
+            if (certificate.getRecommendations().contains(recommendation)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Recommendation already exists");
+            } else {
+                recommendation.getCertificates().add(certificate);
+                certificate.getRecommendations().add(recommendation);
+            }
         }
 
         recommendationRepository.saveAll(recommendations);
-        certificateRepository.save(certificate);
         
         List<RecommendationDTO> recommendationDTOs = new ArrayList<>();
         for (Recommendation recommendation : recommendations) {

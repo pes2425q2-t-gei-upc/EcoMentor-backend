@@ -35,9 +35,12 @@ public class GenerateZoneRecommendationsUseCase {
         OfficialCertificate certificate = certificateRepository.findById(certificateId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Certificate not found"));
 
+        // Limpiar las recomendaciones existentes del certificado
+        certificate.getRecommendations().clear();
+
         // Obtener valores medios de la zona
         AverageValuesDTO averages = averageValuesUseCase.execute(certificate.getAddress().getLocation().getY(),
-                certificate.getAddress().getLocation().getX(), radius * 1000);
+                certificate.getAddress().getLocation().getX(), radius);
 
         List<Recommendation> recommendations = generateByZone(certificate, averages);
 
@@ -46,12 +49,15 @@ public class GenerateZoneRecommendationsUseCase {
             if (recommendation.getCertificates() == null) {
                 recommendation.setCertificates(new ArrayList<>());
             }
-            recommendation.getCertificates().add(certificate);
-            certificate.getRecommendations().add(recommendation);
+            if (certificate.getRecommendations().contains(recommendation)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Recommendation already exists");
+            } else {
+                recommendation.getCertificates().add(certificate);
+                certificate.getRecommendations().add(recommendation);
+            }
         }
 
         recommendationRepository.saveAll(recommendations);
-        certificateRepository.save(certificate);
 
         // Convertir a DTOs
         List<RecommendationDTO> dtoList = new ArrayList<>();
