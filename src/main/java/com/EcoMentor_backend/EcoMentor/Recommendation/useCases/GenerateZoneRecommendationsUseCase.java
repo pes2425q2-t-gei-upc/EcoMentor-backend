@@ -36,11 +36,16 @@ public class GenerateZoneRecommendationsUseCase {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Certificate not found"));
 
         // Limpiar las recomendaciones existentes del certificado
+        recommendationRepository.deleteAll(certificate.getRecommendations());
         certificate.getRecommendations().clear();
 
         // Obtener valores medios de la zona
         AverageValuesDTO averages = averageValuesUseCase.execute(certificate.getAddress().getLocation().getY(),
                 certificate.getAddress().getLocation().getX(), radius);
+
+        if (averages == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Average values not found");
+        }
 
         List<Recommendation> recommendations = generateByZone(certificate, averages);
 

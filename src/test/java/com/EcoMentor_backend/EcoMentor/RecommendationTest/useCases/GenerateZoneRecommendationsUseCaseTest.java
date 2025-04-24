@@ -48,9 +48,11 @@ class GenerateZoneRecommendationsUseCaseTest {
     @Test
     void returnsRecommendationsWhenCertificateAndAveragesAreValid() {
         Long certificateId = 1L;
-        Integer radius = 5;
+        Integer radius = 5000; // Ensure this matches the expected value
         OfficialCertificate certificate = mock(OfficialCertificate.class);
-        AverageValuesDTO averages = mock(AverageValuesDTO.class);
+        AverageValuesDTO averages = new AverageValuesDTO();
+        averages.setInsulation(10.0f); // Set valid values for averages
+        averages.setWindowEfficiency(8.0f); // Add other required fields
         Address address = mock(Address.class);
         Point location = mock(Point.class);
 
@@ -59,14 +61,14 @@ class GenerateZoneRecommendationsUseCaseTest {
         when(address.getLocation()).thenReturn(location);
         when(location.getX()).thenReturn(10.0);
         when(location.getY()).thenReturn(20.0);
-        when(averageValuesUseCase.execute(20.0, 10.0, radius * 1000)).thenReturn(averages);
+        when(averageValuesUseCase.execute(20.0, 10.0, radius)).thenReturn(averages); // Ensure radius matches here
         when(recommendationRepository.saveAll(anyList())).thenReturn(new ArrayList<>());
 
         List<RecommendationDTO> result = generateZoneRecommendationsUseCase.execute(certificateId, radius);
 
         assertNotNull(result);
         verify(certificateRepository).findById(certificateId);
-        verify(averageValuesUseCase).execute(20.0, 10.0, radius * 1000);
+        verify(averageValuesUseCase).execute(20.0, 10.0, radius);
         verify(recommendationRepository).saveAll(anyList());
     }
 
@@ -87,7 +89,7 @@ class GenerateZoneRecommendationsUseCaseTest {
     @Test
     void handlesNullAverageValuesGracefully() {
         Long certificateId = 1L;
-        Integer radius = 5;
+        Integer radius = 5000;
         OfficialCertificate certificate = mock(OfficialCertificate.class);
         Address address = mock(Address.class);
         Point location = mock(Point.class);
@@ -97,18 +99,18 @@ class GenerateZoneRecommendationsUseCaseTest {
         when(address.getLocation()).thenReturn(location);
         when(location.getX()).thenReturn(10.0);
         when(location.getY()).thenReturn(20.0);
-        when(averageValuesUseCase.execute(20.0, 10.0, radius * 1000)).thenReturn(null);
+        when(averageValuesUseCase.execute(20.0, 10.0, radius)).thenReturn(null);
 
-        assertThrows(NullPointerException.class, () -> generateZoneRecommendationsUseCase.execute(certificateId, radius));
+        assertThrows(ResponseStatusException.class, () -> generateZoneRecommendationsUseCase.execute(certificateId, radius));
         verify(certificateRepository).findById(certificateId);
-        verify(averageValuesUseCase).execute(20.0, 10.0, radius * 1000);
+        verify(averageValuesUseCase).execute(20.0, 10.0, radius);
     }
 
     @DisplayName("Handles empty recommendations list gracefully")
     @Test
     void handlesEmptyRecommendationsListGracefully() {
         Long certificateId = 1L;
-        Integer radius = 5;
+        Integer radius = 5000;
         OfficialCertificate certificate = mock(OfficialCertificate.class);
         Address address = mock(Address.class);
         Point location = mock(Point.class);
@@ -119,7 +121,7 @@ class GenerateZoneRecommendationsUseCaseTest {
         when(address.getLocation()).thenReturn(location);
         when(location.getX()).thenReturn(10.0);
         when(location.getY()).thenReturn(20.0);
-        when(averageValuesUseCase.execute(20.0, 10.0, radius * 1000)).thenReturn(averages);
+        when(averageValuesUseCase.execute(20.0, 10.0, radius)).thenReturn(averages);
         when(recommendationRepository.saveAll(anyList())).thenReturn(new ArrayList<>());
 
         List<RecommendationDTO> result = generateZoneRecommendationsUseCase.execute(certificateId, radius);
@@ -127,7 +129,7 @@ class GenerateZoneRecommendationsUseCaseTest {
         assertNotNull(result);
         assertTrue(result.size() == 8);
         verify(certificateRepository).findById(certificateId);
-        verify(averageValuesUseCase).execute(20.0, 10.0, radius * 1000);
+        verify(averageValuesUseCase).execute(20.0, 10.0, radius);
         verify(recommendationRepository).saveAll(anyList());
     }
 }

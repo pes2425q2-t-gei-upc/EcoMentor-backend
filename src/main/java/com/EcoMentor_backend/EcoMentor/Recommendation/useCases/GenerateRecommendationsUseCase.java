@@ -30,6 +30,7 @@ public class GenerateRecommendationsUseCase {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Certificate not found"));
 
         // Limpiar las recomendaciones existentes del certificado
+        recommendationRepository.deleteAll(certificate.getRecommendations());
         certificate.getRecommendations().clear();
 
         List<Recommendation> recommendations = generate(certificate);
