@@ -85,6 +85,7 @@ public class CertificateMapper {
                     .floor(unofficialCertificate.getFloor())
                     .door(unofficialCertificate.getDoor())
                     .climateZone(unofficialCertificate.getClimateZone())
+                    .cadastreMeters(unofficialCertificate.getCadastreMeters())
                     .buildingYear(unofficialCertificate.getBuildingYear())
                     .buildingUse(unofficialCertificate.getBuildingUse())
                     .nonRenewablePrimaryQualification(unofficialCertificate.getNonRenewablePrimaryQualification())
@@ -177,6 +178,7 @@ public class CertificateMapper {
                     .floor(unofficialCertificate.getFloor())
                     .door(unofficialCertificate.getDoor())
                     .climateZone(unofficialCertificate.getClimateZone())
+                    .cadastreMeters(unofficialCertificate.getCadastreMeters())
                     .buildingYear(unofficialCertificate.getBuildingYear())
                     .buildingUse(unofficialCertificate.getBuildingUse())
                     .nonRenewablePrimaryQualification(unofficialCertificate
@@ -271,6 +273,7 @@ public class CertificateMapper {
                      .floor(createUnofficialCertificateDTO.getFloor())
                      .door(createUnofficialCertificateDTO.getDoor())
                      .climateZone(createUnofficialCertificateDTO.getClimateZone())
+                    .cadastreMeters(createUnofficialCertificateDTO.getCadastreMeters())
                      .buildingYear(createUnofficialCertificateDTO.getBuildingYear())
                      .buildingUse(createUnofficialCertificateDTO.getBuildingUse())
                      .nonRenewablePrimaryQualification(createUnofficialCertificateDTO

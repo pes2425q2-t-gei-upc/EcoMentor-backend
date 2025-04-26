@@ -24,6 +24,7 @@ public class UnofficialCertificateWFEDTO extends CertificateWithoutForeignEntiti
     private String climateZone;
     private Year buildingYear;
     private String buildingUse;
+    private float cadastreMeters;
     private Qualification nonRenewablePrimaryQualification;
     private float nonRenewablePrimaryEnergy;
     private Qualification co2Qualification;
