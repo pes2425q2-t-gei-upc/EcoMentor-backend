@@ -32,9 +32,8 @@ public class ChatUseCase {
         this.userRepository = userRepository;
     }
 
-    public ChatResponseDTO execute(String message, Long userId, String chatName, LocalDateTime now1) {
+    public ChatResponseDTO execute(String message, Long userId, String chatName, LocalDateTime now) {
         boolean suspicus = false;
-        LocalDateTime now = LocalDateTime.now(); //todo: cambiar por now1
 
         if (inappropriateLanguageDetector(message)) {
             Chat chat = Chat.builder()
@@ -120,7 +119,9 @@ public class ChatUseCase {
     }
 
     boolean inappropriateLanguageDetector(String sentence) {
-        if (sentence == null) return false;
+        if (sentence == null) {
+            return false;
+        }
 
         // 1) Carga del fichero badwords.properties
         ResourceBundle bundle = ResourceBundle.getBundle("badwords");

@@ -13,4 +13,8 @@ public interface ChatRepository extends MongoRepository<Chat, String> {
     List<Chat> findByUserIdAndChatName(Long userId, String chatName);
 
     List<Chat> findByUserIdAndChatNameOrderByTimestampAsc(Long userId, String chatName);
+
+    void deleteByUserIdAndChatName(Long userId, String chatName);
+
+    void deleteByUserId(Long userId);
 }

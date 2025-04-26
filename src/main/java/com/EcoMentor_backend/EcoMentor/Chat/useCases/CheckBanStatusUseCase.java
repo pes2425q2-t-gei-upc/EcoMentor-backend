@@ -18,16 +18,20 @@ public class CheckBanStatusUseCase {
     private final ChatRepository chatRepository;
 
     public BanAndTimeDTO execute(Long userId) {
-        List<Chat> chat = chatRepository.findByUserIdOrderByTimestampAsc(userId);
+        List<Chat> chats = chatRepository.findByUserIdOrderByTimestampAsc(userId);
 
-        if (chat != null && chat.getLast().isSuspicious()) {
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime banEndTime = chat.getLast().getTimestamp().plusMinutes(5);
-            if (now.isBefore(banEndTime)) {
-                return BanAndTimeDTO.builder()
-                        .banEndTime(chat.getLast().getTimestamp().plusMinutes(5))
-                        .isBanned(true)
-                        .build();
+        if (chats != null && !chats.isEmpty()) {
+            Chat last = chats.get(chats.size() - 1);
+
+            if (last.isSuspicious()) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime banEndTime = last.getTimestamp().plusMinutes(5);
+                if (now.isBefore(banEndTime)) {
+                    return BanAndTimeDTO.builder()
+                            .banEndTime(banEndTime)
+                            .isBanned(true)
+                            .build();
+                }
             }
         }
         return BanAndTimeDTO.builder()
