@@ -12,10 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AverageValuesDTO {
-    private Qualification nonRenewablePrimaryQualification;
-    private Qualification co2Qualification;
-    private Qualification heatingQualification;
-    private Qualification refrigerationQualification;
-    private Qualification acsQualification;
-    private Qualification lightingQualification;
+    private float finalEnergyConsumption;
+    private float nonRenewablePrimaryEmissions;
+    private float co2Emissions;
+    private float heatingEmissions;
+    private float refrigerationEmissions;
+    private float acsEmissions;
+    private float lightingEmissions;
+    private float insulation;
+    private float windowEfficiency;
 }

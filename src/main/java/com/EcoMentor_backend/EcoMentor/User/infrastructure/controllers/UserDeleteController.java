@@ -28,13 +28,9 @@ public class UserDeleteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        try {
-            deleteUserUseCase.execute(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        deleteUserUseCase.execute(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("The user has been successfully deleted");
     }
 
     @DeleteMapping("/{userId}/certificates/{certificateId}")

@@ -44,4 +44,5 @@ public interface CertificateRepository extends JpaRepository<Certificate, String
     float calculateBaseIoACS(int acsAprox, String buildingUse);
 
     float calculateBaseIoLighting(int lightingAprox, String buildingUse);
+
 }

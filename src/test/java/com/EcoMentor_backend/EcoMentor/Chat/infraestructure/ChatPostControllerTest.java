@@ -1,50 +1,43 @@
 package com.EcoMentor_backend.EcoMentor.Chat.infraestructure;
 
-import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.controllers.ChatPostController;
-import com.EcoMentor_backend.EcoMentor.Chat.useCases.ChatUseCase;
-import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
-import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.CreateChatDTO;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.controllers.ChatPostController;
+import com.EcoMentor_backend.EcoMentor.Chat.useCases.ChatUseCase;
+import com.EcoMentor_backend.EcoMentor.Chat.useCases.PostContextUseCase;
+import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
+import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.CreateChatDTO;
+import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.CreateChatWithCertificateDTO;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
+
+import java.time.LocalDateTime;
+
 class ChatPostControllerTest {
 
-@Mock
 private ChatUseCase chatUseCase;
-
+private PostContextUseCase postContextUseCase;
 private ChatPostController chatPostController;
 
 @BeforeEach
 void setUp() {
-    MockitoAnnotations.openMocks(this);
-    chatPostController = new ChatPostController(chatUseCase);
+    chatUseCase = mock(ChatUseCase.class);
+    postContextUseCase = mock(PostContextUseCase.class);
+    chatPostController = new ChatPostController(chatUseCase, postContextUseCase);
 }
+
 
 @Test
-@DisplayName("newChat returns CREATED status and response when input is valid")
-void newChatReturnsCreatedStatusAndResponseWhenInputIsValid() {
-    CreateChatDTO dto = new CreateChatDTO(1L, "Hello");
-    ChatResponseDTO responseDTO = ChatResponseDTO.builder()
-            .message("Hello")
-            .response("Hi there!")
-            .timestamp(null)
-            .build();
+@DisplayName("Handles invalid certificate ID in new chat with context")
+void handlesInvalidCertificateIdInNewChatWithContext() {
+    CreateChatWithCertificateDTO dto = new CreateChatWithCertificateDTO(1L, "Chat1", LocalDateTime.now(), "Message", 999L);
+    when(postContextUseCase.execute(dto)).thenThrow(new RuntimeException("Certificate not found"));
 
-    when(chatUseCase.execute(dto.getMessage(), dto.getUserId())).thenReturn(responseDTO);
+    RuntimeException exception = assertThrows(RuntimeException.class, () -> chatPostController.newChatWithContext(dto));
 
-    ResponseEntity<ChatResponseDTO> response = chatPostController.newChat(dto);
-
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    assertEquals(responseDTO, response.getBody());
+    assertEquals("Certificate not found", exception.getMessage());
 }
-
-
 }

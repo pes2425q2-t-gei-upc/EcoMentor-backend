@@ -14,4 +14,5 @@ public class ChatResponseDTO {
     private String message;
     private String response;
     private LocalDateTime timestamp;
+    private boolean isSuspicious;
 }

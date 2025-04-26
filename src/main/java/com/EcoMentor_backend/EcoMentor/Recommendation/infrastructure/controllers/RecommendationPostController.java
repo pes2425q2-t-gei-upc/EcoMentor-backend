@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.controller
 
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.CreateRecommendationUserCase;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GenerateRecommendationsUseCase;
+import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GenerateZoneRecommendationsUseCase;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.CreateRecommendationDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
 import java.util.List;
@@ -12,7 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+
+
+
 
 
 @RestController
@@ -21,11 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class RecommendationPostController {
     private final CreateRecommendationUserCase createRecommendationUserCase;
     private final GenerateRecommendationsUseCase generateRecommendationsUseCase;
+    private final GenerateZoneRecommendationsUseCase generateZoneRecommendationsUseCase;
 
     public RecommendationPostController(CreateRecommendationUserCase createRecommendationUserCase,
-                                        GenerateRecommendationsUseCase generateRecommendationsUseCase) {
+                                        GenerateRecommendationsUseCase generateRecommendationsUseCase,
+                                        GenerateZoneRecommendationsUseCase generateZoneRecommendationsUseCase) {
         this.createRecommendationUserCase = createRecommendationUserCase;
         this.generateRecommendationsUseCase = generateRecommendationsUseCase;
+        this.generateZoneRecommendationsUseCase = generateZoneRecommendationsUseCase;
     }
 
     @PostMapping
@@ -38,6 +47,14 @@ public class RecommendationPostController {
     @PostMapping("/generate/{certificateId}")
     public ResponseEntity<List<RecommendationDTO>> generateRecommendations(@PathVariable Long certificateId) {
         List<RecommendationDTO> recommendations = generateRecommendationsUseCase.execute(certificateId);
+        return ResponseEntity.ok(recommendations);
+    }
+
+    @PostMapping("/generate/zone/{certificateId}")
+    public ResponseEntity<List<RecommendationDTO>> generateZoneRecommendations(
+            @PathVariable Long certificateId,
+            @RequestParam(name = "radius", defaultValue = "1") Integer radius) {
+        List<RecommendationDTO> recommendations = generateZoneRecommendationsUseCase.execute(certificateId, radius);
         return ResponseEntity.ok(recommendations);
     }
 }

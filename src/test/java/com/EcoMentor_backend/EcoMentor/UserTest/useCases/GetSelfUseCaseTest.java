@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class GetSelfUseCaseTest {
                 .password("password")
                 .build();
         when(userRepository.findByEmail(jwtTokenProvider.getUsernameFromToken(token))).thenReturn(java.util.Optional.of(selfEntity));
-        when(userMapper.toDTO(selfEntity)).thenReturn(new UserDTO(name,1L,email,"password",new ArrayList<>()));
+        when(userMapper.toDTO(selfEntity)).thenReturn(new UserDTO(name,1L,email,"password",new ArrayList<>(), new ArrayList<>()));
 
         //Act
         UserDTO self = getSelfUseCase.execute(token);
