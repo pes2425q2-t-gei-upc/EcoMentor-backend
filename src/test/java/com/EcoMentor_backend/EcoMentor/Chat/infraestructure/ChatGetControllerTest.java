@@ -1,66 +1,106 @@
 package com.EcoMentor_backend.EcoMentor.Chat.infraestructure;
 
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.controllers.ChatGetController;
+import com.EcoMentor_backend.EcoMentor.Chat.useCases.CheckBanStatusUseCase;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.GetChatNamesUseCase;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.GetChatUseCase;
+import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.BanAndTimeDTO;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.*;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 class ChatGetControllerTest {
 
+@Mock
 private GetChatNamesUseCase getChatNamesUseCase;
+
+@Mock
 private GetChatUseCase getChatUseCase;
+
+@Mock
+private CheckBanStatusUseCase checkBanStatusUseCase;
+
+@InjectMocks
 private ChatGetController chatGetController;
 
 @BeforeEach
 void setUp() {
-    getChatNamesUseCase = mock(GetChatNamesUseCase.class);
-    getChatUseCase = mock(GetChatUseCase.class);
-    chatGetController = new ChatGetController(getChatNamesUseCase, getChatUseCase);
+    MockitoAnnotations.openMocks(this);
 }
 
 @Test
-@DisplayName("Returns chat names when user has chats")
-void returnsChatNamesWhenUserHasChats() {
-    ArrayList<String> chatNames = new ArrayList<>(List.of("Chat1", "Chat2"));
-    when(getChatNamesUseCase.getChatNamesUser(1L)).thenReturn(chatNames);
+void testGetChatNamesUser() {
+    long userId = 123L;
+    ArrayList<String> expectedNames = new ArrayList<>(List.of("chat1", "chat2"));
+    when(getChatNamesUseCase.getChatNamesUser(userId)).thenReturn(expectedNames);
 
-    ResponseEntity<ArrayList<String>> response = chatGetController.getChatNamesUser(1L);
+    ResponseEntity<ArrayList<String>> response = chatGetController.getChatNamesUser(userId);
 
-    assertEquals(chatNames, response.getBody());
-    assertEquals(200, response.getStatusCodeValue());
+    assertEquals(ResponseEntity.ok(expectedNames), response);
+    verify(getChatNamesUseCase).getChatNamesUser(userId);
 }
 
 @Test
-@DisplayName("Returns empty list when user has no chats")
-void returnsEmptyListWhenUserHasNoChats() {
-    when(getChatNamesUseCase.getChatNamesUser(1L)).thenReturn(new ArrayList<>());
+void testGetChat() {
+    long userId = 10L;
+    String chatName = "testChat";
+    List<ChatResponseDTO> expectedList = List.of(
+            ChatResponseDTO.builder()
+                    .message("hello")
+                    .response("world")
+                    .timestamp(LocalDateTime.of(2025,4,26,12,0))
+                    .isSuspicious(false)
+                    .build(),
+            ChatResponseDTO.builder()
+                    .message("foo")
+                    .response("bar")
+                    .timestamp(LocalDateTime.of(2025,4,26,12,1))
+                    .isSuspicious(true)
+                    .build()
+    );
+    when(getChatUseCase.execute(userId, chatName)).thenReturn(expectedList);
 
-    ResponseEntity<ArrayList<String>> response = chatGetController.getChatNamesUser(1L);
+    ResponseEntity<List<ChatResponseDTO>> response = chatGetController.getChat(userId, chatName);
 
-    assertTrue(response.getBody().isEmpty());
-    assertEquals(200, response.getStatusCodeValue());
+    assertEquals(ResponseEntity.ok(expectedList), response);
+    verify(getChatUseCase).execute(userId, chatName);
 }
 
+@Test
+void testGetBanStatus_WhenBanned() {
+    long userId = 55L;
+    BanAndTimeDTO dto = BanAndTimeDTO.builder()
+            .isBanned(true)
+            .banEndTime(LocalDateTime.of(2025,4,26,12,5))
+            .build();
+    when(checkBanStatusUseCase.execute(userId)).thenReturn(dto);
+
+    ResponseEntity<BanAndTimeDTO> response = chatGetController.getBanStatus(userId);
+
+    assertEquals(ResponseEntity.ok(dto), response);
+    verify(checkBanStatusUseCase).execute(userId);
+}
 
 @Test
-@DisplayName("Returns empty list when no messages are found for the chat")
-void returnsEmptyListWhenNoMessagesAreFoundForTheChat() {
-    when(getChatUseCase.execute(1L, "Chat1")).thenReturn(List.of());
+void testGetBanStatus_WhenNotBanned() {
+    long userId = 56L;
+    BanAndTimeDTO dto = BanAndTimeDTO.builder()
+            .isBanned(false)
+            .banEndTime(null)
+            .build();
+    when(checkBanStatusUseCase.execute(userId)).thenReturn(dto);
 
-    ResponseEntity<List<ChatResponseDTO>> response = chatGetController.getChat(1L, "Chat1");
+    ResponseEntity<BanAndTimeDTO> response = chatGetController.getBanStatus(userId);
 
-    assertTrue(response.getBody().isEmpty());
-    assertEquals(200, response.getStatusCodeValue());
+    assertEquals(ResponseEntity.ok(dto), response);
+    verify(checkBanStatusUseCase).execute(userId);
 }
 }

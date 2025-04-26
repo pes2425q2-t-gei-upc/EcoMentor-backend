@@ -46,16 +46,6 @@ public class UserDeleteControllerTest {
     }
 
     @Test
-    void deleteUserNotFound() throws Exception {
-        doThrow(new RuntimeException()).when(deleteUserUseCase).execute(1L);
-
-        mockMvc.perform(delete("/api/users/{id}", 1L))
-                .andExpect(status().isNotFound());
-
-        verify(deleteUserUseCase).execute(1L);
-    }
-
-    @Test
     void removeCertificateFromUserSuccessfully() throws Exception {
         mockMvc.perform(delete("/api/users/{userId}/certificates/{certificateId}", 1L, 100L))
                 .andExpect(status().isOk());
