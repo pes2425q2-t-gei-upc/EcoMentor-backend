@@ -28,7 +28,7 @@ public class UnofficialCertificate extends Certificate {
     private String climateZone;
 
 
-    //private float cadastreMeters;
+    private float cadastreMeters;
 
     //TODO change to year class or smth?
 
