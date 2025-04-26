@@ -9,15 +9,23 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByTownUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAverageValuesInAZonUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetFilterAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesEmissionsUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesEnergyUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesPerformanceUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesQualificationUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesRenewableUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetNearAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOBestQualification;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AverageValuesDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.GraphicDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.GraphicDTOQualification;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
+@AllArgsConstructor
 @RequestMapping("/api/address")
 public class AddressGetController {
     private final GetAddressByAddressIdUseCase getAddressByAddressIdUseCase;
@@ -41,28 +50,11 @@ public class AddressGetController {
     private final GetFilterAddressUseCase getFilterAddressUseCase;
     private final GetAddressByBestQualificationUseCase getAddressByBestQualification;
     private final GetAverageValuesInAZonUseCase getAverageValuesInAZonUseCase;
-
-
-    public AddressGetController(GetAddressByAddressIdUseCase getAddressByAddressIdUseCase,
-                                GetAllAddressUseCase getAllAddressUseCase,
-                                GetAddressByProvinceUseCase getAddressByProvinceUseCase,
-                                GetNearAddressUseCase getNearAddressUseCase,
-                                GetAddressByTownUseCase getAddressByTownUseCase,
-                                GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase,
-                                GetFilterAddressUseCase getFilterAddressUseCase,
-                                GetAddressByBestQualificationUseCase getAddressByBestQualification,
-                                GetAverageValuesInAZonUseCase getAverageValuesInAZonUseCase) {
-
-        this.getAddressByAddressIdUseCase = getAddressByAddressIdUseCase;
-        this.getAddressByProvinceUseCase = getAddressByProvinceUseCase;
-        this.getAllAddressUseCase = getAllAddressUseCase;
-        this.getNearAddressUseCase = getNearAddressUseCase;
-        this.getAddressByTownUseCase = getAddressByTownUseCase;
-        this.getAddressByBoundingBoxUseCase = getAddressByBoundingBoxUseCase;
-        this.getFilterAddressUseCase = getFilterAddressUseCase;
-        this.getAddressByBestQualification = getAddressByBestQualification;
-        this.getAverageValuesInAZonUseCase = getAverageValuesInAZonUseCase;
-    }
+    private final GetGraphValuesPerformanceUseCase getGraphValuesPerformanceUseCase;
+    private final GetGraphValuesEnergyUseCase getGraphValuesEnergyUseCase;
+    private final GetGraphValuesEmissionsUseCase getGraphValuesEmissionsUseCase;
+    private final GetGraphValuesQualificationUseCase getGraphValuesQualificationUseCase;
+    private final GetGraphValuesRenewableUseCase getGraphValuesRenewableUseCase;
 
     @GetMapping
     public ResponseEntity<Page<AddressDTO>> getAllAddress(@RequestParam(defaultValue = "0") int page,
@@ -81,6 +73,49 @@ public class AddressGetController {
 
         return ResponseEntity.ok(address);
     }
+
+    @GetMapping("/graphValuesPerformance")
+    public ResponseEntity<List<GraphicDTO>> getGraphValuesPerformance(@RequestParam(required = false) String town,
+                                                                       @RequestParam(required = false) String region,
+                                                                      @RequestParam(required = false) String province) {
+
+        List<GraphicDTO> response = getGraphValuesPerformanceUseCase.execute(town, region, province);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/graphValuesEnergy")
+    public ResponseEntity<List<GraphicDTO>> getGraphValuesEnergy(@RequestParam(required = false) String town,
+                                                                  @RequestParam(required = false) String region,
+                                                                  @RequestParam(required = false) String province) {
+        List<GraphicDTO> response = getGraphValuesEnergyUseCase.execute(town, region, province);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/graphValuesEmissions")
+    public ResponseEntity<List<GraphicDTO>> getGraphValuesEmissions(@RequestParam(required = false) String town,
+                                                                      @RequestParam(required = false) String region,
+                                                                      @RequestParam(required = false) String province) {
+        List<GraphicDTO> response = getGraphValuesEmissionsUseCase.execute(town, region, province);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/graphValuesQualification")
+    public ResponseEntity<List<GraphicDTOQualification>> getGraphValuesQualification(@RequestParam(required = false)
+                                                            String town, @RequestParam(required = false) String region,
+                                                                    @RequestParam(required = false) String province) {
+
+        List<GraphicDTOQualification> response = getGraphValuesQualificationUseCase.execute(town, region, province);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/graphValuesRenewable")
+    public ResponseEntity<List<GraphicDTO>> getGraphValuesRenewable(@RequestParam(required = false) String town,
+                                                                      @RequestParam(required = false) String region,
+                                                                      @RequestParam(required = false) String province) {
+        List<GraphicDTO> response = getGraphValuesRenewableUseCase.execute(town, region, province);
+        return ResponseEntity.ok(response);
+    }
+
 
     @GetMapping("/near")
     public ResponseEntity<List<AddressDTO>> getNearAddress(@RequestParam double radius,
