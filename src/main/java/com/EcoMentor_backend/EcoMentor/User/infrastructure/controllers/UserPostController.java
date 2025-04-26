@@ -6,6 +6,7 @@ import com.EcoMentor_backend.EcoMentor.User.useCases.CreateUserUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,7 @@ public class UserPostController {
     }
 
     @PostMapping
+    @PreAuthorize("(hasRole('ROLE_ADMIN'))")
     public ResponseEntity<Void> createUser(@RequestBody @Validated CreateUserDTO user) {
         createUserUseCase.execute(user);
         return ResponseEntity.status(HttpStatus.CREATED).build();

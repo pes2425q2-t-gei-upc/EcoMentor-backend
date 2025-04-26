@@ -5,9 +5,8 @@ import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -17,53 +16,73 @@ import java.util.Map;
 
 class GeminiServiceTest {
 
-@Mock
 private RestTemplate restTemplate;
-
 private GeminiService geminiService;
 
 @BeforeEach
 void setUp() {
-    MockitoAnnotations.openMocks(this);
+    restTemplate = mock(RestTemplate.class);
     geminiService = new GeminiService(restTemplate, "test-api-key", "http://test-endpoint");
 }
 
-@Test
-@DisplayName("generateContent returns content when API call is successful")
-void generateContentReturnsContentWhenApiCallIsSuccessful() {
-    Map<String, Object> mockResponse = Map.of(
-            "candidates", List.of(Map.of("content", "Generated content"))
-    );
-    when(restTemplate.postForEntity(anyString(), any(), eq(Map.class)))
-            .thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
+@Nested
+@DisplayName("generateContent")
+class GenerateContent {
 
-    String result = geminiService.generateContent("Test prompt");
+    @Test
+    @DisplayName("Returns content when API response is successful and contains candidates")
+    void returnsContentWhenApiResponseIsSuccessful() {
+        Map<String, Object> responseBody = Map.of(
+                "candidates", List.of(Map.of("content", Map.of("text", "Generated content")))
+        );
+        ResponseEntity<Map> responseEntity = new ResponseEntity<>(responseBody, HttpStatus.OK);
+        when(restTemplate.postForEntity(anyString(), any(), eq(Map.class))).thenReturn(responseEntity);
 
-    assertEquals("Generated content", result);
-}
+        String result = geminiService.generateContent(List.of(Map.of("key", "value")));
 
-@Test
-@DisplayName("generateContent throws exception when API call fails")
-void generateContentThrowsExceptionWhenApiCallFails() {
-    when(restTemplate.postForEntity(anyString(), any(), eq(Map.class)))
-            .thenReturn(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+        assertEquals("Generated content", result);
+    }
 
-    RuntimeException exception = assertThrows(RuntimeException.class, () ->
-            geminiService.generateContent("Test prompt"));
+    @Test
+    @DisplayName("Returns empty string when API response contains no candidates")
+    void returnsEmptyStringWhenNoCandidates() {
+        Map<String, Object> responseBody = Map.of("candidates", List.of());
+        ResponseEntity<Map> responseEntity = new ResponseEntity<>(responseBody, HttpStatus.OK);
+        when(restTemplate.postForEntity(anyString(), any(), eq(Map.class))).thenReturn(responseEntity);
 
-    assertTrue(exception.getMessage().contains("Error"));
-}
+        String result = geminiService.generateContent(List.of(Map.of("key", "value")));
 
+        assertEquals("", result);
+    }
 
-@Test
-@DisplayName("generateContent returns empty string when candidates list is empty")
-void generateContentReturnsEmptyStringWhenCandidatesListIsEmpty() {
-    Map<String, Object> mockResponse = Map.of("candidates", List.of());
-    when(restTemplate.postForEntity(anyString(), any(), eq(Map.class)))
-            .thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
+    @Test
+    @DisplayName("Throws exception when API response is not successful")
+    void throwsExceptionWhenApiResponseIsNotSuccessful() {
+        ResponseEntity<Map> responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        when(restTemplate.postForEntity(anyString(), any(), eq(Map.class))).thenReturn(responseEntity);
 
-    String result = geminiService.generateContent("Test prompt");
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+                geminiService.generateContent(List.of(Map.of("key", "value")))
+        );
 
-    assertEquals("", result);
+        assertEquals("Error: API key inválida", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Returns concatenated text when content has nested parts")
+    void returnsConcatenatedTextForNestedParts() {
+        Map<String, Object> responseBody = Map.of(
+                "candidates", List.of(Map.of("content", Map.of("parts", List.of(
+                        Map.of("text", "Part 1"),
+                        Map.of("text", "Part 2")
+                ))))
+        );
+        ResponseEntity<Map> responseEntity = new ResponseEntity<>(responseBody, HttpStatus.OK);
+        when(restTemplate.postForEntity(anyString(), any(), eq(Map.class))).thenReturn(responseEntity);
+
+        String result = geminiService.generateContent(List.of(Map.of("key", "value")));
+
+        assertEquals("Part 1Part 2", result);
+    }
 }
 }
