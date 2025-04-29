@@ -29,7 +29,8 @@ public class UnblockUserUseCase {
         if (user.getRoles().contains(blockedRole)) {
             user.getRoles().remove(blockedRole);
             userRepository.save(user);
-            emailService.sendHtmlEmail(user.getEmail(), "[ECOMENTOR] - You have been unblocked!", "email/unblocked.html");
+            emailService.sendHtmlEmail(user.getEmail(), "[ECOMENTOR] - You have been unblocked!",
+                    "email/unblocked.html");
         }
     }
 }

@@ -56,7 +56,7 @@ public class EmailService {
 
         helper.setTo(to);
         helper.setSubject(subject);
-        helper.setText(loadHtmlTemplate(htmlContentPath), true); // `true` enables HTML
+        helper.setText(loadHtmlTemplate(htmlContentPath), true);
 
         ClassPathResource logoImage = new ClassPathResource("email/logo.png");
         helper.addInline("logoImage", logoImage);
