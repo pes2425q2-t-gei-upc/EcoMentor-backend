@@ -1,5 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.User.useCases;
 
+import com.EcoMentor_backend.EcoMentor.Chat.useCases.DeleteAllChatsUseCase;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;
@@ -13,16 +14,18 @@ import org.springframework.web.server.ResponseStatusException;
 @Transactional
 public class DeleteUserUseCase {
     private final UserRepository userRepository;
+    private final DeleteAllChatsUseCase deleteAllChatsUseCase;
 
-    public DeleteUserUseCase(UserRepository userRepository) {
+    public DeleteUserUseCase(UserRepository userRepository, DeleteAllChatsUseCase deleteAllChatsUseCase) {
         this.userRepository = userRepository;
+        this.deleteAllChatsUseCase = deleteAllChatsUseCase;
     }
 
     public void execute(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "User not found"));
         userRepository.delete(user);
-        System.out.println("User with " + id + " has been deleted");
+        deleteAllChatsUseCase.execute(id);
     }
 
 }

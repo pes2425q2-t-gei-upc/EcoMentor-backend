@@ -5,6 +5,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.EcoMentor_backend.EcoMentor.Chat.useCases.DeleteAllChatsUseCase;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import com.EcoMentor_backend.EcoMentor.User.useCases.DeleteUserUseCase;
@@ -13,37 +14,43 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.web.server.ResponseStatusException;
 
 
 public class DeleteUserUseCaseTest {
 
-    @Mock
-    private UserRepository userRepository;
+@Mock
+private UserRepository userRepository;
 
-    @InjectMocks
-    private DeleteUserUseCase deleteUserUseCase;
+@Mock
+private DeleteAllChatsUseCase deleteAllChatsUseCase;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+@InjectMocks
+private DeleteUserUseCase deleteUserUseCase;
 
-    @Test
-    void successfullyDeletesUser() {
-        Long userId = 1L;
-        User user = new User();
-        when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user));
+@BeforeEach
+void setUp() {
+    MockitoAnnotations.openMocks(this);
+}
 
-        deleteUserUseCase.execute(userId);
+@Test
+void deletesUserAndAssociatedChatsSuccessfully() {
+    Long userId = 1L;
+    User user = new User();
+    when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user));
 
-        verify(userRepository, times(1)).delete(user);
-    }
+    deleteUserUseCase.execute(userId);
 
-    @Test
-    void throwsExceptionWhenUserNotFound() {
-        Long userId = 1L;
-        when(userRepository.findById(userId)).thenReturn(java.util.Optional.empty());
+    verify(userRepository, times(1)).delete(user);
+    verify(deleteAllChatsUseCase, times(1)).execute(userId);
+}
 
-        assertThrows(RuntimeException.class, () -> deleteUserUseCase.execute(userId));
-    }
+@Test
+void throwsExceptionWhenDeletingNonExistentUser() {
+    Long userId = 1L;
+    when(userRepository.findById(userId)).thenReturn(java.util.Optional.empty());
+
+    assertThrows(ResponseStatusException.class, () -> deleteUserUseCase.execute(userId));
+    verify(deleteAllChatsUseCase, times(0)).execute(userId);
+}
 }

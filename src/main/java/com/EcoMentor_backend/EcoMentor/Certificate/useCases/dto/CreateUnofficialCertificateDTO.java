@@ -19,6 +19,7 @@ import lombok.experimental.SuperBuilder;
 public class CreateUnofficialCertificateDTO extends CreateCertificateDTO {
     private String floor;
     private String door;
+    private float cadastreMeters;
     private String climateZone;
     private Year buildingYear;
     private String buildingUse;

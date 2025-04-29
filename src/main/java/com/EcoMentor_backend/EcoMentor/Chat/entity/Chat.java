@@ -26,6 +26,8 @@ public class Chat {
 
     private String response;
 
+    private boolean isSuspicious;
+
     private LocalDateTime timestamp;
 }
 
