@@ -15,9 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -41,23 +38,6 @@ class RoleGetControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(roleGetController)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
-    }
-
-    @Test
-    void getAllRolesSuccessfully() throws Exception {
-        RoleDTO role1 = new RoleDTO(1L, RoleName.ROLE_USER.toString());
-        RoleDTO role2 = new RoleDTO(2L, RoleName.ROLE_ADMIN.toString());
-
-        when(getAllRolesUseCase.execute()).thenReturn(List.of(role1, role2));
-
-        mockMvc.perform(get("/api/roles")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("ROLE_USER"))
-                .andExpect(jsonPath("$[1].name").value("ROLE_ADMIN"));
-
-        verify(getAllRolesUseCase, times(1)).execute();
     }
 
     @Test

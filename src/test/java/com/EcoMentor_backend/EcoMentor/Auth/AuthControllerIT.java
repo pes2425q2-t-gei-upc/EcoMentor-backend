@@ -1,6 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.Auth;
 
 import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.LoginDTO;
+import com.EcoMentor_backend.EcoMentor.Shared.EmailService;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +21,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@TestPropertySource(properties = {
+        "spring.mail.password=mock-test-password",
+        "spring.mail.username=mocktest@example.com"
+})
 public class AuthControllerIT {
 
     //Test that authenticated users can perform calls and viceversa
@@ -28,6 +35,8 @@ public class AuthControllerIT {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockitoBean
+    private EmailService emailService;
 
     @Test
     void registerAndLoginShouldReturnToken() throws Exception {
