@@ -5,6 +5,7 @@ import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.AuthResponseDTO;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.useCases.CreateUserUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.io.IOException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -29,7 +31,7 @@ public class RegisterUseCaseTest {
     private RegisterUseCase registerUseCase;
 
     @Test
-    void executeWithValidCredentialsReturnsTokenDTO(){
+    void executeWithValidCredentialsReturnsTokenDTO() throws MessagingException, IOException {
         CreateUserDTO createUserDTO = new CreateUserDTO("validName","validEmail","validPassword");
         User user = new User();
         user.setId(1L);
@@ -45,7 +47,7 @@ public class RegisterUseCaseTest {
     }
 
     @Test
-    void executeWithExistingCredentialsThrowsException(){
+    void executeWithExistingCredentialsThrowsException() throws MessagingException, IOException {
         CreateUserDTO createUserDTO = new CreateUserDTO("existingName","existingEmail","X");
         when(createUserUseCase.execute(createUserDTO)).thenThrow(new RuntimeException());
         assertThatThrownBy( () -> registerUseCase.execute(createUserDTO)).isInstanceOf(RuntimeException.class);

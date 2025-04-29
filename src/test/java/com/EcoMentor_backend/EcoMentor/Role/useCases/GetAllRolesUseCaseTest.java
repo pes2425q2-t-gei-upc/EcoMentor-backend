@@ -3,7 +3,6 @@ package com.EcoMentor_backend.EcoMentor.Role.useCases;
 import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import com.EcoMentor_backend.EcoMentor.Role.entity.RoleName;
 import com.EcoMentor_backend.EcoMentor.Role.infrastructure.repositories.RoleRepository;
-import com.EcoMentor_backend.EcoMentor.Role.useCases.GetAllRolesUseCase;
 import com.EcoMentor_backend.EcoMentor.Role.useCases.dto.RoleDTO;
 import com.EcoMentor_backend.EcoMentor.Role.useCases.mapper.RoleMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ class GetAllRolesUseCaseTest {
     }
 
     @Test
-    void testExecute_ReturnsListOfRoleDTOs() {
+    void testExecute_ReturnsPageOfRoleDTOs() {
         // Arrange
         Role role1 = new Role();
         role1.setId(1L);
@@ -46,45 +46,46 @@ class GetAllRolesUseCaseTest {
 
         RoleDTO roleDTO1 = new RoleDTO();
         roleDTO1.setId(1L);
-        roleDTO1.setName(RoleName.ROLE_USER.toString());
+        roleDTO1.setName("ROLE_USER");
 
         RoleDTO roleDTO2 = new RoleDTO();
         roleDTO2.setId(2L);
-        roleDTO2.setName(RoleName.ROLE_ADMIN.toString());
+        roleDTO2.setName("ROLE_ADMIN");
 
         List<Role> roles = List.of(role1, role2);
-
-        when(roleRepository.findAll()).thenReturn(roles);
+        Page<Role> rolePage = new PageImpl<>(roles);
+        when(roleRepository.findAll(any(Pageable.class))).thenReturn(rolePage);
         when(roleMapper.toDTO(role1)).thenReturn(roleDTO1);
         when(roleMapper.toDTO(role2)).thenReturn(roleDTO2);
 
         // Act
-        List<RoleDTO> result = getAllRolesUseCase.execute();
+        Page<RoleDTO> result = getAllRolesUseCase.execute(0, 10, "id", "asc");
 
         // Assert
         assertThat(result).isNotNull();
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).getName()).isEqualTo(RoleName.ROLE_USER.toString());
-        assertThat(result.get(1).getName()).isEqualTo(RoleName.ROLE_ADMIN.toString());
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getContent().get(0).getName()).isEqualTo("ROLE_USER");
+        assertThat(result.getContent().get(1).getName()).isEqualTo("ROLE_ADMIN");
 
-        verify(roleRepository, times(1)).findAll();
+        verify(roleRepository, times(1)).findAll(any(Pageable.class));
         verify(roleMapper, times(1)).toDTO(role1);
         verify(roleMapper, times(1)).toDTO(role2);
     }
 
     @Test
-    void testExecute_ReturnsEmptyList_WhenNoRolesExist() {
+    void testExecute_ReturnsEmptyPage_WhenNoRolesExist() {
         // Arrange
-        when(roleRepository.findAll()).thenReturn(List.of());
+        Page<Role> emptyPage = new PageImpl<>(List.of());
+        when(roleRepository.findAll(any(Pageable.class))).thenReturn(emptyPage);
 
         // Act
-        List<RoleDTO> result = getAllRolesUseCase.execute();
+        Page<RoleDTO> result = getAllRolesUseCase.execute(0, 10, "id", "asc");
 
         // Assert
         assertThat(result).isNotNull();
-        assertThat(result).isEmpty();
+        assertThat(result.getContent()).isEmpty();
 
-        verify(roleRepository, times(1)).findAll();
+        verify(roleRepository, times(1)).findAll(any(Pageable.class));
         verifyNoInteractions(roleMapper);
     }
 }
