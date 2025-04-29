@@ -6,8 +6,6 @@ import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
@@ -28,7 +26,8 @@ public class EmailService {
 
     private final ResourceLoader resourceLoader;
 
-    public EmailService(JavaMailSender javaMailSender, Environment env, @Qualifier("webApplicationContext") ResourceLoader resourceLoader) {
+    public EmailService(JavaMailSender javaMailSender, Environment env,
+                        @Qualifier("webApplicationContext") ResourceLoader resourceLoader) {
         this.javaMailSender = javaMailSender;
         this.env = env;
         this.resourceLoader = resourceLoader;

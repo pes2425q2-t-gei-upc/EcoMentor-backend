@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.UserTest.useCases;
 
 import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import com.EcoMentor_backend.EcoMentor.Role.entity.RoleName;
+import com.EcoMentor_backend.EcoMentor.Shared.EmailService;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.Role.infrastructure.repositories.RoleRepository;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
@@ -29,6 +30,10 @@ public class BlockUserUseCaseTest {
 
     @Mock
     private RoleRepository roleRepository;
+
+    @Mock
+    private EmailService emailService;
+
 
     @InjectMocks
     private BlockUserUseCase blockUserUseCase;
