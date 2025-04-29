@@ -273,7 +273,7 @@ public class CertificateMapper {
                      .floor(createUnofficialCertificateDTO.getFloor())
                      .door(createUnofficialCertificateDTO.getDoor())
                      .climateZone(createUnofficialCertificateDTO.getClimateZone())
-                    .cadastreMeters(createUnofficialCertificateDTO.getCadastreMeters())
+                     .cadastreMeters(createUnofficialCertificateDTO.getCadastreMeters())
                      .buildingYear(createUnofficialCertificateDTO.getBuildingYear())
                      .buildingUse(createUnofficialCertificateDTO.getBuildingUse())
                      .nonRenewablePrimaryQualification(createUnofficialCertificateDTO

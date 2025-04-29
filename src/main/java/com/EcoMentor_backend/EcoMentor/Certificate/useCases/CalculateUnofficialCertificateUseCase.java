@@ -1118,7 +1118,8 @@ public class CalculateUnofficialCertificateUseCase {
             unofficialCertificateDTO.setCreateAddressDTO(createAddressDTO);
             unofficialCertificateDTO.setFloor(calculateUnofficialCertificateDTO.getFloor());
             unofficialCertificateDTO.setDoor(calculateUnofficialCertificateDTO.getDoor());
-            unofficialCertificateDTO.setCadastreMeters(calculateUnofficialCertificateDTO.getCadastreMeters());
+            //unofficialCertificateDTO.setCadastreMeters(); //calculateUnofficialCertificateDTO.getCadastreMeters()
+            System.out.println("Passa 1");
             unofficialCertificateDTO.setClimateZone(climateZone);
             unofficialCertificateDTO.setBuildingYear(calculateUnofficialCertificateDTO.getBuildingYear());
             unofficialCertificateDTO.setBuildingUse(buildingUse);
@@ -1183,6 +1184,7 @@ public class CalculateUnofficialCertificateUseCase {
 
             unofficialCertificateDTO.setCreationDate(new java.sql.Date(System.currentTimeMillis()));
             Certificate certificate = certificateMapper.toEntity(unofficialCertificateDTO);
+            System.out.println("Passa 2");
             certificateRepository.save(certificate);
             addCertificateToAddressUseCase.execute(id, certificate.getCertificateId());
 
