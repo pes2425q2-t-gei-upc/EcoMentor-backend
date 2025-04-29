@@ -41,13 +41,27 @@ public class GetSelfUseCaseTest {
         String email = "test@example.com";
         String name = "Original Name";
 
+
+        when(jwtTokenProvider.getUsernameFromToken(token)).thenReturn(email);
+
         User selfEntity = User.builder()
                 .name(name)
                 .email(email)
                 .password("password")
                 .build();
+
         when(userRepository.findByEmail(jwtTokenProvider.getUsernameFromToken(token))).thenReturn(java.util.Optional.of(selfEntity));
-        when(userMapper.toDTO(selfEntity)).thenReturn(new UserDTO(name,1L,email,"password",new ArrayList<>(), new ArrayList<>()));
+        when(userMapper.toDTO(selfEntity)).thenReturn(new UserDTO(
+                name,
+                1L,
+                email,
+                "password",
+                new ArrayList<>(),
+                0,
+                new ArrayList<>()
+        ));
+
+
 
         //Act
         UserDTO self = getSelfUseCase.execute(token);

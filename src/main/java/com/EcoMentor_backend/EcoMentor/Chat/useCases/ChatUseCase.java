@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import com.EcoMentor_backend.EcoMentor.User.useCases.IncreaseWarningUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,11 +27,14 @@ public class ChatUseCase {
     private final GeminiService gemini;
     private final ChatRepository repo;
     private final UserRepository userRepository;
+    private final IncreaseWarningUseCase increaseWarningUseCase;
 
-    public ChatUseCase(GeminiService gemini, ChatRepository repo, UserRepository userRepository) {
+    public ChatUseCase(GeminiService gemini, ChatRepository repo, UserRepository userRepository,
+                       IncreaseWarningUseCase increaseWarningUseCase)  {
         this.gemini = gemini;
         this.repo = repo;
         this.userRepository = userRepository;
+        this.increaseWarningUseCase = increaseWarningUseCase;
     }
 
     public ChatResponseDTO execute(String message, Long userId, String chatName, LocalDateTime now) {
@@ -45,6 +50,7 @@ public class ChatUseCase {
                     .isSuspicious(true)
                     .build();
 
+            increaseWarningUseCase.execute(userId);
             repo.save(chat);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inappropriate language detected");
         }
@@ -71,6 +77,7 @@ public class ChatUseCase {
                 long interval2 = Duration.between(m2.getTimestamp(), m3.getTimestamp()).getSeconds();
                 if (interval1 < 40 && interval2 < 40) {
                     suspicus = true;
+                    increaseWarningUseCase.execute(userId);
                 }
             }
         }
