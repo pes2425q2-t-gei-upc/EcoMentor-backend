@@ -93,14 +93,20 @@ public class ChatUseCase {
 
         List<Map<String, Object>> contents = new ArrayList<>();
         for (Chat c : history) {
-            contents.add(Map.of(
-                    "role", "user",
-                    "parts", List.of(Map.of("text", c.getMessage()))
-            ));
-            contents.add(Map.of(
-                    "role", "model",
-                    "parts", List.of(Map.of("text", c.getResponse()))
-            ));
+            String msg = c.getMessage();
+            String res = c.getResponse();
+
+            if (msg != null && !msg.isBlank() && res != null && !res.isBlank()) {
+                contents.add(Map.of(
+                        "role", "user",
+                        "parts", List.of(Map.of("text", msg))
+                ));
+
+                contents.add(Map.of(
+                        "role", "model",
+                        "parts", List.of(Map.of("text", res))
+                ));
+            }
         }
         contents.add(Map.of(
                 "role", "user",
