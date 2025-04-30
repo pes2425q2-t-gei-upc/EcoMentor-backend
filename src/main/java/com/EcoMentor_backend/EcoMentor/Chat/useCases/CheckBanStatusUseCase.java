@@ -3,6 +3,7 @@ package com.EcoMentor_backend.EcoMentor.Chat.useCases;
 import com.EcoMentor_backend.EcoMentor.Chat.entity.Chat;
 import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.repositories.ChatRepository;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.BanAndTimeDTO;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,9 @@ public class CheckBanStatusUseCase {
             Chat last = chats.get(chats.size() - 1);
 
             if (last.isSuspicious()) {
-                Date now = new Date();
+                Date nowUtc = new Date();
+                Date now = new Date(nowUtc.getTime() + Duration.ofHours(2).toMillis());
+
                 Date lastTime = last.getTimestamp();
                 long banEndMillis = lastTime.getTime() + (5 * 60 * 1000);
                 Date banEndTime = new Date(banEndMillis);
