@@ -3,8 +3,12 @@ package com.EcoMentor_backend.EcoMentor.Chat.useCases;
 import com.EcoMentor_backend.EcoMentor.Chat.entity.Chat;
 import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.repositories.ChatRepository;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
+import com.EcoMentor_backend.EcoMentor.Shared.EmailService;
+import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import com.EcoMentor_backend.EcoMentor.User.useCases.IncreaseWarningUseCase;
+import jakarta.mail.MessagingException;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,19 +31,20 @@ public class ChatUseCase {
     private final ChatRepository repo;
     private final UserRepository userRepository;
     private final IncreaseWarningUseCase increaseWarningUseCase;
+    private final EmailService emailService;
 
     public ChatUseCase(GeminiService gemini, ChatRepository repo, UserRepository userRepository,
-                       IncreaseWarningUseCase increaseWarningUseCase)  {
+                       IncreaseWarningUseCase increaseWarningUseCase, EmailService emailService) {
         this.gemini = gemini;
         this.repo = repo;
         this.userRepository = userRepository;
         this.increaseWarningUseCase = increaseWarningUseCase;
+        this.emailService = emailService;
     }
 
     public ChatResponseDTO execute(String message, Long userId, String chatName) {
         Date nowUtc = new Date();
         Date now = new Date(nowUtc.getTime() + Duration.ofHours(2).toMillis());
-        long twoHoursInMs = 2L * 60 * 60 * 1000;
         boolean suspicus = false;
 
         if (inappropriateLanguageDetector(message)) {
@@ -52,6 +57,13 @@ public class ChatUseCase {
                     .isSuspicious(true)
                     .build();
 
+            User user = userRepository.findById(userId).orElseThrow();
+            try {
+                emailService.sendHtmlEmail(user.getEmail(), "[ECOMENTOR] - Inappropriate language detected",
+                        "email/blockChat.html");
+            } catch (MessagingException | IOException e) {
+                System.out.println("Error sending email: " + e.getMessage());
+            }
             increaseWarningUseCase.execute(userId);
             repo.save(chat);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inappropriate language detected");
@@ -85,6 +97,13 @@ public class ChatUseCase {
                 long interval2 = (t3.getTime() - t2.getTime()) / 1000;
 
                 if (interval1 < 40 && interval2 < 40) {
+                    User user = userRepository.findById(userId).orElseThrow();
+                    try {
+                        emailService.sendHtmlEmail(user.getEmail(), "[ECOMENTOR] - Inappropriate language detected",
+                                "email/blockChat.html");
+                    } catch (MessagingException | IOException e) {
+                        System.out.println("Error sending email: " + e.getMessage());
+                    }
                     suspicus = true;
                     increaseWarningUseCase.execute(userId);
                 }
