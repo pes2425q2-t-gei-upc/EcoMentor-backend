@@ -4,6 +4,7 @@ import com.EcoMentor_backend.EcoMentor.Chat.entity.Chat;
 import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.repositories.ChatRepository;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
+import com.EcoMentor_backend.EcoMentor.User.useCases.IncreaseWarningUseCase;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,8 +16,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import com.EcoMentor_backend.EcoMentor.User.useCases.IncreaseWarningUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

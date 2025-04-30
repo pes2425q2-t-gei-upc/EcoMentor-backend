@@ -1,8 +1,8 @@
 package com.EcoMentor_backend.EcoMentor.User.useCases;
 
+import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import lombok.AllArgsConstructor;
-import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +18,7 @@ public class IncreaseWarningUseCase {
         user.setWarnings(newWarnings);
         userRepository.save(user);
         //if (newWarnings%5 == 0) {
-            //todo send email
+        //todo send email
         //}
         return newWarnings;
     }
