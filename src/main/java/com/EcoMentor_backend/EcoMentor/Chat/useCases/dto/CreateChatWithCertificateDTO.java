@@ -5,7 +5,7 @@ import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertific
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.UnofficialCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.UnofficialCertificateWFEDTO;
 import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +25,7 @@ public class CreateChatWithCertificateDTO {
     private String chatName;
 
     @NotBlank
-    LocalDateTime dateTime;
+    ZonedDateTime dateTime;
 
     @NotBlank
     private String message;

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +41,7 @@ void returnsResponseWhenUserExistsAndMessageProcessedSuccessfully() {
             .thenReturn(List.of());
     when(geminiService.generateContent(anyList())).thenReturn("Generated response");
 
-    ChatResponseDTO result = chatUseCase.execute("Hello", 1L, "chat1", LocalDateTime.now());
+    ChatResponseDTO result = chatUseCase.execute("Hello", 1L, "chat1", ZonedDateTime.now());
 
     assertEquals("Hello", result.getMessage());
     assertEquals("Generated response", result.getResponse());
@@ -53,7 +53,7 @@ void throwsExceptionWhenUserDoesNotExist() {
     when(userRepository.existsById(1L)).thenReturn(false);
 
     ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-            chatUseCase.execute("Hello", 1L, "chat1", LocalDateTime.now())
+            chatUseCase.execute("Hello", 1L, "chat1", ZonedDateTime.now())
     );
 
     assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -69,7 +69,7 @@ void throwsExceptionWhenResponseGenerationFails() {
     when(geminiService.generateContent(anyList())).thenReturn("");
 
     ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-            chatUseCase.execute("Hello", 1L, "chat1", LocalDateTime.now())
+            chatUseCase.execute("Hello", 1L, "chat1", ZonedDateTime.now())
     );
 
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
@@ -86,7 +86,7 @@ void processesChatHistoryAndAppendsNewMessage() {
             ));
     when(geminiService.generateContent(anyList())).thenReturn("New response");
 
-    ChatResponseDTO result = chatUseCase.execute("How are you?", 1L, "chat1", LocalDateTime.now());
+    ChatResponseDTO result = chatUseCase.execute("How are you?", 1L, "chat1", ZonedDateTime.now());
 
     assertEquals("How are you?", result.getMessage());
     assertEquals("New response", result.getResponse());

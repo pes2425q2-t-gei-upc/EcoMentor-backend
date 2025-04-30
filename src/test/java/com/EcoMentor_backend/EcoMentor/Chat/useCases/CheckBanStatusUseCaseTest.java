@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +31,7 @@ void setUp() {
 void returnsBanStatusWhenUserIsBanned() {
     Long userId = 1L;
     Chat suspiciousChat = Chat.builder()
-            .timestamp(LocalDateTime.now().minusMinutes(3))
+            .timestamp(ZonedDateTime.now().minusMinutes(3))
             .isSuspicious(true)
             .build();
     when(chatRepository.findByUserIdOrderByTimestampAsc(userId))
@@ -59,7 +59,7 @@ void returnsNotBannedWhenUserHasNoChats() {
 void returnsNotBannedWhenLastChatIsNotSuspicious() {
     Long userId = 1L;
     Chat nonSuspiciousChat = Chat.builder()
-            .timestamp(LocalDateTime.now().minusMinutes(10))
+            .timestamp(ZonedDateTime.now().minusMinutes(10))
             .isSuspicious(false)
             .build();
     when(chatRepository.findByUserIdOrderByTimestampAsc(userId))
@@ -75,7 +75,7 @@ void returnsNotBannedWhenLastChatIsNotSuspicious() {
 void returnsNotBannedWhenBanTimeHasExpired() {
     Long userId = 1L;
     Chat expiredBanChat = Chat.builder()
-            .timestamp(LocalDateTime.now().minusMinutes(10))
+            .timestamp(ZonedDateTime.now().minusMinutes(10))
             .isSuspicious(true)
             .build();
     when(chatRepository.findByUserIdOrderByTimestampAsc(userId))
