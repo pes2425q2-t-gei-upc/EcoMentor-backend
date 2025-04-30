@@ -1,6 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Address.useCases.dto;
 
-import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ProvincesDTO {
-    private ArrayList<String> provinces;
+    private List<String> provinces;
 }
 

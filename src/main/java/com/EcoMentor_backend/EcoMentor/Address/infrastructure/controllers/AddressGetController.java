@@ -83,6 +83,26 @@ public class AddressGetController {
         return ResponseEntity.ok(address);
     }
 
+    @GetMapping("/distinct/towns")
+    public ResponseEntity<TownsDTO> getAllTowns() {
+        TownsDTO dto = getAllTownsUseCase.execute();
+        return ResponseEntity.ok(dto);
+    }
+
+
+    @GetMapping("/distinct/provinces")
+    public ResponseEntity<ProvincesDTO> getAllProvinces() {
+        ProvincesDTO dto = getAllProvincesUseCase.execute();
+        return ResponseEntity.ok(dto);
+    }
+
+
+    @GetMapping("/distinct/regions")
+    public ResponseEntity<RegionsDTO> getAllRegions() {
+        RegionsDTO dto = getAllRegionsUseCase.execute();
+        return ResponseEntity.ok(dto);
+    }
+
     @GetMapping("/graphValuesPerformance")
     public ResponseEntity<List<GraphicDTO>> getGraphValuesPerformance(@RequestParam(required = false) String town,
                                                                        @RequestParam(required = false) String region,
@@ -239,27 +259,6 @@ public class AddressGetController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(address);
-    }
-
-    // --- Nuevo endpoint para towns ---
-    @GetMapping("/distinct/towns")
-    public ResponseEntity<TownsDTO> getAllTowns() {
-        TownsDTO dto = getAllTownsUseCase.execute();
-        return ResponseEntity.ok(dto);
-    }
-
-    // --- Nuevo endpoint para provinces ---
-    @GetMapping("/distinct/provinces")
-    public ResponseEntity<ProvincesDTO> getAllProvinces() {
-        ProvincesDTO dto = getAllProvincesUseCase.execute();
-        return ResponseEntity.ok(dto);
-    }
-
-    // --- Nuevo endpoint para regions ---
-    @GetMapping("/distinct/regions")
-    public ResponseEntity<RegionsDTO> getAllRegions() {
-        RegionsDTO dto = getAllRegionsUseCase.execute();
-        return ResponseEntity.ok(dto);
     }
 
 
