@@ -2,7 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Chat.useCases.dto;
 
 
 import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +20,7 @@ public class CreateChatDTO {
     private String chatName;
 
     @NotBlank
-    LocalDateTime dateTime;
+    ZonedDateTime dateTime;
 
     @NotBlank
     private String message;

@@ -10,6 +10,7 @@ services:
       - mongo
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
       - DB_HOST=postgres
       - MONGO_HOST=mongo
 

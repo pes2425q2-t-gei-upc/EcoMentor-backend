@@ -6,8 +6,8 @@ import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import com.EcoMentor_backend.EcoMentor.User.useCases.IncreaseWarningUseCase;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,10 @@ public class ChatUseCase {
         this.increaseWarningUseCase = increaseWarningUseCase;
     }
 
-    public ChatResponseDTO execute(String message, Long userId, String chatName, LocalDateTime now) {
+    public ChatResponseDTO execute(String message, Long userId, String chatName) {
+        Date nowUtc = new Date();
+        Date now = new Date(nowUtc.getTime() + Duration.ofHours(2).toMillis());
+        long twoHoursInMs = 2L * 60 * 60 * 1000;
         boolean suspicus = false;
 
         if (inappropriateLanguageDetector(message)) {
@@ -64,16 +67,23 @@ public class ChatUseCase {
             Chat m1 = history.get(history.size() - 3);
             Chat m2 = history.get(history.size() - 2);
             Chat m3 = history.get(history.size() - 1);
-
             if (m3.isSuspicious()) {
-                LocalDateTime messageTime = m3.getTimestamp();
-
-                if (Duration.between(messageTime, now).getSeconds() < 300) {
-                    throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Messages are too close in time");
+                Date messageTime = m3.getTimestamp();
+                long secondsDiff = (now.getTime() - messageTime.getTime()) / 1000;
+                if (secondsDiff < 300) {
+                    throw new ResponseStatusException(
+                            HttpStatus.TOO_MANY_REQUESTS,
+                            "Messages are too close in time"
+                    );
                 }
             } else {
-                long interval1 = Duration.between(m1.getTimestamp(), m2.getTimestamp()).getSeconds();
-                long interval2 = Duration.between(m2.getTimestamp(), m3.getTimestamp()).getSeconds();
+                Date t1 = m1.getTimestamp();
+                Date t2 = m2.getTimestamp();
+                Date t3 = m3.getTimestamp();
+
+                long interval1 = (t2.getTime() - t1.getTime()) / 1000;
+                long interval2 = (t3.getTime() - t2.getTime()) / 1000;
+
                 if (interval1 < 40 && interval2 < 40) {
                     suspicus = true;
                     increaseWarningUseCase.execute(userId);

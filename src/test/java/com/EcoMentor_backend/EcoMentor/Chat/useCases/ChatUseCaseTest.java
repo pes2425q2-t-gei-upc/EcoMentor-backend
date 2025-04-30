@@ -15,9 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 class ChatUseCaseTest {
 
@@ -32,66 +31,82 @@ void setUp() {
     geminiService = mock(GeminiService.class);
     chatRepository = mock(ChatRepository.class);
     userRepository = mock(UserRepository.class);
-    increaseWarningUseCase = mock(IncreaseWarningUseCase.class);
     chatUseCase = new ChatUseCase(geminiService, chatRepository, userRepository, increaseWarningUseCase);
 }
 
-@Test
-@DisplayName("Returns response when user exists and message is processed successfully")
-void returnsResponseWhenUserExistsAndMessageProcessedSuccessfully() {
-    when(userRepository.existsById(1L)).thenReturn(true);
-    when(chatRepository.findByUserIdAndChatNameOrderByTimestampAsc(1L, "chat1"))
-            .thenReturn(List.of());
-    when(geminiService.generateContent(anyList())).thenReturn("Generated response");
+    @Test
+    @DisplayName("Returns response when user exists and message is processed successfully")
+    void returnsResponseWhenUserExistsAndMessageProcessedSuccessfully() {
+        when(userRepository.existsById(1L)).thenReturn(true);
+        when(chatRepository.findByUserIdAndChatNameOrderByTimestampAsc(1L, "chat1"))
+                .thenReturn(List.of());
+        when(geminiService.generateContent(anyList())).thenReturn("Generated response");
 
-    ChatResponseDTO result = chatUseCase.execute("Hello", 1L, "chat1", LocalDateTime.now());
+        ChatResponseDTO result = chatUseCase.execute("Hello", 1L, "chat1");
 
-    assertEquals("Hello", result.getMessage());
-    assertEquals("Generated response", result.getResponse());
-}
+        assertEquals("Hello", result.getMessage());
+        assertEquals("Generated response", result.getResponse());
+    }
 
-@Test
-@DisplayName("Throws exception when user does not exist")
-void throwsExceptionWhenUserDoesNotExist() {
-    when(userRepository.existsById(1L)).thenReturn(false);
+    @Test
+    @DisplayName("Throws exception when user does not exist")
+    void throwsExceptionWhenUserDoesNotExist() {
+        when(userRepository.existsById(1L)).thenReturn(false);
 
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-            chatUseCase.execute("Hello", 1L, "chat1", LocalDateTime.now())
-    );
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                chatUseCase.execute("Hello", 1L, "chat1")
+        );
 
-    assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-    assertEquals("User not found", exception.getReason());
-}
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("User not found", exception.getReason());
+    }
 
-@Test
-@DisplayName("Throws exception when response generation fails")
-void throwsExceptionWhenResponseGenerationFails() {
-    when(userRepository.existsById(1L)).thenReturn(true);
-    when(chatRepository.findByUserIdAndChatNameOrderByTimestampAsc(1L, "chat1"))
-            .thenReturn(List.of());
-    when(geminiService.generateContent(anyList())).thenReturn("");
+    @Test
+    @DisplayName("Throws exception when response generation fails")
+    void throwsExceptionWhenResponseGenerationFails() {
+        when(userRepository.existsById(1L)).thenReturn(true);
+        when(chatRepository.findByUserIdAndChatNameOrderByTimestampAsc(1L, "chat1"))
+                .thenReturn(List.of());
+        when(geminiService.generateContent(anyList())).thenReturn("");
 
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-            chatUseCase.execute("Hello", 1L, "chat1", LocalDateTime.now())
-    );
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                chatUseCase.execute("Hello", 1L, "chat1")
+        );
 
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
-    assertEquals("Error generating response", exception.getReason());
-}
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
+        assertEquals("Error generating response", exception.getReason());
+    }
 
-@Test
-@DisplayName("Processes chat history and appends new message")
-void processesChatHistoryAndAppendsNewMessage() {
-    when(userRepository.existsById(1L)).thenReturn(true);
-    when(chatRepository.findByUserIdAndChatNameOrderByTimestampAsc(1L, "chat1"))
-            .thenReturn(List.of(
-                    Chat.builder().message("Hi").response("Hello").build()
-            ));
-    when(geminiService.generateContent(anyList())).thenReturn("New response");
+    @Nested
+    @DisplayName("When there is chat history")
+    class ChatHistoryTests {
+        private Date now;
 
-    ChatResponseDTO result = chatUseCase.execute("How are you?", 1L, "chat1", LocalDateTime.now());
+        @BeforeEach
+        void initHistory() {
+            now = new Date();
+        }
 
-    assertEquals("How are you?", result.getMessage());
-    assertEquals("New response", result.getResponse());
-}
+        @Test
+        @DisplayName("Processes chat history and appends new message")
+        void processesChatHistoryAndAppendsNewMessage() {
+            when(userRepository.existsById(1L)).thenReturn(true);
+            Chat prev = Chat.builder()
+                    .userId(1L)
+                    .chatName("chat1")
+                    .message("Hi")
+                    .response("Hello")
+                    .timestamp(new Date(now.getTime() - 60000)) // 1 min ago
+                    .isSuspicious(false)
+                    .build();
+            when(chatRepository.findByUserIdAndChatNameOrderByTimestampAsc(1L, "chat1"))
+                    .thenReturn(List.of(prev));
+            when(geminiService.generateContent(anyList())).thenReturn("New response");
+
+            ChatResponseDTO result = chatUseCase.execute("How are you?", 1L, "chat1");
+
+            assertEquals("How are you?", result.getMessage());
+            assertEquals("New response", result.getResponse());
+        }
+    }
 }

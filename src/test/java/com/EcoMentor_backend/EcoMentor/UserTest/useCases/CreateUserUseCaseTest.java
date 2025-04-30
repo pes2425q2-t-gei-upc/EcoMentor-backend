@@ -7,18 +7,22 @@ import static org.mockito.Mockito.when;
 
 import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import com.EcoMentor_backend.EcoMentor.Role.entity.RoleName;
+import com.EcoMentor_backend.EcoMentor.Shared.EmailService;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.Role.infrastructure.repositories.RoleRepository;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import com.EcoMentor_backend.EcoMentor.User.useCases.CreateUserUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
 import com.EcoMentor_backend.EcoMentor.User.useCases.mapper.UserMapper;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.io.IOException;
 import java.util.Optional;
 
 
@@ -36,6 +40,9 @@ public class CreateUserUseCaseTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private EmailService emailService;
+
     @InjectMocks
     private CreateUserUseCase createUserUseCase;
 
@@ -46,7 +53,7 @@ public class CreateUserUseCaseTest {
 
 
     @Test
-    void successfullyCreatesUser() {
+    void successfullyCreatesUser() throws MessagingException, IOException {
         CreateUserDTO userDTO = new CreateUserDTO("test@example.com", "password", "Test User");
         User user = new User();
         Role userRole = new Role();
