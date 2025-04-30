@@ -4,6 +4,7 @@ import com.EcoMentor_backend.EcoMentor.Chat.entity.Chat;
 import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.repositories.ChatRepository;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
+import com.EcoMentor_backend.EcoMentor.User.useCases.IncreaseWarningUseCase;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,11 +26,14 @@ public class ChatUseCase {
     private final GeminiService gemini;
     private final ChatRepository repo;
     private final UserRepository userRepository;
+    private final IncreaseWarningUseCase increaseWarningUseCase;
 
-    public ChatUseCase(GeminiService gemini, ChatRepository repo, UserRepository userRepository) {
+    public ChatUseCase(GeminiService gemini, ChatRepository repo, UserRepository userRepository,
+                       IncreaseWarningUseCase increaseWarningUseCase)  {
         this.gemini = gemini;
         this.repo = repo;
         this.userRepository = userRepository;
+        this.increaseWarningUseCase = increaseWarningUseCase;
     }
 
     public ChatResponseDTO execute(String message, Long userId, String chatName) {
@@ -48,6 +52,7 @@ public class ChatUseCase {
                     .isSuspicious(true)
                     .build();
 
+            increaseWarningUseCase.execute(userId);
             repo.save(chat);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inappropriate language detected");
         }
@@ -81,20 +86,27 @@ public class ChatUseCase {
 
                 if (interval1 < 40 && interval2 < 40) {
                     suspicus = true;
+                    increaseWarningUseCase.execute(userId);
                 }
             }
         }
 
         List<Map<String, Object>> contents = new ArrayList<>();
         for (Chat c : history) {
-            contents.add(Map.of(
-                    "role", "user",
-                    "parts", List.of(Map.of("text", c.getMessage()))
-            ));
-            contents.add(Map.of(
-                    "role", "model",
-                    "parts", List.of(Map.of("text", c.getResponse()))
-            ));
+            String msg = c.getMessage();
+            String res = c.getResponse();
+
+            if (msg != null && !msg.isBlank() && res != null && !res.isBlank()) {
+                contents.add(Map.of(
+                        "role", "user",
+                        "parts", List.of(Map.of("text", msg))
+                ));
+
+                contents.add(Map.of(
+                        "role", "model",
+                        "parts", List.of(Map.of("text", res))
+                ));
+            }
         }
         contents.add(Map.of(
                 "role", "user",
