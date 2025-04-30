@@ -33,6 +33,7 @@ public class CreateUserUseCase {
         }
 
         User user = userMapper.toEntity(userDTO);
+        user.setWarnings(0);
         Role role = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow();
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRoles(Set.of(role));

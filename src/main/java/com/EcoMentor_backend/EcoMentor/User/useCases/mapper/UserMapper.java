@@ -28,6 +28,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .id(user.getId())
+                .warnings(user.getWarnings())
                 .certificateDTOList(user.getCertificates().stream().map(certificateMapper::toDTO)
                         .collect(Collectors.toList()))
                 .roles(user.getRoles().stream().map((Role::getName)).collect(Collectors.toList()))
@@ -43,7 +44,6 @@ public class UserMapper {
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
-
                 .build();
     }
 
