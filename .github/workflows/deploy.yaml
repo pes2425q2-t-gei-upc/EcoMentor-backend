@@ -1,0 +1,101 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ "feat/deployment" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build Docker image
+        run: |
+          docker build -t ecomentorapp:latest .
+          docker save -o ecomentorapp.tar ecomentorapp:latest
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Transfer Docker image to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no ecomentorapp.tar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/ecomentorapp.tar
+
+      - name: Deploy on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
+            # Load the Docker image
+            docker load -i ~/ecomentorapp.tar
+            rm ~/ecomentorapp.tar
+          
+            # Create deployment directory if it doesn't exist
+            mkdir -p ~/deployment
+            cd ~/deployment
+          
+            # Create or update docker-compose.yml
+            cat > docker-compose.yml << 'EOD'
+            version: '3.8'
+            services:
+              #backend part
+              backend:
+                image: ecomentorapp:latest
+                ports:
+                  - "8080:8080"
+                depends_on:
+                  - postgres
+                  - mongo
+                environment:
+                  - GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+                  - SPRING_MAIL_PASSWORD=${{ secrets.SPRING_MAIL_PASSWORD }}
+                  - DB_HOST=postgres
+                  - MONGO_HOST=mongo
+          
+              #DB part
+              postgres:
+                image: postgis/postgis:15-3.3
+                ports:
+                  - "5432:5432"
+                environment:
+                  POSTGRES_DB: EcoMentorDB
+                  POSTGRES_USER: EcoMentor
+                  POSTGRES_PASSWORD: 1234
+                volumes:
+                  - postgres-data:/var/lib/postgresql/data
+          
+              mongo:
+                image: mongo:6.0
+                ports:
+                  - "27017:27017"
+                environment:
+                  MONGO_INITDB_DATABASE: EcoMentorChat
+                  MONGO_INITDB_ROOT_USERNAME: admin
+                  MONGO_INITDB_ROOT_PASSWORD: 1234
+                volumes:
+                  - mongo-data:/data/db
+          
+            volumes:
+              postgres-data:
+              mongo-data:
+            EOD
+          
+            # Stop and start containers
+            docker compose down || true
+            docker compose up -d
+          
+            # Clean up old images
+            docker image prune -f
+          EOF
