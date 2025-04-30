@@ -7,7 +7,7 @@ import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 
 class ChatMapperTest {
 
@@ -17,7 +17,7 @@ void mapsChatEntityToChatResponseDTOSuccessfully() {
     Chat chat = Chat.builder()
             .message("Test message")
             .response("Test response")
-            .timestamp(ZonedDateTime.now())
+            .timestamp(new Date())
             .build();
 
     ChatResponseDTO result = ChatMapper.toChatResponseDTO(chat);

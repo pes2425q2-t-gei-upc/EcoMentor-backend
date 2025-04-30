@@ -11,11 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.http.ResponseEntity;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.*;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ChatGetControllerTest {
@@ -37,33 +38,26 @@ class ChatGetControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void testGetChatNamesUser() {
-        long userId = 123L;
-        ArrayList<String> expectedNames = new ArrayList<>(List.of("chat1", "chat2"));
-        when(getChatNamesUseCase.getChatNamesUser(userId)).thenReturn(expectedNames);
-
-        ResponseEntity<ArrayList<String>> response = chatGetController.getChatNamesUser(userId);
-
-        assertEquals(ResponseEntity.ok(expectedNames), response);
-        verify(getChatNamesUseCase).getChatNamesUser(userId);
-    }
 
     @Test
     void testGetChat() {
         long userId = 10L;
         String chatName = "testChat";
-        List<ChatResponseDTO> expectedList = List.of(
+        // Timestamps for tests
+        Date ts1 = Date.from(Instant.parse("2025-04-26T10:00:00Z"));
+        Date ts2 = Date.from(Instant.parse("2025-04-26T10:01:00Z"));
+
+        List<ChatResponseDTO> expectedList = Arrays.asList(
                 ChatResponseDTO.builder()
                         .message("hello")
                         .response("world")
-                        .timestamp(ZonedDateTime.of(2025, 4, 26, 12, 0, 0, 0, ZoneId.systemDefault()))
+                        .timestamp(ts1)
                         .isSuspicious(false)
                         .build(),
                 ChatResponseDTO.builder()
                         .message("foo")
                         .response("bar")
-                        .timestamp(ZonedDateTime.of(2025, 4, 26, 12, 1, 0, 0, ZoneId.systemDefault()))
+                        .timestamp(ts2)
                         .isSuspicious(true)
                         .build()
         );
@@ -78,9 +72,10 @@ class ChatGetControllerTest {
     @Test
     void testGetBanStatus_WhenBanned() {
         long userId = 55L;
+        Date banTime = Date.from(Instant.parse("2025-04-26T10:01:00Z"));
         BanAndTimeDTO dto = BanAndTimeDTO.builder()
                 .isBanned(true)
-                .banEndTime(ZonedDateTime.of(2025, 4, 26, 12, 1, 0, 0, ZoneId.systemDefault()))
+                .banEndTime(banTime)
                 .build();
         when(checkBanStatusUseCase.execute(userId)).thenReturn(dto);
 

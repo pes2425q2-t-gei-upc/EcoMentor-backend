@@ -1,6 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Chat.useCases.dto;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class BanAndTimeDTO {
-    ZonedDateTime banEndTime;
+    Date banEndTime;
     boolean isBanned;
 }
