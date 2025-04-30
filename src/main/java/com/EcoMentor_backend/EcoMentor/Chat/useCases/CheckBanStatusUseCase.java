@@ -4,7 +4,7 @@ package com.EcoMentor_backend.EcoMentor.Chat.useCases;
 import com.EcoMentor_backend.EcoMentor.Chat.entity.Chat;
 import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.repositories.ChatRepository;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.BanAndTimeDTO;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,8 @@ public class CheckBanStatusUseCase {
             Chat last = chats.get(chats.size() - 1);
 
             if (last.isSuspicious()) {
-                LocalDateTime now = LocalDateTime.now();
-                LocalDateTime banEndTime = last.getTimestamp().plusMinutes(5);
+                ZonedDateTime now = ZonedDateTime.now();
+                ZonedDateTime banEndTime = last.getTimestamp().plusMinutes(5);
                 if (now.isBefore(banEndTime)) {
                     return BanAndTimeDTO.builder()
                             .banEndTime(banEndTime)

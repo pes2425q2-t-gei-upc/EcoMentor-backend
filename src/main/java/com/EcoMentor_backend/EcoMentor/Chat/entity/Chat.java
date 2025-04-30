@@ -1,6 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.Chat.entity;
 
-import java.time.LocalDateTime;
+
+import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,6 @@ public class Chat {
 
     private boolean isSuspicious;
 
-    private LocalDateTime timestamp;
+    private ZonedDateTime timestamp;
 }
 

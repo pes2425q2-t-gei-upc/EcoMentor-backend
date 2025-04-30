@@ -5,7 +5,7 @@ import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.repositories.ChatRep
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +32,7 @@ public class ChatUseCase {
         this.userRepository = userRepository;
     }
 
-    public ChatResponseDTO execute(String message, Long userId, String chatName, LocalDateTime now) {
+    public ChatResponseDTO execute(String message, Long userId, String chatName, ZonedDateTime now) {
         boolean suspicus = false;
 
         if (inappropriateLanguageDetector(message)) {
@@ -61,7 +61,7 @@ public class ChatUseCase {
             Chat m3 = history.get(history.size() - 1);
 
             if (m3.isSuspicious()) {
-                LocalDateTime messageTime = m3.getTimestamp();
+                ZonedDateTime messageTime = m3.getTimestamp();
 
                 if (Duration.between(messageTime, now).getSeconds() < 300) {
                     throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Messages are too close in time");
