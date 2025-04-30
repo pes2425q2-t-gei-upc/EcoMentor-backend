@@ -242,21 +242,21 @@ public class AddressGetController {
     }
 
     // --- Nuevo endpoint para towns ---
-    @GetMapping("/towns")
+    @GetMapping("/distinct/towns")
     public ResponseEntity<TownsDTO> getAllTowns() {
         TownsDTO dto = getAllTownsUseCase.execute();
         return ResponseEntity.ok(dto);
     }
 
     // --- Nuevo endpoint para provinces ---
-    @GetMapping("/provinces")
+    @GetMapping("/distinct/provinces")
     public ResponseEntity<ProvincesDTO> getAllProvinces() {
         ProvincesDTO dto = getAllProvincesUseCase.execute();
         return ResponseEntity.ok(dto);
     }
 
     // --- Nuevo endpoint para regions ---
-    @GetMapping("/regions")
+    @GetMapping("/distinct/regions")
     public ResponseEntity<RegionsDTO> getAllRegions() {
         RegionsDTO dto = getAllRegionsUseCase.execute();
         return ResponseEntity.ok(dto);
