@@ -47,4 +47,13 @@ public interface AddressRepository extends JpaRepository<Address, Long>, CustomA
     Address findAddressByAddressNameAndAddressNumber(String addressName, String addressNumber);
 
     List<Address> findByZipcode(Integer zipcode);
+
+    @Query("SELECT DISTINCT a.town FROM Address a")
+    List<String> findDistinctTowns();
+
+    @Query("SELECT DISTINCT a.province FROM Address a")
+    List<String> findDistinctProvinces();
+
+    @Query("SELECT DISTINCT a.region FROM Address a")
+    List<String> findDistinctRegions();
 }
