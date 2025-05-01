@@ -45,4 +45,10 @@ public interface CustomCertificateRepository {
                                                  float windowEfficiency, float heatingEmissionsInitial,
                                                  float refrigerationEmissionsInitial, float acsEmissionsInitial,
                                                  float lightingEmissionsInitial, float residentialUseVentilation);
+
+    float calculateAproxInsulation(int insulation, String buildingUse);
+
+    float calculateAproxWindowEfficiciency(int windowEfficiency, String buildingUse);
+
+    float calculateAproxResidentialUseVentilation(int residentialUseVentilation, String buildingUse);
 }

@@ -45,13 +45,13 @@ public class CalculateUnofficialCertificateDTOTest {
                 false,
                 true,
                 false,
-                10.0f,
-                5.0f,
+                10,
+                5,
                 15,
                 10,
                 5,
                 2,
-                1.0f,
+                1,
                 true
         );
 

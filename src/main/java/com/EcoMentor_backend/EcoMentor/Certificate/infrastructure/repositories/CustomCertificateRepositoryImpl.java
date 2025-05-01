@@ -456,6 +456,183 @@ public class CustomCertificateRepositoryImpl implements CustomCertificateReposit
     }
 
     @Override
+    public float calculateAproxInsulation(int insulation, String buildingUse) {
+        if (Objects.equals(buildingUse, "terciario")) {
+            if (insulation == 0) {
+                return 0.4215064102564102f;
+            } else if (insulation == 1) {
+                return 0.8229470198675497f;
+            } else if (insulation == 2) {
+                return 1.5809164969450102f;
+            } else if (insulation == 3) {
+                return 1.7843442622950825f;
+            } else if (insulation == 4) {
+                return 1.9593513513513514f;
+            } else if (insulation == 5) {
+                return 2.3513184079601985f;
+            } else if (insulation == 6) {
+                return 2.929905213270142f;
+            } else {
+                return 0;
+            }
+        } else if (Objects.equals(buildingUse, "vivienda unifamiliar")) {
+            if (insulation == 0) {
+                return 0.4463405017921147f;
+            } else if (insulation == 1) {
+                return 0.6901919122686772f;
+            } else if (insulation == 2) {
+                return 1.1734839226685365f;
+            } else if (insulation == 3) {
+                return 1.685810271420969f;
+            } else if (insulation == 4) {
+                return 1.7867968851395204f;
+            } else if (insulation == 5) {
+                return 2.230012083303717f;
+            } else if (insulation == 6) {
+                return 2.864451894066376f;
+            } else {
+                return 0;
+            }
+        } else if (Objects.equals(buildingUse, "vivienda bloque")) {
+            if (insulation == 0) {
+                return 0.5459663791391824f;
+            } else if (insulation == 1) {
+                return 1.050653140571582f;
+            } else if (insulation == 2) {
+                return 1.6791956149942528f;
+            } else if (insulation == 3) {
+                return 1.78320545104429f;
+            } else if (insulation == 4) {
+                return 1.937239989250202f;
+            } else if (insulation == 5) {
+                return 2.305815774131756f;
+            } else if (insulation == 6) {
+                return 2.830711557788945f;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public float calculateAproxWindowEfficiciency(int windowEfficiency, String buildingUse) {
+        if (Objects.equals(buildingUse, "terciario")) {
+            if (windowEfficiency == 0) {
+                return 2.350766871165644f;
+            } else if (windowEfficiency == 1) {
+                return 3.392629757785467f;
+            } else if (windowEfficiency == 2) {
+                return 3.7594155844155845f;
+            } else if (windowEfficiency == 3) {
+                return 4.231644736842106f;
+            } else if (windowEfficiency == 4) {
+                return 5.073227848101266f;
+            } else if (windowEfficiency == 5) {
+                return 5.6646815834767645f;
+            } else if (windowEfficiency == 6) {
+                return 7.391304757f;
+            } else {
+                return 0;
+            }
+        } else if (Objects.equals(buildingUse, "vivienda unifamiliar")) {
+            if (windowEfficiency == 0) {
+                return 2.725277699728388f;
+            } else if (windowEfficiency == 1) {
+                return 3.3582833494571642f;
+            } else if (windowEfficiency == 2) {
+                return 3.714480885048442f;
+            } else if (windowEfficiency == 3) {
+                return 3.8819905417024936f;
+            } else if (windowEfficiency == 4) {
+                return 4.201142256482131f;
+            } else if (windowEfficiency == 5) {
+                return 4.839439252336449f;
+            } else if (windowEfficiency == 6) {
+                return 5.8236826004369678f;
+            } else {
+                return 0;
+            }
+        } else if (Objects.equals(buildingUse, "vivienda bloque")) {
+            if (windowEfficiency == 0) {
+                return 3.11522583231521f;
+            } else if (windowEfficiency == 1) {
+                return 3.729452989688357f;
+            } else if (windowEfficiency == 2) {
+                return 4.0529504940662395f;
+            } else if (windowEfficiency == 3) {
+                return 4.7941776501359055f;
+            } else if (windowEfficiency == 4) {
+                return 5.25666454183267f;
+            } else if (windowEfficiency == 5) {
+                return 5.89720154167835f;
+            } else if (windowEfficiency == 6) {
+                return 6.934f;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public float calculateAproxResidentialUseVentilation(int residentialUseVentilation, String buildingUse) {
+        if (Objects.equals(buildingUse, "terciario")) {
+            if (residentialUseVentilation == 0) {
+                return 0.2826298701298702f;
+            } else if (residentialUseVentilation == 1) {
+                return 0.6188888888888888f;
+            } else if (residentialUseVentilation == 2) {
+                return 0.7964667535853975f;
+            } else if (residentialUseVentilation == 3) {
+                return 0.8381621621621622f;
+            } else if (residentialUseVentilation == 4) {
+                return 0.9429245283018869f;
+            } else if (residentialUseVentilation == 5 || residentialUseVentilation == 6) {
+                return 1.7203802281368819f;
+            } else {
+                return 0;
+            }
+        } else if (Objects.equals(buildingUse, "vivienda unifamiliar")) {
+            if (residentialUseVentilation == 0) {
+                return 0.6208197351409903f;
+            } else if (residentialUseVentilation == 1) {
+                return 0.7447099337748346f;
+            } else if (residentialUseVentilation == 2) {
+                return 0.9307425343018563f;
+            } else if (residentialUseVentilation == 3) {
+                return 1.32672f;
+            } else if (residentialUseVentilation == 4) {
+                return 1.5643f;
+            } else if (residentialUseVentilation == 5 || residentialUseVentilation == 6) {
+                return 1.7682f;
+            } else {
+                return 0;
+            }
+        } else if (Objects.equals(buildingUse, "vivienda bloque")) {
+            if (residentialUseVentilation == 0) {
+                return 0.6256941877182173f;
+            } else if (residentialUseVentilation == 1) {
+                return 0.7525769139606542f;
+            } else if (residentialUseVentilation == 2) {
+                return 0.9331371529067893f;
+            } else if (residentialUseVentilation == 3) {
+                return 1.2354f;
+            } else if (residentialUseVentilation == 4) {
+                return 1.4567f;
+            } else if (residentialUseVentilation == 5 || residentialUseVentilation == 6) {
+                return 1.8764f;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
     public CalculatorResultsDTO calculateQualifications(String climateZone, String buildingUse,
                                                         int nonRenewablePrimaryEnergyAprox,
                                                         boolean solarThermal, boolean photovoltaicSolar,
