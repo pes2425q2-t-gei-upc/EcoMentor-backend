@@ -23,7 +23,6 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOBestQualification;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AverageValuesDTO;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.FilterRequestDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.GraphicDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.GraphicDTOQualification;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.ProvincesDTO;
@@ -39,7 +38,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,7 +65,6 @@ public class AddressGetController {
     private final GetAllTownsUseCase getAllTownsUseCase;
     private final GetAllProvincesUseCase getAllProvincesUseCase;
     private final GetAllRegionsUseCase getAllRegionsUseCase;
-    private final GetMultipleFiltersAddressUseCase getMultipleFiltersAddressUseCase;
 
     @GetMapping
     public ResponseEntity<Page<AddressDTO>> getAllAddress(@RequestParam(defaultValue = "0") int page,
@@ -217,24 +214,7 @@ public class AddressGetController {
         return ResponseEntity.ok(address);
     }
 
-    @GetMapping("/multiplefilters")
-    public ResponseEntity<List<AddressDTOSimple>> getMultipleFiltersAddressUseCase(@RequestBody FilterRequestDTO
-                                                                                               requestBody) {
 
-        List<AddressDTOSimple> addresses = getMultipleFiltersAddressUseCase.execute(
-                requestBody.getFilters(),
-                requestBody.getMinLatitude(),
-                requestBody.getMaxLatitude(),
-                requestBody.getMinLongitude(),
-                requestBody.getMaxLongitude()
-        );
-
-        if (addresses.isEmpty()) {
-            return ResponseEntity.noContent().build(); // O .notFound().build() si prefieres
-        }
-
-        return ResponseEntity.ok(addresses);
-    }
 
 
     @Tag(name = "Best building certifications by area", description = "Endpoints to query addresses")

@@ -272,31 +272,5 @@ public class AddressGetControllerTest {
         verify(getGraphValuesRenewableUseCase).execute(null, null, null);
     }
 
-    @Test
-    public void testGetMultipleFiltersAddressUseCase() {
-        // Datos de prueba
-        Map<String, String> filters = Map.of("key1", "value1", "key2", "value2");
-        double minLatitude = 10.0;
-        double maxLatitude = 20.0;
-        double minLongitude = 30.0;
-        double maxLongitude = 40.0;
-
-        FilterRequestDTO requestDTO = new FilterRequestDTO(filters, minLatitude, maxLatitude,
-                minLongitude, maxLongitude);
-        List<AddressDTOSimple> expectedAddresses = Collections.singletonList(new AddressDTOSimple());
-
-        // Configuración del mock
-        when(getMultipleFiltersAddressUseCase.execute(filters, minLatitude, maxLatitude, minLongitude, maxLongitude))
-                .thenReturn(expectedAddresses);
-
-        // Ejecución del método
-        ResponseEntity<List<AddressDTOSimple>> response = addressGetController
-                .getMultipleFiltersAddressUseCase(requestDTO);
-
-        // Verificaciones
-        assertEquals(ResponseEntity.ok(expectedAddresses), response);
-        verify(getMultipleFiltersAddressUseCase, times(1))
-                .execute(filters, minLatitude, maxLatitude, minLongitude, maxLongitude);
-    }
 
 }
