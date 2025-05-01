@@ -62,7 +62,7 @@ public class SecurityConfig {
         final UrlBasedCorsConfigurationSource  source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:8081", "http://localhost:5173")); // Change to your React Native URL
+        config.setAllowedOrigins(List.of("http://localhost:8081", "http://localhost:5173", "https://ecomentor-admin.onrender.com"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         source.registerCorsConfiguration("/**", config);
