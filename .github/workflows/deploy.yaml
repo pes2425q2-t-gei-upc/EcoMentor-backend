@@ -51,48 +51,48 @@ jobs:
             cd ~/deployment
           
             # Create or update docker-compose.yml
-            cat > docker-compose.yml <<EOD
-            version: '3.8'
-            services:
-              backend:
-                image: ecomentorapp:latest
-                ports:
-                  - "8080:8080"
-                depends_on:
-                  - postgres
-                  - mongo
-                environment:
-                  - GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
-                  - SPRING_MAIL_PASSWORD=${{ secrets.SPRING_MAIL_PASSWORD }}
-                  - DB_HOST=postgres
-                  - MONGO_HOST=mongo
-            
-              postgres:
-                image: postgis/postgis:15-3.3
-                ports:
-                  - "5432:5432"
-                environment:
-                  POSTGRES_DB: EcoMentorDB
-                  POSTGRES_USER: EcoMentor
-                  POSTGRES_PASSWORD: 1234
-                volumes:
-                  - postgres-data:/var/lib/postgresql/data
-            
-              mongo:
-                image: mongo:6.0
-                ports:
-                  - "27017:27017"
-                environment:
-                  MONGO_INITDB_DATABASE: EcoMentorChat
-                  MONGO_INITDB_ROOT_USERNAME: admin
-                  MONGO_INITDB_ROOT_PASSWORD: 1234
-                volumes:
-                  - mongo-data:/data/db
-            
-            volumes:
-              postgres-data:
-              mongo-data:
-            EOD
+            cat > docker-compose.yml << 'EOD'
+version: '3.8'
+services:
+  backend:
+    image: ecomentorapp:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - mongo
+    environment:
+      - GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+      - SPRING_MAIL_PASSWORD=${{ secrets.SPRING_MAIL_PASSWORD }}
+      - DB_HOST=postgres
+      - MONGO_HOST=mongo
+
+  postgres:
+    image: postgis/postgis:15-3.3
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: EcoMentorDB
+      POSTGRES_USER: EcoMentor
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: EcoMentorChat
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  postgres-data:
+  mongo-data:
+EOD
             
             # Stop and start containers
             docker compose down || true
@@ -100,3 +100,4 @@ jobs:
             
             # Clean up old images
             docker image prune -f
+EOF
