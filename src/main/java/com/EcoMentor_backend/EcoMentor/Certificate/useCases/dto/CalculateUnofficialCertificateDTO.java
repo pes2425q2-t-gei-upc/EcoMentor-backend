@@ -30,12 +30,12 @@ public class CalculateUnofficialCertificateDTO {
     private boolean biomass;
     private boolean districtNet;
     private boolean geothermal;
-    private float insulation;
-    private float windowEfficiency;
+    private int insulation;
+    private int windowEfficiency;
     private int heatingEmissionsAprox;
     private int refrigerationEmissionsAprox;
     private int acsEmissionsAprox;
     private int lightingEmissionsAprox;
-    private float residentialUseVentilation;
+    private int residentialUseVentilation;
     private boolean energeticRehabilitation;
 }

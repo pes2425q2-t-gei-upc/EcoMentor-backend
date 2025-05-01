@@ -56,9 +56,14 @@ public class CalculateUnofficialCertificateUseCase {
         float lightingEmissionsInitial = certificateRepository.calculateBaseIoLighting(lightingAprox, buildingUse);
         String climateZone = calculateUnofficialCertificateDTO.getClimateZone();
         boolean geothermal = calculateUnofficialCertificateDTO.isGeothermal();
-        float insulation = calculateUnofficialCertificateDTO.getInsulation();
-        float windowEfficiency = calculateUnofficialCertificateDTO.getWindowEfficiency();
-        float residentialUseVentilation = calculateUnofficialCertificateDTO.getResidentialUseVentilation();
+        float insulation = certificateRepository.calculateAproxInsulation(calculateUnofficialCertificateDTO
+                .getInsulation(), buildingUse);
+        float windowEfficiency = certificateRepository
+                .calculateAproxWindowEfficiciency(calculateUnofficialCertificateDTO
+                .getWindowEfficiency(), buildingUse);
+        float residentialUseVentilation = certificateRepository
+                .calculateAproxResidentialUseVentilation(calculateUnofficialCertificateDTO
+                        .getResidentialUseVentilation(), buildingUse);
 
         CreateAddressDTO createAddressDTO = calculateUnofficialCertificateDTO.getCreateAddressDTO();
         Long id;

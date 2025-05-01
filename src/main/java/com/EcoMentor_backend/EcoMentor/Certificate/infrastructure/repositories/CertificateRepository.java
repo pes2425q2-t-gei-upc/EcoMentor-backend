@@ -55,4 +55,9 @@ public interface CertificateRepository extends JpaRepository<Certificate, String
                                                  float refrigerationEmissionsInitial, float acsEmissionsInitial,
                                                  float lightingEmissionsInitial, float residentialUseVentilation);
 
+    float calculateAproxInsulation(int insulation, String buildingUse);
+
+    float calculateAproxWindowEfficiciency(int windowEfficiency, String buildingUse);
+
+    float calculateAproxResidentialUseVentilation(int residentialUseVentilation, String buildingUse);
 }

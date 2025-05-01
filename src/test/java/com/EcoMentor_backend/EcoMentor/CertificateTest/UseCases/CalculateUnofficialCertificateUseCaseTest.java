@@ -72,9 +72,9 @@ public class CalculateUnofficialCertificateUseCaseTest {
         calculateUnofficialCertificateDTO.setLightingEmissionsAprox(10);
         calculateUnofficialCertificateDTO.setClimateZone("B3");
         calculateUnofficialCertificateDTO.setGeothermal(false);
-        calculateUnofficialCertificateDTO.setInsulation(1.0f);
-        calculateUnofficialCertificateDTO.setWindowEfficiency(1.5f);
-        calculateUnofficialCertificateDTO.setResidentialUseVentilation(0.8f);
+        calculateUnofficialCertificateDTO.setInsulation(1);
+        calculateUnofficialCertificateDTO.setWindowEfficiency(2);
+        calculateUnofficialCertificateDTO.setResidentialUseVentilation(1);
         // Configuración correcta de CreateAddressDTO
         CreateAddressDTO createAddressDTO = CreateAddressDTO.builder()
                 .addressName("Street Name")
