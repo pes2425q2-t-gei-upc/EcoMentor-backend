@@ -54,7 +54,7 @@ jobs:
             cat > docker-compose.yml << 'EOD'
             version: '3.8'
             services:
-              #backend part
+
               backend:
                 image: ecomentorapp:latest
                 ports:
@@ -67,8 +67,7 @@ jobs:
                   - SPRING_MAIL_PASSWORD=${{ secrets.SPRING_MAIL_PASSWORD }}
                   - DB_HOST=postgres
                   - MONGO_HOST=mongo
-          
-              #DB part
+
               postgres:
                 image: postgis/postgis:15-3.3
                 ports:
@@ -79,7 +78,7 @@ jobs:
                   POSTGRES_PASSWORD: 1234
                 volumes:
                   - postgres-data:/var/lib/postgresql/data
-          
+            
               mongo:
                 image: mongo:6.0
                 ports:
@@ -90,16 +89,15 @@ jobs:
                   MONGO_INITDB_ROOT_PASSWORD: 1234
                 volumes:
                   - mongo-data:/data/db
-          
+            
             volumes:
               postgres-data:
               mongo-data:
-            EOD
-          
-            # Stop and start containers
-            docker compose down || true
-            docker compose up -d
-          
-            # Clean up old images
-            docker image prune -f
-          EOF
+              EOD
+              
+              # Stop and start containers
+              docker compose down || true
+              docker compose up -d
+              
+              # Clean up old images
+              docker image prune -f
