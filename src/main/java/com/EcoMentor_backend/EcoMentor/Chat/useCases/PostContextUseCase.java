@@ -25,13 +25,12 @@ public class PostContextUseCase {
                     + " " + dto.toString();
 
             return chatUseCase.execute(message, createChatWithCertificateDTO.getUserId(),
-                    createChatWithCertificateDTO.getChatName(), createChatWithCertificateDTO.getDateTime());
+                    createChatWithCertificateDTO.getChatName());
 
 
         } else {
             return chatUseCase.execute(createChatWithCertificateDTO.getMessage(),
-                    createChatWithCertificateDTO.getUserId(), createChatWithCertificateDTO.getChatName(),
-                    createChatWithCertificateDTO.getDateTime());
+                    createChatWithCertificateDTO.getUserId(), createChatWithCertificateDTO.getChatName());
 
         }
 

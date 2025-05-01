@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 class ChatPostControllerTest {
 
@@ -33,7 +33,7 @@ void setUp() {
 @Test
 @DisplayName("Handles invalid certificate ID in new chat with context")
 void handlesInvalidCertificateIdInNewChatWithContext() {
-    CreateChatWithCertificateDTO dto = new CreateChatWithCertificateDTO(1L, "Chat1", LocalDateTime.now(), "Message", 999L);
+    CreateChatWithCertificateDTO dto = new CreateChatWithCertificateDTO(1L, "Chat1", ZonedDateTime.now(), "Message", 999L);
     when(postContextUseCase.execute(dto)).thenThrow(new RuntimeException("Certificate not found"));
 
     RuntimeException exception = assertThrows(RuntimeException.class, () -> chatPostController.newChatWithContext(dto));
