@@ -51,10 +51,9 @@ jobs:
             cd ~/deployment
           
             # Create or update docker-compose.yml
-            cat > docker-compose.yml << EOD
+            cat > docker-compose.yml <<EOD
             version: '3.8'
             services:
-
               backend:
                 image: ecomentorapp:latest
                 ports:
@@ -67,7 +66,7 @@ jobs:
                   - SPRING_MAIL_PASSWORD=${{ secrets.SPRING_MAIL_PASSWORD }}
                   - DB_HOST=postgres
                   - MONGO_HOST=mongo
-
+            
               postgres:
                 image: postgis/postgis:15-3.3
                 ports:
