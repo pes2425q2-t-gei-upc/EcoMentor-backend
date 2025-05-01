@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 class PostContextUseCaseTest {
 
@@ -30,7 +30,7 @@ void setUp() {
 @Test
 @DisplayName("Throws exception when certificate retrieval fails")
 void throwsExceptionWhenCertificateRetrievalFails() {
-    CreateChatWithCertificateDTO dto = new CreateChatWithCertificateDTO(1L, "Chat1", LocalDateTime.now(), "Message", 123L);
+    CreateChatWithCertificateDTO dto = new CreateChatWithCertificateDTO(1L, "Chat1", ZonedDateTime.now(), "Message", 123L);
     when(getCertificateByCertificateIdWFEUseCase.execute(123L)).thenThrow(new RuntimeException("Certificate not found"));
 
     RuntimeException exception = assertThrows(RuntimeException.class, () -> postContextUseCase.execute(dto));

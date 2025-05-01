@@ -20,5 +20,6 @@ public class UserDTO {
     private String email;
     private String password;
     private List<CertificateDTO> certificateDTOList;
+    private int warnings;
     private List<RoleName> roles;
 }

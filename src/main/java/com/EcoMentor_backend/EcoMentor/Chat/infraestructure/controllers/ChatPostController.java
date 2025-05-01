@@ -24,8 +24,7 @@ public class ChatPostController {
 
     @PostMapping
     public ResponseEntity<ChatResponseDTO> newChat(@RequestBody CreateChatDTO dto) {
-        ChatResponseDTO chatResponseDTO = chatUseCase.execute(dto.getMessage(),  dto.getUserId(), dto.getChatName(),
-                                                                                                    dto.getDateTime());
+        ChatResponseDTO chatResponseDTO = chatUseCase.execute(dto.getMessage(),  dto.getUserId(), dto.getChatName());
         return new ResponseEntity<>(chatResponseDTO, HttpStatus.CREATED);
     }
 

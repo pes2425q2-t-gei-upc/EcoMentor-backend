@@ -6,6 +6,8 @@ import com.EcoMentor_backend.EcoMentor.User.useCases.UnblockUserUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.UpdateSelfUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.UpdateUserUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UpdateUserDTO;
+import jakarta.mail.MessagingException;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,14 +53,14 @@ public class UserPutController {
 
     @PutMapping("/{id}/block")
     @PreAuthorize("(hasRole('ROLE_ADMIN'))")
-    public ResponseEntity<Void> blockUser(@PathVariable Long id) {
+    public ResponseEntity<Void> blockUser(@PathVariable Long id) throws MessagingException, IOException {
         blockUserUseCase.execute(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping("/{id}/unblock")
     @PreAuthorize("(hasRole('ROLE_ADMIN'))")
-    public ResponseEntity<Void> unblockUser(@PathVariable Long id) {
+    public ResponseEntity<Void> unblockUser(@PathVariable Long id) throws MessagingException, IOException {
         unblockUserUseCase.execute(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

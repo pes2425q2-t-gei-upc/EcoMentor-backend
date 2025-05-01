@@ -52,6 +52,8 @@ public class User implements UserDetails {
     @NotNull
     private String email;
 
+    private int warnings;
+
     @NotNull
     private String password;
 

@@ -4,8 +4,10 @@ import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import com.EcoMentor_backend.EcoMentor.Role.infrastructure.repositories.RoleRepository;
 import com.EcoMentor_backend.EcoMentor.Role.useCases.dto.RoleDTO;
 import com.EcoMentor_backend.EcoMentor.Role.useCases.mapper.RoleMapper;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +25,10 @@ public class GetAllRolesUseCase {
         this.roleMapper = roleMapper;
     }
 
-    public List<RoleDTO> execute() {
-        List<Role> roles = roleRepository.findAll();
-        return roles.stream().map(roleMapper::toDTO).collect(Collectors.toList());
+    public Page<RoleDTO> execute(int page, int size, String sort, String order) {
+        Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
+        Page<Role> roles = roleRepository.findAll(pageable);
+        return roles.map(roleMapper::toDTO);
     }
 }
