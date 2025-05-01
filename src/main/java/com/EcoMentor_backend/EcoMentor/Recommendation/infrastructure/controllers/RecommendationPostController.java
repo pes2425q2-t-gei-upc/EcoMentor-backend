@@ -1,10 +1,12 @@
 package com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.controllers;
 
+import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.CalculateRecommendationValuesUseCase;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.CreateRecommendationUserCase;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GenerateRecommendationsUseCase;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GenerateZoneRecommendationsUseCase;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.CreateRecommendationDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
+import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.TotalValuesRecommendationDTO;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +30,16 @@ public class RecommendationPostController {
     private final CreateRecommendationUserCase createRecommendationUserCase;
     private final GenerateRecommendationsUseCase generateRecommendationsUseCase;
     private final GenerateZoneRecommendationsUseCase generateZoneRecommendationsUseCase;
+    private final CalculateRecommendationValuesUseCase calculateRecommendationValuesUseCase;
 
     public RecommendationPostController(CreateRecommendationUserCase createRecommendationUserCase,
                                         GenerateRecommendationsUseCase generateRecommendationsUseCase,
-                                        GenerateZoneRecommendationsUseCase generateZoneRecommendationsUseCase) {
+                                        GenerateZoneRecommendationsUseCase generateZoneRecommendationsUseCase,
+                                        CalculateRecommendationValuesUseCase calculateRecommendationValuesUseCase) {
         this.createRecommendationUserCase = createRecommendationUserCase;
         this.generateRecommendationsUseCase = generateRecommendationsUseCase;
         this.generateZoneRecommendationsUseCase = generateZoneRecommendationsUseCase;
+        this.calculateRecommendationValuesUseCase = calculateRecommendationValuesUseCase;
     }
 
     @PostMapping
@@ -56,5 +61,16 @@ public class RecommendationPostController {
             @RequestParam(name = "radius", defaultValue = "1") Integer radius) {
         List<RecommendationDTO> recommendations = generateZoneRecommendationsUseCase.execute(certificateId, radius);
         return ResponseEntity.ok(recommendations);
+    }
+
+    @PostMapping("/finalValues/{certificateId}")
+    public ResponseEntity<TotalValuesRecommendationDTO> calculateValues(
+            @RequestBody List<CreateRecommendationDTO> recommendationDTOs,
+            @PathVariable Long certificateId) {
+
+        TotalValuesRecommendationDTO result = calculateRecommendationValuesUseCase
+                .calculateValues(recommendationDTOs, certificateId);
+
+        return ResponseEntity.ok(result);
     }
 }
