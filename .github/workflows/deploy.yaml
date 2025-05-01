@@ -51,7 +51,7 @@ jobs:
             cd ~/deployment
           
             # Create or update docker-compose.yml
-            cat > docker-compose.yml <<EOD
+            cat > docker-compose.yml << 'EOD'
             version: '3.8'
             services:
               backend:
@@ -92,7 +92,7 @@ jobs:
             volumes:
               postgres-data:
               mongo-data:
-            EOD
+            'EOD'
             
             # Stop and start containers
             docker compose down || true
@@ -100,4 +100,4 @@ jobs:
             
             # Clean up old images
             docker image prune -f
-            EOF
+            'EOF'
