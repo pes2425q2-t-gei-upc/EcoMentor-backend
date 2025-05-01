@@ -1,6 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories;
 
 import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import java.util.ArrayList;
@@ -20,9 +21,10 @@ public class CustomAddressRepositoryImpl implements CustomAddressRepository {
                                                             double maxLatitude, double minLongitude,
                                                             double maxLongitude) {
 
+        CertificateType official = CertificateType.OFFICIAL;
         String jpql = "SELECT a FROM  Address a"
                 + " JOIN a.certificates c"
-                + " WHERE c." + parameter + " = :value "
+                + " WHERE   c.certificateType = :" + official + " AND c." + parameter + " = :value "
                 + "AND ST_Within(a.location, ST_MakeEnvelope(:minLongitude, :minLatitude, :maxLongitude,"
                 + " :maxLatitude, 4326))";
 
@@ -43,10 +45,12 @@ public class CustomAddressRepositoryImpl implements CustomAddressRepository {
                                                               double maxLatitude,
                                                               double minLongitude,
                                                               double maxLongitude) {
-        StringBuilder jpql = new StringBuilder("SELECT a FROM Address a JOIN a.certificates c WHERE ");
+        StringBuilder jpql = new StringBuilder("SELECT a FROM Address a JOIN a.certificates c WHERE");
 
+        CertificateType official = CertificateType.OFFICIAL;
         // Añadir condiciones dinámicamente
         List<String> conditions = new ArrayList<>();
+        conditions.add("c.certificateType = :" + official + " AND");
         for (String key : parameters.keySet()) {
             conditions.add("c." + key + " = :" + key);
         }
