@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculatorResultsDTO;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -36,4 +37,18 @@ public interface CustomCertificateRepository {
     float calculateBaseIoACS(int acsAprox, String buildingUse);
 
     float calculateBaseIoLighting(int lightingAprox, String buildingUse);
+
+    CalculatorResultsDTO calculateQualifications(String climateZone, String buildingUse,
+                                                 int nonRenewablePrimaryEnergyAprox,
+                                                 boolean solarThermal, boolean photovoltaicSolar, boolean biomass,
+                                                 boolean districtNet, boolean geothermal, float insulation,
+                                                 float windowEfficiency, float heatingEmissionsInitial,
+                                                 float refrigerationEmissionsInitial, float acsEmissionsInitial,
+                                                 float lightingEmissionsInitial, float residentialUseVentilation);
+
+    float calculateAproxInsulation(int insulation, String buildingUse);
+
+    float calculateAproxWindowEfficiciency(int windowEfficiency, String buildingUse);
+
+    float calculateAproxResidentialUseVentilation(int residentialUseVentilation, String buildingUse);
 }

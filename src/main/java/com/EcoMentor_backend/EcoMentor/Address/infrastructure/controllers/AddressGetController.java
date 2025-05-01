@@ -7,6 +7,9 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByBoundingBoxU
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByProvinceUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByTownUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllProvincesUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllRegionsUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllTownsUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAverageValuesInAZonUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetFilterAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesEmissionsUseCase;
@@ -14,13 +17,18 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesEnergyUseC
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesPerformanceUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesQualificationUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesRenewableUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetMultipleFiltersAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetNearAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOBestQualification;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AverageValuesDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.FilterRequestDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.GraphicDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.GraphicDTOQualification;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.ProvincesDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.RegionsDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.TownsDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +39,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,6 +64,10 @@ public class AddressGetController {
     private final GetGraphValuesEmissionsUseCase getGraphValuesEmissionsUseCase;
     private final GetGraphValuesQualificationUseCase getGraphValuesQualificationUseCase;
     private final GetGraphValuesRenewableUseCase getGraphValuesRenewableUseCase;
+    private final GetAllTownsUseCase getAllTownsUseCase;
+    private final GetAllProvincesUseCase getAllProvincesUseCase;
+    private final GetAllRegionsUseCase getAllRegionsUseCase;
+    private final GetMultipleFiltersAddressUseCase getMultipleFiltersAddressUseCase;
 
     @GetMapping
     public ResponseEntity<Page<AddressDTO>> getAllAddress(@RequestParam(defaultValue = "0") int page,
@@ -72,6 +85,26 @@ public class AddressGetController {
         }
 
         return ResponseEntity.ok(address);
+    }
+
+    @GetMapping("/distinct/towns")
+    public ResponseEntity<TownsDTO> getAllTowns() {
+        TownsDTO dto = getAllTownsUseCase.execute();
+        return ResponseEntity.ok(dto);
+    }
+
+
+    @GetMapping("/distinct/provinces")
+    public ResponseEntity<ProvincesDTO> getAllProvinces() {
+        ProvincesDTO dto = getAllProvincesUseCase.execute();
+        return ResponseEntity.ok(dto);
+    }
+
+
+    @GetMapping("/distinct/regions")
+    public ResponseEntity<RegionsDTO> getAllRegions() {
+        RegionsDTO dto = getAllRegionsUseCase.execute();
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/graphValuesPerformance")
@@ -184,6 +217,25 @@ public class AddressGetController {
         return ResponseEntity.ok(address);
     }
 
+    @GetMapping("/multiplefilters")
+    public ResponseEntity<List<AddressDTOSimple>> getMultipleFiltersAddressUseCase(@RequestBody FilterRequestDTO
+                                                                                               requestBody) {
+
+        List<AddressDTOSimple> addresses = getMultipleFiltersAddressUseCase.execute(
+                requestBody.getFilters(),
+                requestBody.getMinLatitude(),
+                requestBody.getMaxLatitude(),
+                requestBody.getMinLongitude(),
+                requestBody.getMaxLongitude()
+        );
+
+        if (addresses.isEmpty()) {
+            return ResponseEntity.noContent().build(); // O .notFound().build() si prefieres
+        }
+
+        return ResponseEntity.ok(addresses);
+    }
+
 
     @Tag(name = "Best building certifications by area", description = "Endpoints to query addresses")
     @GetMapping("/bestQualification")
@@ -231,8 +283,6 @@ public class AddressGetController {
         }
         return ResponseEntity.ok(address);
     }
-
-
 
 
 }

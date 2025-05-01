@@ -1,8 +1,37 @@
 package com.EcoMentor_backend.EcoMentor.TestAddress.infraestructure.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.EcoMentor_backend.EcoMentor.Address.infrastructure.controllers.AddressGetController;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.*;
-import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.*;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByAddressIdUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByBestQualificationUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByBoundingBoxUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByProvinceUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAddressByTownUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAverageValuesInAZonUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetFilterAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesEmissionsUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesEnergyUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesPerformanceUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesQualificationUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetGraphValuesRenewableUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetMultipleFiltersAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.GetNearAddressUseCase;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOBestQualification;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AverageValuesDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.FilterRequestDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.GraphicDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.GraphicDTOQualification;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,221 +40,263 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Collections;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+
+
 
 public class AddressGetControllerTest {
 
-@Mock private GetAddressByAddressIdUseCase getAddressByAddressIdUseCase;
-@Mock private GetAllAddressUseCase getAllAddressUseCase;
-@Mock private GetNearAddressUseCase getNearAddressUseCase;
-@Mock private GetAddressByProvinceUseCase getAddressByProvinceUseCase;
-@Mock private GetAddressByTownUseCase getAddressByTownUseCase;
-@Mock private GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase;
-@Mock private GetFilterAddressUseCase getFilterAddressUseCase;
-@Mock private GetAddressByBestQualificationUseCase getAddressByBestQualification;
-@Mock private GetAverageValuesInAZonUseCase getAverageValuesInAZonUseCase;
-@Mock private GetGraphValuesPerformanceUseCase getGraphValuesPerformanceUseCase;
-@Mock private GetGraphValuesEnergyUseCase getGraphValuesEnergyUseCase;
-@Mock private GetGraphValuesEmissionsUseCase getGraphValuesEmissionsUseCase;
-@Mock private GetGraphValuesQualificationUseCase getGraphValuesQualificationUseCase;
-@Mock private GetGraphValuesRenewableUseCase getGraphValuesRenewableUseCase;
 
-@InjectMocks
-private AddressGetController addressGetController;
+    @Mock private GetAddressByAddressIdUseCase getAddressByAddressIdUseCase;
+    @Mock private GetAllAddressUseCase getAllAddressUseCase;
+    @Mock private GetNearAddressUseCase getNearAddressUseCase;
+    @Mock private GetAddressByProvinceUseCase getAddressByProvinceUseCase;
+    @Mock private GetAddressByTownUseCase getAddressByTownUseCase;
+    @Mock private GetAddressByBoundingBoxUseCase getAddressByBoundingBoxUseCase;
+    @Mock private GetFilterAddressUseCase getFilterAddressUseCase;
+    @Mock private GetAddressByBestQualificationUseCase getAddressByBestQualification;
+    @Mock private GetAverageValuesInAZonUseCase getAverageValuesInAZonUseCase;
+    @Mock private GetGraphValuesPerformanceUseCase getGraphValuesPerformanceUseCase;
+    @Mock private GetGraphValuesEnergyUseCase getGraphValuesEnergyUseCase;
+    @Mock private GetGraphValuesEmissionsUseCase getGraphValuesEmissionsUseCase;
+    @Mock private GetGraphValuesQualificationUseCase getGraphValuesQualificationUseCase;
+    @Mock private GetGraphValuesRenewableUseCase getGraphValuesRenewableUseCase;
+    @Mock private GetMultipleFiltersAddressUseCase getMultipleFiltersAddressUseCase;
 
-@BeforeEach
-public void setUp() {
-    MockitoAnnotations.openMocks(this);
-}
+    @InjectMocks
+    private AddressGetController addressGetController;
 
-@Test
-void testGetAllAddressWithPagination() {
-    int page = 0, size = 10;
-    String sort = "addressId";
-    Page<AddressDTO> addressPage = mock(Page.class);
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
-    when(getAllAddressUseCase.execute(page, size, sort)).thenReturn(addressPage);
+    @Test
+    void testGetAllAddressWithPagination() {
+        int page = 0;
+        int size = 10;
+        String sort = "addressId";
+        Page<AddressDTO> addressPage = mock(Page.class);
 
-    ResponseEntity<Page<AddressDTO>> response = addressGetController.getAllAddress(page, size, sort);
+        when(getAllAddressUseCase.execute(page, size, sort)).thenReturn(addressPage);
 
-    assertEquals(ResponseEntity.ok(addressPage), response);
-    verify(getAllAddressUseCase).execute(page, size, sort);
-}
+        ResponseEntity<Page<AddressDTO>> response = addressGetController.getAllAddress(page, size, sort);
 
-@Test
-void testGetAddress() {
-    Long addressId = 1L;
-    AddressDTO addressDTO = new AddressDTO();
+        assertEquals(ResponseEntity.ok(addressPage), response);
+        verify(getAllAddressUseCase).execute(page, size, sort);
+    }
 
-    when(getAddressByAddressIdUseCase.execute(addressId)).thenReturn(addressDTO);
+    @Test
+    void testGetAddress() {
+        Long addressId = 1L;
+        AddressDTO addressDTO = new AddressDTO();
 
-    ResponseEntity<AddressDTO> response = addressGetController.getAddress(addressId);
+        when(getAddressByAddressIdUseCase.execute(addressId)).thenReturn(addressDTO);
 
-    assertEquals(ResponseEntity.ok(addressDTO), response);
-    verify(getAddressByAddressIdUseCase).execute(addressId);
-}
+        ResponseEntity<AddressDTO> response = addressGetController.getAddress(addressId);
 
-@Test
-void testGetNearAddress() {
-    double radius = 10.0, latitude = 40.0, longitude = -3.0;
-    List<AddressDTO> addressList = Collections.singletonList(new AddressDTO());
+        assertEquals(ResponseEntity.ok(addressDTO), response);
+        verify(getAddressByAddressIdUseCase).execute(addressId);
+    }
 
-    when(getNearAddressUseCase.execute(radius, latitude, longitude)).thenReturn(addressList);
+    @Test
+    void testGetNearAddress() {
+        double radius = 10.0;
+        double latitude = 40.0;
+        double longitude = -3.0;
+        List<AddressDTO> addressList = Collections.singletonList(new AddressDTO());
 
-    ResponseEntity<List<AddressDTO>> response = addressGetController.getNearAddress(radius, latitude, longitude);
+        when(getNearAddressUseCase.execute(radius, latitude, longitude)).thenReturn(addressList);
 
-    assertEquals(ResponseEntity.ok(addressList), response);
-    verify(getNearAddressUseCase).execute(radius, latitude, longitude);
-}
+        ResponseEntity<List<AddressDTO>> response = addressGetController.getNearAddress(radius, latitude, longitude);
 
-@Test
-void testGetAddressByProvince() {
-    String province = "Sample Province";
-    List<AddressDTO> addressList = Collections.singletonList(new AddressDTO());
+        assertEquals(ResponseEntity.ok(addressList), response);
+        verify(getNearAddressUseCase).execute(radius, latitude, longitude);
+    }
 
-    when(getAddressByProvinceUseCase.execute(province)).thenReturn(addressList);
+    @Test
+    void testGetAddressByProvince() {
+        String province = "Sample Province";
+        List<AddressDTO> addressList = Collections.singletonList(new AddressDTO());
 
-    ResponseEntity<List<AddressDTO>> response = addressGetController.getAddressByProvince(province);
+        when(getAddressByProvinceUseCase.execute(province)).thenReturn(addressList);
 
-    assertEquals(ResponseEntity.ok(addressList), response);
-    verify(getAddressByProvinceUseCase).execute(province);
-}
+        ResponseEntity<List<AddressDTO>> response = addressGetController.getAddressByProvince(province);
 
-@Test
-void testGetAddressByTown() {
-    String town = "Sample Town";
-    List<AddressDTO> addressList = Collections.singletonList(new AddressDTO());
+        assertEquals(ResponseEntity.ok(addressList), response);
+        verify(getAddressByProvinceUseCase).execute(province);
+    }
 
-    when(getAddressByTownUseCase.execute(town)).thenReturn(addressList);
+    @Test
+    void testGetAddressByTown() {
+        String town = "Sample Town";
+        List<AddressDTO> addressList = Collections.singletonList(new AddressDTO());
 
-    ResponseEntity<List<AddressDTO>> response = addressGetController.getAddressByTown(town);
+        when(getAddressByTownUseCase.execute(town)).thenReturn(addressList);
 
-    assertEquals(ResponseEntity.ok(addressList), response);
-    verify(getAddressByTownUseCase).execute(town);
-}
+        ResponseEntity<List<AddressDTO>> response = addressGetController.getAddressByTown(town);
 
-@Test
-void testGetAddressByBoundingBox() {
-    double minLat = 40.0, maxLat = 41.0, minLng = -3.0, maxLng = -2.0;
-    List<AddressDTOSimple> addressList = Collections.singletonList(new AddressDTOSimple());
+        assertEquals(ResponseEntity.ok(addressList), response);
+        verify(getAddressByTownUseCase).execute(town);
+    }
 
-    when(getAddressByBoundingBoxUseCase.execute(minLat, maxLat, minLng, maxLng)).thenReturn(addressList);
+    @Test
+    void testGetAddressByBoundingBox() {
+        double minLat = 40.0;
+        double maxLat = 41.0;
+        double minLng = -3.0;
+        double maxLng = -2.0;
+        List<AddressDTOSimple> addressList = Collections.singletonList(new AddressDTOSimple());
 
-    ResponseEntity<List<AddressDTOSimple>> response = addressGetController.getOfficialCertificatesByAddressBoundingBox(
-            minLat, maxLat, minLng, maxLng);
+        when(getAddressByBoundingBoxUseCase.execute(minLat, maxLat, minLng, maxLng)).thenReturn(addressList);
 
-    assertEquals(ResponseEntity.ok(addressList), response);
-    verify(getAddressByBoundingBoxUseCase).execute(minLat, maxLat, minLng, maxLng);
-}
+        ResponseEntity<List<AddressDTOSimple>> response = addressGetController
+                .getOfficialCertificatesByAddressBoundingBox(minLat, maxLat, minLng, maxLng);
 
-@Test
-void testGetAddressByFilter() {
-    String parameter = "town", value = "Sample Town";
-    double minLat = 40.0, maxLat = 41.0, minLng = -3.0, maxLng = -2.0;
-    List<AddressDTOSimple> addressList = Collections.singletonList(new AddressDTOSimple());
+        assertEquals(ResponseEntity.ok(addressList), response);
+        verify(getAddressByBoundingBoxUseCase).execute(minLat, maxLat, minLng, maxLng);
+    }
 
-    when(getFilterAddressUseCase.execute(parameter, value, minLat, maxLat, minLng, maxLng)).thenReturn(addressList);
+    @Test
+    void testGetAddressByFilter() {
+        String parameter = "town";
+        String value = "Sample Town";
+        double minLat = 40.0;
+        double maxLat = 41.0;
+        double minLng = -3.0;
+        double maxLng = -2.0;
+        List<AddressDTOSimple> addressList = Collections.singletonList(new AddressDTOSimple());
 
-    ResponseEntity<List<AddressDTOSimple>> response = addressGetController.getAddressByFilter(
-            parameter, value, minLat, maxLat, minLng, maxLng);
+        when(getFilterAddressUseCase.execute(parameter, value, minLat, maxLat, minLng, maxLng)).thenReturn(addressList);
 
-    assertEquals(ResponseEntity.ok(addressList), response);
-    verify(getFilterAddressUseCase).execute(parameter, value, minLat, maxLat, minLng, maxLng);
-}
+        ResponseEntity<List<AddressDTOSimple>> response = addressGetController.getAddressByFilter(
+                parameter, value, minLat, maxLat, minLng, maxLng);
 
-@Test
-void testGetAddressByBestQualification() {
-    String town = "Sample Town";
-    Integer zipcode = 12345;
-    Double latitude = 40.0, longitude = -3.0;
-    Integer radius = 5;
-    List<AddressDTOBestQualification> addressList = Collections.singletonList(new AddressDTOBestQualification());
+        assertEquals(ResponseEntity.ok(addressList), response);
+        verify(getFilterAddressUseCase).execute(parameter, value, minLat, maxLat, minLng, maxLng);
+    }
 
-    when(getAddressByBestQualification.execute(town, zipcode, latitude, longitude, radius))
-            .thenReturn(addressList);
+    @Test
+    void testGetAddressByBestQualification() {
+        String town = "Sample Town";
+        Integer zipcode = 12345;
+        Double latitude = 40.0;
+        Double longitude = -3.0;
+        Integer radius = 5;
+        List<AddressDTOBestQualification> addressList = Collections.singletonList(new AddressDTOBestQualification());
 
-    ResponseEntity<List<AddressDTOBestQualification>> response = addressGetController.getAddressByBestQualification(
-            town, zipcode, latitude, longitude, radius);
+        when(getAddressByBestQualification.execute(town, zipcode, latitude, longitude, radius))
+                .thenReturn(addressList);
 
-    assertEquals(ResponseEntity.ok(addressList), response);
-    verify(getAddressByBestQualification).execute(town, zipcode, latitude, longitude, radius);
-}
+        ResponseEntity<List<AddressDTOBestQualification>> response = addressGetController.getAddressByBestQualification(
+                town, zipcode, latitude, longitude, radius);
 
-@Test
-void testGetAverageValuesInAZon() {
-    Double latitude = 40.0, longitude = -3.0;
-    Integer radius = 5;
-    AverageValuesDTO averageValuesDTO = new AverageValuesDTO();
+        assertEquals(ResponseEntity.ok(addressList), response);
+        verify(getAddressByBestQualification).execute(town, zipcode, latitude, longitude, radius);
+    }
 
-    when(getAverageValuesInAZonUseCase.execute(latitude, longitude, radius)).thenReturn(averageValuesDTO);
+    @Test
+    void testGetAverageValuesInAZon() {
+        Double latitude = 40.0;
+        Double longitude = -3.0;
+        Integer radius = 5;
+        AverageValuesDTO averageValuesDTO = new AverageValuesDTO();
 
-    ResponseEntity<AverageValuesDTO> response = addressGetController.getAverageValuesInAZon(latitude, longitude, radius);
+        when(getAverageValuesInAZonUseCase.execute(latitude, longitude, radius)).thenReturn(averageValuesDTO);
 
-    assertEquals(ResponseEntity.ok(averageValuesDTO), response);
-    verify(getAverageValuesInAZonUseCase).execute(latitude, longitude, radius);
-}
+        ResponseEntity<AverageValuesDTO> response = addressGetController
+                .getAverageValuesInAZon(latitude, longitude, radius);
 
-@Test
-void testGetGraphValuesPerformance() {
-    List<GraphicDTO> graphics = Collections.singletonList(new GraphicDTO());
+        assertEquals(ResponseEntity.ok(averageValuesDTO), response);
+        verify(getAverageValuesInAZonUseCase).execute(latitude, longitude, radius);
+    }
 
-    when(getGraphValuesPerformanceUseCase.execute(null, null, null)).thenReturn(graphics);
+    @Test
+    void testGetGraphValuesPerformance() {
+        List<GraphicDTO> graphics = Collections.singletonList(new GraphicDTO());
 
-    ResponseEntity<List<GraphicDTO>> response = addressGetController.getGraphValuesPerformance(null, null, null);
+        when(getGraphValuesPerformanceUseCase.execute(null, null, null)).thenReturn(graphics);
 
-    assertEquals(ResponseEntity.ok(graphics), response);
-    verify(getGraphValuesPerformanceUseCase).execute(null, null, null);
-}
+        ResponseEntity<List<GraphicDTO>> response = addressGetController.getGraphValuesPerformance(null, null, null);
 
-@Test
-void testGetGraphValuesEnergy() {
-    List<GraphicDTO> graphics = Collections.singletonList(new GraphicDTO());
+        assertEquals(ResponseEntity.ok(graphics), response);
+        verify(getGraphValuesPerformanceUseCase).execute(null, null, null);
+    }
 
-    when(getGraphValuesEnergyUseCase.execute(null, null, null)).thenReturn(graphics);
+    @Test
+    void testGetGraphValuesEnergy() {
+        List<GraphicDTO> graphics = Collections.singletonList(new GraphicDTO());
 
-    ResponseEntity<List<GraphicDTO>> response = addressGetController.getGraphValuesEnergy(null, null, null);
+        when(getGraphValuesEnergyUseCase.execute(null, null, null)).thenReturn(graphics);
 
-    assertEquals(ResponseEntity.ok(graphics), response);
-    verify(getGraphValuesEnergyUseCase).execute(null, null, null);
-}
+        ResponseEntity<List<GraphicDTO>> response = addressGetController.getGraphValuesEnergy(null, null, null);
 
-@Test
-void testGetGraphValuesEmissions() {
-    List<GraphicDTO> graphics = Collections.singletonList(new GraphicDTO());
+        assertEquals(ResponseEntity.ok(graphics), response);
+        verify(getGraphValuesEnergyUseCase).execute(null, null, null);
+    }
 
-    when(getGraphValuesEmissionsUseCase.execute(null, null, null)).thenReturn(graphics);
+    @Test
+    void testGetGraphValuesEmissions() {
+        List<GraphicDTO> graphics = Collections.singletonList(new GraphicDTO());
 
-    ResponseEntity<List<GraphicDTO>> response = addressGetController.getGraphValuesEmissions(null, null, null);
+        when(getGraphValuesEmissionsUseCase.execute(null, null, null)).thenReturn(graphics);
 
-    assertEquals(ResponseEntity.ok(graphics), response);
-    verify(getGraphValuesEmissionsUseCase).execute(null, null, null);
-}
+        ResponseEntity<List<GraphicDTO>> response = addressGetController.getGraphValuesEmissions(null, null, null);
 
-@Test
-void testGetGraphValuesQualification() {
-    List<GraphicDTOQualification> graphics = Collections.singletonList(new GraphicDTOQualification());
+        assertEquals(ResponseEntity.ok(graphics), response);
+        verify(getGraphValuesEmissionsUseCase).execute(null, null, null);
+    }
 
-    when(getGraphValuesQualificationUseCase.execute(null, null, null)).thenReturn(graphics);
+    @Test
+    void testGetGraphValuesQualification() {
+        List<GraphicDTOQualification> graphics = Collections.singletonList(new GraphicDTOQualification());
 
-    ResponseEntity<List<GraphicDTOQualification>> response = addressGetController.getGraphValuesQualification(null, null, null);
+        when(getGraphValuesQualificationUseCase.execute(null, null, null)).thenReturn(graphics);
 
-    assertEquals(ResponseEntity.ok(graphics), response);
-    verify(getGraphValuesQualificationUseCase).execute(null, null, null);
-}
+        ResponseEntity<List<GraphicDTOQualification>> response = addressGetController
+                .getGraphValuesQualification(null, null, null);
 
-@Test
-void testGetGraphValuesRenewable() {
-    List<GraphicDTO> graphics = Collections.singletonList(new GraphicDTO());
+        assertEquals(ResponseEntity.ok(graphics), response);
+        verify(getGraphValuesQualificationUseCase).execute(null, null, null);
+    }
 
-    when(getGraphValuesRenewableUseCase.execute(null, null, null)).thenReturn(graphics);
+    @Test
+    void testGetGraphValuesRenewable() {
+        List<GraphicDTO> graphics = Collections.singletonList(new GraphicDTO());
 
-    ResponseEntity<List<GraphicDTO>> response = addressGetController.getGraphValuesRenewable(null, null, null);
+        when(getGraphValuesRenewableUseCase.execute(null, null, null)).thenReturn(graphics);
 
-    assertEquals(ResponseEntity.ok(graphics), response);
-    verify(getGraphValuesRenewableUseCase).execute(null, null, null);
-}
+        ResponseEntity<List<GraphicDTO>> response = addressGetController.getGraphValuesRenewable(null, null, null);
+
+        assertEquals(ResponseEntity.ok(graphics), response);
+        verify(getGraphValuesRenewableUseCase).execute(null, null, null);
+    }
+
+    @Test
+    public void testGetMultipleFiltersAddressUseCase() {
+        // Datos de prueba
+        Map<String, String> filters = Map.of("key1", "value1", "key2", "value2");
+        double minLatitude = 10.0;
+        double maxLatitude = 20.0;
+        double minLongitude = 30.0;
+        double maxLongitude = 40.0;
+
+        FilterRequestDTO requestDTO = new FilterRequestDTO(filters, minLatitude, maxLatitude,
+                minLongitude, maxLongitude);
+        List<AddressDTOSimple> expectedAddresses = Collections.singletonList(new AddressDTOSimple());
+
+        // Configuración del mock
+        when(getMultipleFiltersAddressUseCase.execute(filters, minLatitude, maxLatitude, minLongitude, maxLongitude))
+                .thenReturn(expectedAddresses);
+
+        // Ejecución del método
+        ResponseEntity<List<AddressDTOSimple>> response = addressGetController
+                .getMultipleFiltersAddressUseCase(requestDTO);
+
+        // Verificaciones
+        assertEquals(ResponseEntity.ok(expectedAddresses), response);
+        verify(getMultipleFiltersAddressUseCase, times(1))
+                .execute(filters, minLatitude, maxLatitude, minLongitude, maxLongitude);
+    }
+
 }
