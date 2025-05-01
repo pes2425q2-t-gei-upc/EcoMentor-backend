@@ -31,6 +31,11 @@ public class AddOfficialCertificateToUserByDocumentIdUseCase {
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
+
+        if (user.getCertificates().contains(officialCertificate)) {
+            throw new IllegalArgumentException("User already has this official certificate");
+        }
+
         officialCertificate.getUsers().add(user);
         user.getCertificates().add(officialCertificate);
 
