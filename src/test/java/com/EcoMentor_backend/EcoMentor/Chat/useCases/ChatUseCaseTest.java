@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import com.EcoMentor_backend.EcoMentor.Chat.entity.Chat;
 import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.repositories.ChatRepository;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
+import com.EcoMentor_backend.EcoMentor.Shared.EmailService;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import com.EcoMentor_backend.EcoMentor.User.useCases.IncreaseWarningUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +26,15 @@ private ChatRepository chatRepository;
 private UserRepository userRepository;
 private ChatUseCase chatUseCase;
 private IncreaseWarningUseCase increaseWarningUseCase;
+private EmailService emailService;
 
 @BeforeEach
 void setUp() {
     geminiService = mock(GeminiService.class);
     chatRepository = mock(ChatRepository.class);
     userRepository = mock(UserRepository.class);
-    chatUseCase = new ChatUseCase(geminiService, chatRepository, userRepository, increaseWarningUseCase);
+    increaseWarningUseCase = mock(IncreaseWarningUseCase.class);
+    chatUseCase = new ChatUseCase(geminiService, chatRepository, userRepository, increaseWarningUseCase, emailService);
 }
 
     @Test
