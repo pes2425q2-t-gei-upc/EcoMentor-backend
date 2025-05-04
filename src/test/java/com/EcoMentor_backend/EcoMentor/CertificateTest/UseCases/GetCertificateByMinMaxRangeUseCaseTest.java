@@ -1,6 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.CertificateTest.UseCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,12 +12,15 @@ import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByMinM
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 
 public class GetCertificateByMinMaxRangeUseCaseTest {
@@ -42,19 +46,17 @@ public class GetCertificateByMinMaxRangeUseCaseTest {
     }
 
     @Test
-    public void testExecute() {
-        List<Certificate> certificates = new ArrayList<>();
-
-
+    public void testThrowsNotFoundWhenNoCertificatesInRange() {
         when(certificateRepository.convertToCorrectType("parameter", "min")).thenReturn(1);
         when(certificateRepository.convertToCorrectType("parameter", "max")).thenReturn(10);
-        when(certificateRepository.findCertificateByMinMaxRange("parameter", 1, 10)).thenReturn(certificates);
-        when(certificateMapper.toDTOW(certificate)).thenReturn(certificateWithoutForeignEntitiesDTO);
-        List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
-        List<CertificateWithoutForeignEntitiesDTO> result = getCertificateByMinMaxRangeUseCase.execute("parameter",
-                "min", "max");
+        when(certificateRepository.findCertificateByMinMaxRange("parameter", 1, 10))
+                .thenReturn(Collections.emptyList());
 
-        assertEquals(certificateDTOS.size(), result.size());
-        verify(certificateRepository, times(1)).findCertificateByMinMaxRange("parameter", 1, 10);
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            getCertificateByMinMaxRangeUseCase.execute("parameter", "min", "max");
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
+
 }

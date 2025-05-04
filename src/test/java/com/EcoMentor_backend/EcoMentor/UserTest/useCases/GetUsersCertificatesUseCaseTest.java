@@ -19,7 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 
 class GetUsersCertificatesUseCaseTest {
@@ -68,10 +69,15 @@ class GetUsersCertificatesUseCaseTest {
     }
 
     @Test
-    @DisplayName("Should throw exception when user is not found")
-    void shouldThrowExceptionWhenUserIsNotFound() {
+    @DisplayName("Should throw ResponseStatusException when user is not found")
+    void shouldThrowResponseStatusExceptionWhenUserIsNotFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> getUsersCertificatesUseCase.execute(1L));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            getUsersCertificatesUseCase.execute(1L);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
+
 }

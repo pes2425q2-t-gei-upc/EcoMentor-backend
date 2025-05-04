@@ -5,9 +5,11 @@ import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UpdateUserDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
@@ -20,7 +22,8 @@ public class UpdateSelfUseCase {
     public User execute(UpdateUserDTO user, String token) {
 
         User self = userRepository.findByEmail(tokenProvider.getUsernameFromToken(token))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "User not found"));
         self.setName(user.getName());
         userRepository.save(self);
         System.out.println("User with email" + self.getEmail() + " has been updated");

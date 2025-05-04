@@ -1,15 +1,20 @@
 version: '3.8'
 services:
-#backend part
+  #backend part
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - mongo
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
+      - DB_HOST=postgres
+      - MONGO_HOST=mongo
 
-  #backend:
-  #  build: .
-  #  ports:
-  #    - "8080:8080"
-  #  depends_on:
-  #    - postgres
-
-#DB part
+  #DB part
   postgres:
     image: postgis/postgis:15-3.3
     ports:
@@ -21,6 +26,17 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
+  mongo:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: EcoMentorChat
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+    volumes:
+      - mongo-data:/data/db
 
 volumes:
- postgres-data:
+  postgres-data:
+  mongo-data:

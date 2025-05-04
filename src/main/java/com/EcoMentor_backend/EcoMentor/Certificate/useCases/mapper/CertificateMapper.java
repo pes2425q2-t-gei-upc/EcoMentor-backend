@@ -4,12 +4,16 @@ import com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories.Addre
 import com.EcoMentor_backend.EcoMentor.Address.useCases.mapper.AddressMapper;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.UnofficialCertificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateOfficialCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateUnofficialCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.OfficialCertificateWFEDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.UnofficialCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.UnofficialCertificateWFEDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.repositories.RecommendationRepository;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.mapper.RecommendationMapper;
 import java.util.stream.Collectors;
@@ -74,6 +78,43 @@ public class CertificateMapper {
                     .energeticRehabilitation(officialCertificate.isEnergeticRehabilitation())
                     .entryDate(officialCertificate.getEntryDate())
                     .build();
+        } else if (certificate instanceof UnofficialCertificate unofficialCertificate) {
+            return UnofficialCertificateWFEDTO.builder()
+                    .certificateId(unofficialCertificate.getCertificateId())
+                    .certificateType(unofficialCertificate.getCertificateType())
+                    .floor(unofficialCertificate.getFloor())
+                    .door(unofficialCertificate.getDoor())
+                    .climateZone(unofficialCertificate.getClimateZone())
+                    .cadastreMeters(unofficialCertificate.getCadastreMeters())
+                    .buildingYear(unofficialCertificate.getBuildingYear())
+                    .buildingUse(unofficialCertificate.getBuildingUse())
+                    .nonRenewablePrimaryQualification(unofficialCertificate.getNonRenewablePrimaryQualification())
+                    .nonRenewablePrimaryEnergy(unofficialCertificate.getNonRenewablePrimaryEnergy())
+                    .co2Qualification(unofficialCertificate.getCo2Qualification())
+                    .co2Emissions(unofficialCertificate.getCo2Emissions())
+                    .finalEnergyConsumption(unofficialCertificate.getFinalEnergyConsumption())
+                    .annualCost(unofficialCertificate.getAnnualCost())
+                    .electricVehicle(unofficialCertificate.isElectricVehicle())
+                    .solarThermal(unofficialCertificate.isSolarThermal())
+                    .photovoltaicSolar(unofficialCertificate.isPhotovoltaicSolar())
+                    .biomass(unofficialCertificate.isBiomass())
+                    .districtNet(unofficialCertificate.isDistrictNet())
+                    .geothermal(unofficialCertificate.isGeothermal())
+                    .insulation(unofficialCertificate.getInsulation())
+                    .windowEfficiency(unofficialCertificate.getWindowEfficiency())
+                    .heatingQualification(unofficialCertificate.getHeatingQualification())
+                    .heatingEmissions(unofficialCertificate.getHeatingEmissions())
+                    .refrigerationQualification(unofficialCertificate.getRefrigerationQualification())
+                    .refrigerationEmissions(unofficialCertificate.getRefrigerationEmissions())
+                    .acsQualification(unofficialCertificate.getAcsQualification())
+                    .acsEmissions(unofficialCertificate.getAcsEmissions())
+                    .lightingQualification(unofficialCertificate.getLightingQualification())
+                    .lightingEmissions(unofficialCertificate.getLightingEmissions())
+                    .residentialUseVentilation(unofficialCertificate.getResidentialUseVentilation())
+                    .energeticRehabilitation(unofficialCertificate.isEnergeticRehabilitation())
+                    .creationDate(unofficialCertificate.getCreationDate())
+                    .build();
+
         } else {
             return CertificateWithoutForeignEntitiesDTO.builder()
                     .certificateId(certificate.getCertificateId())
@@ -127,6 +168,46 @@ public class CertificateMapper {
                     .energeticRehabilitation(officialCertificate.isEnergeticRehabilitation())
                     .entryDate(officialCertificate.getEntryDate())
                     .build();
+        } else if (certificate instanceof UnofficialCertificate unofficialCertificate) {
+            return UnofficialCertificateDTO.builder()
+                    .certificateId(unofficialCertificate.getCertificateId())
+                    .addressDTO(addressMapper.toDTOWithoutCertificate(unofficialCertificate.getAddress()))
+                    .certificateType(unofficialCertificate.getCertificateType())
+                    .recommendations(unofficialCertificate.getRecommendations().stream()
+                            .map(recommendationMapper::toDTO).collect(Collectors.toList()))
+                    .floor(unofficialCertificate.getFloor())
+                    .door(unofficialCertificate.getDoor())
+                    .climateZone(unofficialCertificate.getClimateZone())
+                    .cadastreMeters(unofficialCertificate.getCadastreMeters())
+                    .buildingYear(unofficialCertificate.getBuildingYear())
+                    .buildingUse(unofficialCertificate.getBuildingUse())
+                    .nonRenewablePrimaryQualification(unofficialCertificate
+                            .getNonRenewablePrimaryQualification())
+                    .nonRenewablePrimaryEnergy(unofficialCertificate.getNonRenewablePrimaryEnergy())
+                    .co2Qualification(unofficialCertificate.getCo2Qualification())
+                    .co2Emissions(unofficialCertificate.getCo2Emissions())
+                    .finalEnergyConsumption(unofficialCertificate.getFinalEnergyConsumption())
+                    .annualCost(unofficialCertificate.getAnnualCost())
+                    .electricVehicle(unofficialCertificate.isElectricVehicle())
+                    .solarThermal(unofficialCertificate.isSolarThermal())
+                    .photovoltaicSolar(unofficialCertificate.isPhotovoltaicSolar())
+                    .biomass(unofficialCertificate.isBiomass())
+                    .districtNet(unofficialCertificate.isDistrictNet())
+                    .geothermal(unofficialCertificate.isGeothermal())
+                    .insulation(unofficialCertificate.getInsulation())
+                    .windowEfficiency(unofficialCertificate.getWindowEfficiency())
+                    .heatingQualification(unofficialCertificate.getHeatingQualification())
+                    .heatingEmissions(unofficialCertificate.getHeatingEmissions())
+                    .refrigerationQualification(unofficialCertificate.getRefrigerationQualification())
+                    .refrigerationEmissions(unofficialCertificate.getRefrigerationEmissions())
+                    .acsQualification(unofficialCertificate.getAcsQualification())
+                    .acsEmissions(unofficialCertificate.getAcsEmissions())
+                    .lightingQualification(unofficialCertificate.getLightingQualification())
+                    .lightingEmissions(unofficialCertificate.getLightingEmissions())
+                    .residentialUseVentilation(unofficialCertificate.getResidentialUseVentilation())
+                    .energeticRehabilitation(unofficialCertificate.isEnergeticRehabilitation())
+                    .creationDate(unofficialCertificate.getCreationDate()).build();
+
         } else {
             return CertificateDTO.builder()
                     .certificateId(certificate.getCertificateId())
@@ -183,6 +264,45 @@ public class CertificateMapper {
                     .energeticRehabilitation(createOfficialCertificateDTO.isEnergeticRehabilitation())
                     .entryDate(createOfficialCertificateDTO.getEntryDate())
                     .build();
+        } else if (dto instanceof CreateUnofficialCertificateDTO createUnofficialCertificateDTO) {
+            return UnofficialCertificate.builder()
+                     .address(addressRepository.findByAddressId(addressMapper.toEntity(createUnofficialCertificateDTO
+                             .getCreateAddressDTO()).getAddressId()))
+                     .certificateType(createUnofficialCertificateDTO.getCertificateType())
+                     .recommendations(createUnofficialCertificateDTO.getRecommendations())
+                     .floor(createUnofficialCertificateDTO.getFloor())
+                     .door(createUnofficialCertificateDTO.getDoor())
+                     .climateZone(createUnofficialCertificateDTO.getClimateZone())
+                     .cadastreMeters(createUnofficialCertificateDTO.getCadastreMeters())
+                     .buildingYear(createUnofficialCertificateDTO.getBuildingYear())
+                     .buildingUse(createUnofficialCertificateDTO.getBuildingUse())
+                     .nonRenewablePrimaryQualification(createUnofficialCertificateDTO
+                             .getNonRenewablePrimaryQualification())
+                     .nonRenewablePrimaryEnergy(createUnofficialCertificateDTO.getNonRenewablePrimaryEnergy())
+                     .co2Qualification(createUnofficialCertificateDTO.getCo2Qualification())
+                     .co2Emissions(createUnofficialCertificateDTO.getCo2Emissions())
+                     .finalEnergyConsumption(createUnofficialCertificateDTO.getFinalEnergyConsumption())
+                     .annualCost(createUnofficialCertificateDTO.getAnnualCost())
+                     .electricVehicle(createUnofficialCertificateDTO.isElectricVehicle())
+                     .solarThermal(createUnofficialCertificateDTO.isSolarThermal())
+                     .photovoltaicSolar(createUnofficialCertificateDTO.isPhotovoltaicSolar())
+                     .biomass(createUnofficialCertificateDTO.isBiomass())
+                     .districtNet(createUnofficialCertificateDTO.isDistrictNet())
+                     .geothermal(createUnofficialCertificateDTO.isGeothermal())
+                     .insulation(createUnofficialCertificateDTO.getInsulation())
+                     .windowEfficiency(createUnofficialCertificateDTO.getWindowEfficiency())
+                     .heatingQualification(createUnofficialCertificateDTO.getHeatingQualification())
+                     .heatingEmissions(createUnofficialCertificateDTO.getHeatingEmissions())
+                     .refrigerationQualification(createUnofficialCertificateDTO.getRefrigerationQualification())
+                     .refrigerationEmissions(createUnofficialCertificateDTO.getRefrigerationEmissions())
+                     .acsQualification(createUnofficialCertificateDTO.getAcsQualification())
+                     .acsEmissions(createUnofficialCertificateDTO.getAcsEmissions())
+                     .lightingQualification(createUnofficialCertificateDTO.getLightingQualification())
+                     .lightingEmissions(createUnofficialCertificateDTO.getLightingEmissions())
+                     .residentialUseVentilation(createUnofficialCertificateDTO.getResidentialUseVentilation())
+                     .energeticRehabilitation(createUnofficialCertificateDTO.isEnergeticRehabilitation())
+                     .creationDate(createUnofficialCertificateDTO.getCreationDate())
+                     .build();
         } else {
             return Certificate.builder()
                     .address(addressRepository.findByAddressId(addressMapper.toEntity(dto.getCreateAddressDTO())

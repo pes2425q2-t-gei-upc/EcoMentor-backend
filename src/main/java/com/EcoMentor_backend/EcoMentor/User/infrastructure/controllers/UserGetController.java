@@ -8,11 +8,15 @@ import com.EcoMentor_backend.EcoMentor.User.useCases.GetUserByIdUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.GetUsersCertificatesUseCase;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -37,16 +41,23 @@ public class UserGetController {
     }
 
     @GetMapping
-    public List<UserDTO> getAllUsers() {
-        return getAllUsersUseCase.execute();
+    @PreAuthorize("(hasRole('ROLE_ADMIN'))")
+    public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size,
+                                                    @RequestParam(defaultValue = "name") String sort) {
+
+        Page<UserDTO> users = getAllUsersUseCase.execute(page, size, sort);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/email/{email}")
+    @PreAuthorize("(hasRole('ROLE_ADMIN'))")
     public UserDTO getUserByEmail(@PathVariable String email) {
         return getByEmailUseCase.execute(email);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("(hasRole('ROLE_ADMIN'))")
     public UserDTO getUserById(@PathVariable long id) {
         return getUserByIdUseCase.execute(id);
     }

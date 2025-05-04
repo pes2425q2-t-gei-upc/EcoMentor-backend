@@ -1,60 +1,71 @@
 package com.EcoMentor_backend.EcoMentor.CertificateTest.UseCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetAllCertificatesUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import org.springframework.data.domain.*;
 
-
-
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class GetAllCertificatesUseCaseTest {
 
-    @Mock
-    private CertificateRepository certificateRepository;
+@Mock
+private CertificateRepository certificateRepository;
 
-    @Mock
-    private CertificateMapper certificateMapper;
+@Mock
+private CertificateMapper certificateMapper;
 
-    @InjectMocks
-    private GetAllCertificatesUseCase getAllCertificatesUseCase;
+@InjectMocks
+private GetAllCertificatesUseCase getAllCertificatesUseCase;
 
-    @Mock
-    private Certificate certificate;
+@BeforeEach
+void setUp() {
+    MockitoAnnotations.openMocks(this);
+}
+@Test
+void testExecute() {
+    // Arrange
+    int page = 0;
+    int size = 5;
+    String sortBy = "name";
 
-    @Mock
-    private CertificateWithoutForeignEntitiesDTO certificateWithoutForeignEntitiesDTO;
+    List<Certificate> certificates = IntStream.range(0, size)
+            .mapToObj(i -> new Certificate(/* inicializa con datos de prueba */))
+            .collect(Collectors.toList());
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+    Page<Certificate> certificatesPage = new PageImpl<>(certificates);
+    when(certificateRepository.findAll(any(Pageable.class))).thenReturn(certificatesPage);
 
-    @Test
-    public void testExecute() {
-        List<Certificate> certificates = new ArrayList<>();
-        List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
+    List<CertificateWithoutForeignEntitiesDTO> dtos = certificates.stream()
+            .map(c -> new CertificateWithoutForeignEntitiesDTO(/* inicializa con datos de prueba */))
+            .collect(Collectors.toList());
 
-        when(certificateRepository.findAll()).thenReturn(certificates);
-        when(certificateMapper.toDTOW(certificate)).thenReturn(certificateWithoutForeignEntitiesDTO);
+    when(certificateMapper.toDTOW(any(Certificate.class))).thenAnswer(invocation -> {
+        Certificate certificate = invocation.getArgument(0);
+        return new CertificateWithoutForeignEntitiesDTO(/* inicializa con datos de prueba */);
+    });
 
-        List<CertificateWithoutForeignEntitiesDTO> result = getAllCertificatesUseCase.execute();
+    // Act
+    Page<CertificateWithoutForeignEntitiesDTO> result = getAllCertificatesUseCase.execute(page, size, sortBy);
 
-        assertEquals(certificateDTOS.size(), result.size());
-        verify(certificateRepository, times(1)).findAll();
-    }
+    // Assert
+    assertEquals(dtos.size(), result.getContent().size());
+    verify(certificateRepository, times(1)).findAll(any(Pageable.class));
+    verify(certificateMapper, times(certificates.size())).toDTOW(any(Certificate.class));
+}
+
 }

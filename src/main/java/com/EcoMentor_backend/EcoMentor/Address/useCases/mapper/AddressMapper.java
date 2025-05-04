@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Address.useCases.mapper;
 
 import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
+import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOBestQualification;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOSimple;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTOWithoutCertificate;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
@@ -116,6 +117,21 @@ public class AddressMapper {
                 .town(address.getTown())
                 .region(address.getRegion())
                 .province(address.getProvince())
+                .longitude((float) address.getLocation().getX())
+                .latitude((float) address.getLocation().getY())
+                .build();
+    }
+
+
+    public AddressDTOBestQualification toDTOWithBestQualification(Address address) {
+        if (address == null) {
+            return null;
+        }
+        return AddressDTOBestQualification.builder()
+                .addressName(address.getAddressName())
+                .addressNumber(address.getAddressNumber())
+                .zipcode(address.getZipcode())
+                .town(address.getTown())
                 .longitude((float) address.getLocation().getX())
                 .latitude((float) address.getLocation().getY())
                 .build();

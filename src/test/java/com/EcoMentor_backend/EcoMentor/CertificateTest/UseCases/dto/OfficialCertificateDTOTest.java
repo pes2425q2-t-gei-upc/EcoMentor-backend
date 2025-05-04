@@ -25,7 +25,7 @@ public class OfficialCertificateDTOTest {
                 .certificateType(CertificateType.OFFICIAL)
                 .documentId("DOC123")
                 .climateZone("Zone1")
-                .cadastreMeters(100)
+                .cadastreMeters(100.0f)
                 .buildingYear(Year.of(2020))
                 .nonRenewablePrimaryQualification(Qualification.A)
                 .nonRenewablePrimaryEnergy(50.0f)

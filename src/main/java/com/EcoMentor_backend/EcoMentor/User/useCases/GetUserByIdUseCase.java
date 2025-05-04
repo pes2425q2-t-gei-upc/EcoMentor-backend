@@ -4,8 +4,10 @@ import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;
 import com.EcoMentor_backend.EcoMentor.User.useCases.mapper.UserMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
@@ -21,7 +23,7 @@ public class GetUserByIdUseCase {
     public UserDTO execute(long id) {
         User user = userRepository.findUserById(id);
         if (user == null) {
-            throw new RuntimeException("User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         return userMapper.toDTO(user);
     }

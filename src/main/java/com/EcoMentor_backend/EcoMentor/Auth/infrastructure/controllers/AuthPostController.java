@@ -6,6 +6,8 @@ import com.EcoMentor_backend.EcoMentor.Auth.useCases.RegisterUseCase;
 import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.AuthResponseDTO;
 import com.EcoMentor_backend.EcoMentor.Auth.useCases.dto.LoginDTO;
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.CreateUserDTO;
+import jakarta.mail.MessagingException;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,14 +26,15 @@ public class AuthPostController {
     private final LoginUseCase loginUseCase;
 
 
-    @PostMapping(value="login")
+    @PostMapping(value = "login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody @Validated LoginDTO loginDTO) {
         return ResponseEntity.ok(loginUseCase.execute(loginDTO));
     }
 
 
     @PostMapping(value = "register")
-    public ResponseEntity<AuthResponseDTO> register(@RequestBody @Validated CreateUserDTO user) {
+    public ResponseEntity<AuthResponseDTO> register(@RequestBody @Validated CreateUserDTO user)
+            throws MessagingException, IOException {
         return ResponseEntity.ok(registerUseCase.execute(user));
     }
 }

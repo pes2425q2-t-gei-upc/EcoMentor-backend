@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -50,42 +53,45 @@ void executeReturnsCertificatesWithinBounds() {
 }
 
 @Test
-void executeReturnsEmptyListWhenNoCertificatesFound() {
+void throwsExceptionWhenNoCertificatesFound() {
     when(certificateRepository.convertToCorrectType(anyString(), anyString())).thenReturn("correctValue");
     when(certificateRepository.findCertificateByParameter(anyString(), any(), anyDouble(), anyDouble(), anyDouble(),
             anyDouble()))
             .thenReturn(Collections.emptyList());
 
-    List<CertificateWithoutForeignEntitiesDTO> result = getCertificateByParameterUseCase.execute("parameter",
-            "value", 0.0, 10.0, 0.0, 10.0);
-
-    assertTrue(result.isEmpty());
+    assertThrows(ResponseStatusException.class, () -> {
+        getCertificateByParameterUseCase.execute("parameter", "value", 0.0, 10.0, 0.0, 10.0);
+    });
 }
 
+
 @Test
-void executeHandlesNullParameter() {
+void throwsNotFoundWhenNullParameterAndNoCertificatesFound() {
     when(certificateRepository.convertToCorrectType(anyString(), isNull())).thenReturn(null);
     when(certificateRepository.findCertificateByParameter(anyString(), isNull(), anyDouble(), anyDouble(), anyDouble(),
             anyDouble()))
             .thenReturn(Collections.emptyList());
 
-    List<CertificateWithoutForeignEntitiesDTO> result = getCertificateByParameterUseCase.execute("parameter",
-            null, 0.0, 10.0, 0.0, 10.0);
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+        getCertificateByParameterUseCase.execute("parameter", null, 0.0, 10.0, 0.0, 10.0);
+    });
 
-    assertTrue(result.isEmpty());
+    assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
 }
+
 
 @Test
-void executeHandlesEmptyParameter() {
+void throwsNotFoundWhenEmptyParameterAndNoCertificatesFound() {
     when(certificateRepository.convertToCorrectType(anyString(), eq(""))).thenReturn("");
     when(certificateRepository.findCertificateByParameter(anyString(), eq(""), anyDouble(), anyDouble(),
-            anyDouble(),
-            anyDouble()))
+            anyDouble(), anyDouble()))
             .thenReturn(Collections.emptyList());
 
-    List<CertificateWithoutForeignEntitiesDTO> result = getCertificateByParameterUseCase.execute("parameter",
-            "", 0.0, 10.0, 0.0, 10.0);
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+        getCertificateByParameterUseCase.execute("parameter", "", 0.0, 10.0, 0.0, 10.0);
+    });
 
-    assertTrue(result.isEmpty());
+    assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
 }
+
 }

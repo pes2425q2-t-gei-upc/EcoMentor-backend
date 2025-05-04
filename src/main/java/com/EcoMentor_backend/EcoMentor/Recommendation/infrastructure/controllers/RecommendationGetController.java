@@ -36,4 +36,6 @@ public class RecommendationGetController {
         RecommendationDTO recommendation = getRecommendationByIdUserCase.execute(recommendationId);
         return ResponseEntity.ok(recommendation);
     }
+
+
 }
