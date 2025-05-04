@@ -46,17 +46,32 @@ public class GetCertificateBySetOfValuesUseCaseTest {
 
     @Test
     public void testExecute() {
+        // Lista de certificados simulada
         List<Certificate> certificates = new ArrayList<>();
+        Certificate certificate = new Certificate();  // Asegúrate de crear un certificado de prueba
+        certificates.add(certificate);
+
+        // Lista de DTOs esperados
         List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
+        CertificateWithoutForeignEntitiesDTO certificateWithoutForeignEntitiesDTO = new CertificateWithoutForeignEntitiesDTO();  // Crear un DTO de prueba
+        certificateDTOS.add(certificateWithoutForeignEntitiesDTO);
+
         List<Object> values = List.of("value1", "value2");
 
+        // Configura el mock para devolver los certificados simulados cuando se busquen por el conjunto de valores
         when(certificateRepository.findCertificateBySetOfValues("parameter", values)).thenReturn(certificates);
+
+        // Configura el mock para el mapeo de certificado a DTO
         when(certificateMapper.toDTOW(certificate)).thenReturn(certificateWithoutForeignEntitiesDTO);
 
-        List<CertificateWithoutForeignEntitiesDTO> result = getCertificateBySetOfValuesUseCase.execute("parameter",
-                values);
+        // Llama al método que estás probando
+        List<CertificateWithoutForeignEntitiesDTO> result = getCertificateBySetOfValuesUseCase.execute("parameter", values);
 
-        assertEquals(certificateDTOS.size(), result.size());
+        // Compara los resultados
+        assertEquals(certificateDTOS.size(), result.size());  // Verifica que las listas tengan el mismo tamaño
+
+        // Verifica que se haya llamado al repositorio con los parámetros correctos
         verify(certificateRepository, times(1)).findCertificateBySetOfValues("parameter", values);
     }
+
 }

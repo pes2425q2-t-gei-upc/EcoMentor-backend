@@ -1,6 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.CertificateTest.UseCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,15 +12,15 @@ import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByAddr
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 
 public class GetCertificateByAddressUseCaseTest {
@@ -45,16 +46,15 @@ public class GetCertificateByAddressUseCaseTest {
     }
 
     @Test
-    public void testExecute() {
-        List<Certificate> certificates = new ArrayList<>();
-        List<CertificateWithoutForeignEntitiesDTO> certificateDTOS = new ArrayList<>();
+    public void testThrowsNotFoundWhenNoCertificatesForAddress() {
+        when(certificateRepository.findCertificateByAddressAddressId(1L)).thenReturn(Collections.emptyList());
 
-        when(certificateRepository.findCertificateByAddressAddressId(1L)).thenReturn(certificates);
-        when(certificateMapper.toDTOW(certificate)).thenReturn(certificateWithoutForeignEntitiesDTO);
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            getCertificateByAddressUseCase.execute(1L);
+        });
 
-        List<CertificateWithoutForeignEntitiesDTO> result = getCertificateByAddressUseCase.execute(1L);
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
 
-        assertEquals(certificateDTOS.size(), result.size());
-        verify(certificateRepository, times(1)).findCertificateByAddressAddressId(1L);
     }
+
 }

@@ -1,8 +1,8 @@
 package com.EcoMentor_backend.EcoMentor.Exception;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
-public record ErrorDetails(LocalDateTime timeframe,
+public record ErrorDetails(ZonedDateTime timeframe,
                            String message,
                            String details,
                            String errorCode) {

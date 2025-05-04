@@ -22,6 +22,7 @@ import lombok.experimental.SuperBuilder;
         property = "certificateType", visible = true)
 @JsonSubTypes({
     @JsonSubTypes.Type(value = CreateOfficialCertificateDTO.class, name = "OFFICIAL"),
+    @JsonSubTypes.Type(value = CreateUnofficialCertificateDTO.class, name = "UNOFFICIAL")
 })
 @Data
 @AllArgsConstructor

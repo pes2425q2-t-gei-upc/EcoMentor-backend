@@ -9,9 +9,10 @@ import java.util.List;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -27,12 +28,12 @@ public class GetNearAddressUseCase {
     }
 
     public List<AddressDTO> execute(double radius, double latitude, double longitude) {
-        radius = radius * 1000; //convert to meters
+        radius = radius * 1000; //convert to kmeters
 
         Point location = geometryFactory.createPoint(new Coordinate(longitude, latitude));
         List<Address> listAddress = addressRepository.findAddressesWithinDistance(location, radius);
         if (listAddress.isEmpty()) {
-            throw new RuntimeException("No address found within the radius");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No address found within the radius");
         }
 
         List<AddressDTO> listAddressDTO = new ArrayList<>();

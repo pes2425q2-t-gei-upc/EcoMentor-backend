@@ -1,0 +1,16 @@
+package com.EcoMentor_backend.EcoMentor.Chat.useCases.dto;
+
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class BanAndTimeDTO {
+    Date banEndTime;
+    boolean isBanned;
+}

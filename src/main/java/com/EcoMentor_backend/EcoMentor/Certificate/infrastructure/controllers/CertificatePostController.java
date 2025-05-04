@@ -1,7 +1,10 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers;
 
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.CalculateUnofficialCertificateUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.CreateCertificateUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateBySetOfValuesUseCase;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculateUnofficialCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculatorResultsDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateCertificateDTO;
 import java.util.List;
@@ -22,11 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class CertificatePostController {
     private final CreateCertificateUseCase createCertificateUseCase;
     private final GetCertificateBySetOfValuesUseCase getCertificateBySetOfValuesUseCase;
+    private final CalculateUnofficialCertificateUseCase calculateUnofficialCertificateUseCase;
 
     public CertificatePostController(CreateCertificateUseCase createCertificateUseCase,
-                                     GetCertificateBySetOfValuesUseCase getCertificateBySetOfValuesUseCase) {
+                                     GetCertificateBySetOfValuesUseCase getCertificateBySetOfValuesUseCase,
+                                     CalculateUnofficialCertificateUseCase calculateUnofficialCertificateUseCase) {
         this.createCertificateUseCase = createCertificateUseCase;
         this.getCertificateBySetOfValuesUseCase = getCertificateBySetOfValuesUseCase;
+        this.calculateUnofficialCertificateUseCase = calculateUnofficialCertificateUseCase;
     }
 
     @PostMapping
@@ -47,5 +53,16 @@ public class CertificatePostController {
         }
     }
 
+    @PostMapping("/calculateUnofficialCertificate")
+    public ResponseEntity<CalculatorResultsDTO> calculateUnofficialCertificate(
+            @RequestBody @Validated CalculateUnofficialCertificateDTO calculateUnofficialCertificateDTO) {
+        CalculatorResultsDTO calculatorResultsDTO = calculateUnofficialCertificateUseCase
+                .execute(calculateUnofficialCertificateDTO);
+        if (calculatorResultsDTO == null) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(calculatorResultsDTO);
+        }
+    }
 
 }

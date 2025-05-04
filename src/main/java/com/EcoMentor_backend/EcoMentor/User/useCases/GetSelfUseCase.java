@@ -6,9 +6,11 @@ import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepo
 import com.EcoMentor_backend.EcoMentor.User.useCases.dto.UserDTO;
 import com.EcoMentor_backend.EcoMentor.User.useCases.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
@@ -22,7 +24,8 @@ public class GetSelfUseCase {
 
     public UserDTO execute(String token) {
         User self = userRepository.findByEmail(tokenProvider.getUsernameFromToken(token))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "User not found"));
         System.out.println(self);
         return userMapper.toDTO(self);
     }

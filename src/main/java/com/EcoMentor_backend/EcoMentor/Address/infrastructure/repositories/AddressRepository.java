@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories;
 
 import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import java.util.List;
+import java.util.Map;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -45,4 +46,21 @@ public interface AddressRepository extends JpaRepository<Address, Long>, CustomA
 
 
     Address findAddressByAddressNameAndAddressNumber(String addressName, String addressNumber);
+
+    List<Address> findByZipcode(Integer zipcode);
+
+    @Query("SELECT DISTINCT a.town FROM Address a")
+    List<String> findDistinctTowns();
+
+    @Query("SELECT DISTINCT a.province FROM Address a")
+    List<String> findDistinctProvinces();
+
+    @Query("SELECT DISTINCT a.region FROM Address a")
+    List<String> findDistinctRegions();
+
+    List<Address> findAddressByCertificateByParameters(Map<String, Object> parameters,
+                                                       double minLatitude,
+                                                       double maxLatitude,
+                                                       double minLongitude,
+                                                       double maxLongitude);
 }

@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,14 +52,14 @@ public class UpdateSelfUseCaseTest {
     }
 
     @Test
-    void throwsExceptionWhenTokenUserNotFound(){
+    void throwsExceptionWhenTokenUserNotFound() {
         String token = "";
         String invalid = "invalid-username";
         UpdateUserDTO updateUserDTO = new UpdateUserDTO("new-name");
 
         when(jwtTokenProvider.getUsernameFromToken(token)).thenReturn(invalid);
 
-        assertThrows( UsernameNotFoundException.class, () -> updateSelfUseCase.execute(updateUserDTO,token));
-
+        assertThrows(ResponseStatusException.class, () -> updateSelfUseCase.execute(updateUserDTO, token));
     }
+
 }

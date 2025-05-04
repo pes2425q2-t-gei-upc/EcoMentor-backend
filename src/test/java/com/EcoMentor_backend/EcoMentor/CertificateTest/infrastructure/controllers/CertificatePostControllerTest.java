@@ -1,29 +1,31 @@
 package com.EcoMentor_backend.EcoMentor.CertificateTest.infrastructure.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.controllers.CertificatePostController;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.CalculateUnofficialCertificateUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.CreateCertificateUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateBySetOfValuesUseCase;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculateUnofficialCertificateDTO;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculatorResultsDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateCertificateDTO;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 
 
-
-
-public class CertificatePostControllerTest {
+class CertificatePostControllerTest {
 
     @Mock
     private CreateCertificateUseCase createCertificateUseCase;
@@ -31,30 +33,67 @@ public class CertificatePostControllerTest {
     @Mock
     private GetCertificateBySetOfValuesUseCase getCertificateBySetOfValuesUseCase;
 
+    @Mock
+    private CalculateUnofficialCertificateUseCase calculateUnofficialCertificateUseCase;
+
     @InjectMocks
     private CertificatePostController certificatePostController;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testCreateCertificate() {
-        CreateCertificateDTO dto = new CreateCertificateDTO();
-        ResponseEntity<Void> response = certificatePostController.createCertificate(dto);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    void testCreateCertificate() {
+        // Arrange
+        CreateCertificateDTO createCertificateDTO = new CreateCertificateDTO();
+        doNothing().when(createCertificateUseCase).execute(createCertificateDTO);
+
+        // Act
+        ResponseEntity<Void> response = certificatePostController.createCertificate(createCertificateDTO);
+
+        // Assert
+        assertEquals(201, response.getStatusCodeValue());
+        verify(createCertificateUseCase, times(1)).execute(createCertificateDTO);
     }
 
     @Test
-    public void testGetCertificateBySetOfValues() {
-        CertificateWithoutForeignEntitiesDTO dto = new CertificateWithoutForeignEntitiesDTO();
-        when(getCertificateBySetOfValuesUseCase.execute("parameter", Collections.singletonList("value")))
-                .thenReturn(Collections.singletonList(dto));
+    void testGetCertificateBySetOfValues() {
+        // Arrange
+        String parameter = "buildingUse";
+        List<Object> values = Arrays.asList("residential", "commercial");
+        List<CertificateWithoutForeignEntitiesDTO> expectedCertificates = Arrays.asList(
+                new CertificateWithoutForeignEntitiesDTO(),
+                new CertificateWithoutForeignEntitiesDTO()
+        );
+        when(getCertificateBySetOfValuesUseCase.execute(parameter, values)).thenReturn(expectedCertificates);
 
-        ResponseEntity<List<CertificateWithoutForeignEntitiesDTO>> response = certificatePostController
-                .getCertificateBySetOfValues("parameter", Collections.singletonList("value"));
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, Objects.requireNonNull(response.getBody()).size());
+        // Act
+        ResponseEntity<List<CertificateWithoutForeignEntitiesDTO>> response =
+                certificatePostController.getCertificateBySetOfValues(parameter, values);
+
+        // Assert
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(expectedCertificates, response.getBody());
+        verify(getCertificateBySetOfValuesUseCase, times(1)).execute(parameter, values);
+    }
+
+    @Test
+    void testCalculateUnofficialCertificate() {
+        // Arrange
+        CalculateUnofficialCertificateDTO calculateUnofficialCertificateDTO = new CalculateUnofficialCertificateDTO();
+        CalculatorResultsDTO expectedResults = new CalculatorResultsDTO();
+        when(calculateUnofficialCertificateUseCase.execute(calculateUnofficialCertificateDTO))
+                .thenReturn(expectedResults);
+
+        // Act
+        ResponseEntity<CalculatorResultsDTO> response =
+                certificatePostController.calculateUnofficialCertificate(calculateUnofficialCertificateDTO);
+
+        // Assert
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(expectedResults, response.getBody());
+        verify(calculateUnofficialCertificateUseCase, times(1)).execute(calculateUnofficialCertificateDTO);
     }
 }

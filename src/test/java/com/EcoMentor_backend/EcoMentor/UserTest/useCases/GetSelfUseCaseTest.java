@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 
@@ -41,13 +41,27 @@ public class GetSelfUseCaseTest {
         String email = "test@example.com";
         String name = "Original Name";
 
+
+        when(jwtTokenProvider.getUsernameFromToken(token)).thenReturn(email);
+
         User selfEntity = User.builder()
                 .name(name)
                 .email(email)
                 .password("password")
                 .build();
+
         when(userRepository.findByEmail(jwtTokenProvider.getUsernameFromToken(token))).thenReturn(java.util.Optional.of(selfEntity));
-        when(userMapper.toDTO(selfEntity)).thenReturn(new UserDTO(name,1L,email,"password",new ArrayList<>()));
+        when(userMapper.toDTO(selfEntity)).thenReturn(new UserDTO(
+                name,
+                1L,
+                email,
+                "password",
+                new ArrayList<>(),
+                0,
+                new ArrayList<>()
+        ));
+
+
 
         //Act
         UserDTO self = getSelfUseCase.execute(token);
@@ -65,6 +79,6 @@ public class GetSelfUseCaseTest {
         String invalid = "invalid-username";
         when(jwtTokenProvider.getUsernameFromToken(token)).thenReturn(invalid);
 
-        assertThrows( UsernameNotFoundException.class, () -> getSelfUseCase.execute(token));
+        assertThrows(ResponseStatusException.class, () -> getSelfUseCase.execute(token));
     }
 }

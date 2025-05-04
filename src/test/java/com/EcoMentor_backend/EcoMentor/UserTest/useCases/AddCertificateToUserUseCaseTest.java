@@ -1,8 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.UserTest.useCases;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
@@ -15,7 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 
 class AddCertificateToUserUseCaseTest {
@@ -62,8 +62,16 @@ class AddCertificateToUserUseCaseTest {
         when(userRepository.findById(userId)).thenReturn(java.util.Optional.empty());
         when(certificateRepository.findCertificateByCertificateId(certificateId)).thenReturn(certificate);
 
-        assertThrows(IllegalArgumentException.class, () -> addCertificateToUserUseCase.execute(userId, certificateId));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            addCertificateToUserUseCase.execute(userId, certificateId);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+
+        verify(userRepository).findById(userId);
+        verify(certificateRepository).findCertificateByCertificateId(certificateId);
     }
+
 
     @Test
     void throwsExceptionWhenCertificateNotFound() {
@@ -71,9 +79,27 @@ class AddCertificateToUserUseCaseTest {
         Long certificateId = 1L;
         User user = new User();
 
-        when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user));
+        // Simula que el certificado no se encuentra (esto debería lanzar la excepción y detener la ejecución antes de llegar al userRepository)
         when(certificateRepository.findCertificateByCertificateId(certificateId)).thenReturn(null);
 
-        assertThrows(IllegalArgumentException.class, () -> addCertificateToUserUseCase.execute(userId, certificateId));
+        // No es necesario simular el userRepository si no se alcanza esta parte del código
+        // Simula que el usuario existe (esto debería ser llamado solo si el certificado existe)
+        when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user));
+
+        // Verifica que la excepción ResponseStatusException es lanzada correctamente
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            addCertificateToUserUseCase.execute(userId, certificateId);
+        });
+
+        // Verifica que la excepción tiene el código de estado adecuado
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertTrue(exception.getReason().contains("Certificate not found"));
+
+        // Verifica que findById no haya sido invocado ya que el flujo de ejecución se detuvo antes
+        verify(userRepository, never()).findById(userId);
+        verify(certificateRepository).findCertificateByCertificateId(certificateId);
     }
+
+
+
 }

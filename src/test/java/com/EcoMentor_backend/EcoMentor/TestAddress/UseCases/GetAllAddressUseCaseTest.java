@@ -1,75 +1,71 @@
 package com.EcoMentor_backend.EcoMentor.TestAddress.UseCases;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
 import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories.AddressRepository;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAllAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AddressDTO;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.mapper.AddressMapper;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.Collections;
+import org.springframework.data.domain.*;
+
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
-@ExtendWith(MockitoExtension.class)
 public class GetAllAddressUseCaseTest {
 
-    @Mock
-    private AddressRepository addressRepository;
+@Mock
+private AddressRepository addressRepository;
 
-    @Mock
-    private AddressMapper addressMapper;
+@Mock
+private AddressMapper addressMapper;
 
-    @InjectMocks
-    private GetAllAddressUseCase getAllAddressUseCase;
+@InjectMocks
+private GetAllAddressUseCase getAllAddressUseCase;
 
-    private Address address;
-    private AddressDTO addressDTO;
+@BeforeEach
+void setUp() {
+    MockitoAnnotations.openMocks(this);
+}
 
-    @BeforeEach
-    void setUp() {
-        address = Address.builder()
-                .addressId(1L)
-                .addressName("Test Address")
-                .addressNumber("123")
-                .build();
+@Test
+void testExecute_ReturnsMappedPageWithSort() {
+    // Arrange
+    int page = 0;
+    int size = 2;
+    String sortField = "city";  // por ejemplo
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortField));
 
-        addressDTO = AddressDTO.builder()
-                .addressId(1L)
-                .addressName("Test Address")
-                .addressNumber("123")
-                .build();
-    }
+    Address addr1 = new Address();
+    Address addr2 = new Address();
 
-    @Test
-    void shouldReturnEmptyListWhenNoAddressesFound() {
-        when(addressRepository.findAll()).thenReturn(Collections.emptyList());
+    AddressDTO dto1 = new AddressDTO();
+    AddressDTO dto2 = new AddressDTO();
 
-        List<AddressDTO> result = getAllAddressUseCase.execute();
+    Page<Address> addressPage = new PageImpl<>(List.of(addr1, addr2), pageable, 2);
 
-        assertEquals(Collections.emptyList(), result);
-        verify(addressRepository).findAll();
-        verifyNoMoreInteractions(addressRepository, addressMapper);
-    }
+    when(addressRepository.findAll(pageable)).thenReturn(addressPage);
+    when(addressMapper.toDTO(any(Address.class)))
+            .thenReturn(dto1)
+            .thenReturn(dto2);
 
-    @Test
-    void shouldReturnAddressDTOListWhenAddressesFound() {
-        when(addressRepository.findAll()).thenReturn(Arrays.asList(address));
-        when(addressMapper.toDTO(address)).thenReturn(addressDTO);
+    // Act
+    Page<AddressDTO> result = getAllAddressUseCase.execute(page, size, sortField);
 
-        List<AddressDTO> result = getAllAddressUseCase.execute();
+    // Assert
+    assertEquals(2, result.getContent().size());
+    assertEquals(dto1, result.getContent().get(0));
+    assertEquals(dto2, result.getContent().get(1));
 
-        assertEquals(Arrays.asList(addressDTO), result);
-        verify(addressRepository).findAll();
-        verify(addressMapper).toDTO(address);
-        verifyNoMoreInteractions(addressRepository, addressMapper);
-    }
+    verify(addressRepository, times(1)).findAll(pageable);
+    verify(addressMapper, times(2)).toDTO(any(Address.class));
+    verifyNoMoreInteractions(addressRepository, addressMapper);
+}
 }
