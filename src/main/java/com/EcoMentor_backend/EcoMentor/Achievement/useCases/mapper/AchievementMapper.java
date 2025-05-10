@@ -12,14 +12,12 @@ public class AchievementMapper {
         return AchievementDTO.builder()
                 .achievementId(achievement.getAchievementId())
                 .achievementName(achievement.getAchievementName())
-                .achievementProgress(achievement.getAchievementProgress())
                 .build();
     }
 
     public Achievement toEntity(CreateAchievementDTO createAchievementDTO) {
         return Achievement.builder()
                 .achievementName(createAchievementDTO.getAchievementName())
-                .achievementProgress(createAchievementDTO.getAchievementProgress())
                 .build();
     }
 }

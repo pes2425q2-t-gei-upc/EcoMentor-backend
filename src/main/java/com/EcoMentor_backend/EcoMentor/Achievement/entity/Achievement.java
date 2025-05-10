@@ -1,15 +1,9 @@
 package com.EcoMentor_backend.EcoMentor.Achievement.entity;
 
 
+import com.EcoMentor_backend.EcoMentor.Achievements_User.entity.Achievements_User;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -33,16 +27,7 @@ public class Achievement {
     @NotNull
     private String achievementName;
 
-    @NotNull
-    private float achievementProgress;
-
-    @ManyToMany
-    @JoinTable(
-            name = "tbl_achievements_user",
-            joinColumns = @JoinColumn(name = "achievementId", referencedColumnName = "achievementId"),
-            inverseJoinColumns = @JoinColumn(name = "id", referencedColumnName = "id")
-    )
-    private List<User> users;
-
+    @OneToMany(mappedBy = "achievement")
+    private List<Achievements_User> progresses;
 
 }

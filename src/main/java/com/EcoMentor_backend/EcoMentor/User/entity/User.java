@@ -1,7 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.User.entity;
 
 
-import com.EcoMentor_backend.EcoMentor.Achievement.entity.Achievement;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import jakarta.persistence.Column;
@@ -75,8 +74,6 @@ public class User implements UserDetails {
     )
     private List<Certificate> certificates = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "users")
-    private List<Achievement> achievements = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
