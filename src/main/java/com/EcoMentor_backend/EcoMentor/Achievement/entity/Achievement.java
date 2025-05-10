@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,6 @@ public class Achievement {
     private String achievementName;
 
     @OneToMany(mappedBy = "achievementProgress")
-    private List<AchievementsUser> progresses;
+    private List<AchievementsUser> progresses = new ArrayList<>();
 
 }

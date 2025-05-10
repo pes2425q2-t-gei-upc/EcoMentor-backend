@@ -35,6 +35,6 @@ public class AchievementsUser {
     private Achievement achievementProgress;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false, referencedColumnName = "userId")
+    @JoinColumn(name = "id", nullable = false, referencedColumnName = "id")
     private User userProgress;
 }

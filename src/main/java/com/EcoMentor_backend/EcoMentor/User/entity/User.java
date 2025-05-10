@@ -77,7 +77,7 @@ public class User implements UserDetails {
     private List<Certificate> certificates = new ArrayList<>();
 
     @OneToMany(mappedBy = "userProgress")
-    private List<AchievementsUser> progresses;
+    private List<AchievementsUser> progresses = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
