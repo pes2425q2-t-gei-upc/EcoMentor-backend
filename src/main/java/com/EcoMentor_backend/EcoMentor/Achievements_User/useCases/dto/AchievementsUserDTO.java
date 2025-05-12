@@ -13,5 +13,6 @@ public class AchievementsUserDTO {
     private Long progressId;
     private String progressStatus;
     private Long achievementId;
+    private String achievementName;
 }
 
