@@ -13,6 +13,7 @@ public class AchievementsUserMapper {
                 .progressId(achievementsUser.getProgressId())
                 .progressStatus(achievementsUser.getProgressStatus())
                 .achievementId(achievementsUser.getAchievementProgress().getAchievementId())
+                .achievementName(achievementsUser.getAchievementProgress().getAchievementName())
                 .build();
     }
 
