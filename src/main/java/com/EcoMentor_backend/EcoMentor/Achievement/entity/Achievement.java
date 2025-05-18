@@ -2,6 +2,7 @@ package com.EcoMentor_backend.EcoMentor.Achievement.entity;
 
 
 import com.EcoMentor_backend.EcoMentor.Achievements_User.entity.AchievementsUser;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,6 +30,7 @@ public class Achievement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long achievementId;
 
+    @Column(unique = true)
     @NotNull
     private String achievementName;
 
