@@ -1,5 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.Command;
 
+import com.EcoMentor_backend.EcoMentor.Achievement.entity.Achievement;
+import com.EcoMentor_backend.EcoMentor.Achievement.infrastructure.repositories.AchievementRepository;
 import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import com.EcoMentor_backend.EcoMentor.Role.entity.RoleName;
 import com.EcoMentor_backend.EcoMentor.Role.infrastructure.repositories.RoleRepository;
@@ -12,9 +14,12 @@ import org.springframework.stereotype.Component;
 public class DatabaseInitializer implements ApplicationRunner {
 
     private final RoleRepository roleRepository;
+    private final AchievementRepository achievementRepository;
 
-    public DatabaseInitializer(RoleRepository roleRepository) {
+    public DatabaseInitializer(RoleRepository roleRepository,
+                               AchievementRepository achievementRepository) {
         this.roleRepository = roleRepository;
+        this.achievementRepository = achievementRepository;
     }
 
 
@@ -32,5 +37,17 @@ public class DatabaseInitializer implements ApplicationRunner {
                     }
             );
         }
+        for (int i = 1; i <= 12; i++) {
+            String achievementName = String.valueOf(i);
+            achievementRepository.findByAchievementName(achievementName).orElseGet(
+                    () -> {
+                        Achievement achievement = new Achievement();
+                        achievement.setAchievementName(achievementName);
+                        return achievementRepository.save(achievement);
+                    }
+            );
+        }
+
+
     }
 }
