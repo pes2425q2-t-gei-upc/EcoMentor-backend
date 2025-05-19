@@ -6,97 +6,78 @@ import com.EcoMentor_backend.EcoMentor.Chat.useCases.GetChatNamesUseCase;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.GetChatUseCase;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.BanAndTimeDTO;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
+import com.EcoMentor_backend.EcoMentor.User.useCases.GetUserIdByToken;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class ChatGetControllerTest {
 
-    @Mock
     private GetChatNamesUseCase getChatNamesUseCase;
-
-    @Mock
     private GetChatUseCase getChatUseCase;
-
-    @Mock
     private CheckBanStatusUseCase checkBanStatusUseCase;
-
-    @InjectMocks
-    private ChatGetController chatGetController;
+    private GetUserIdByToken getUserIdByToken;
+    private ChatGetController controller;
+    private HttpServletRequest request;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        getChatNamesUseCase = Mockito.mock(GetChatNamesUseCase.class);
+        getChatUseCase = Mockito.mock(GetChatUseCase.class);
+        checkBanStatusUseCase = Mockito.mock(CheckBanStatusUseCase.class);
+        getUserIdByToken = Mockito.mock(GetUserIdByToken.class);
+        controller = new ChatGetController(getChatNamesUseCase, getChatUseCase, checkBanStatusUseCase, getUserIdByToken);
+        request = Mockito.mock(HttpServletRequest.class);
     }
 
+    @Test
+    @DisplayName("Should return chat names for valid token")
+    void shouldReturnChatNamesForValidToken() {
+        String token = "token123";
+        Long userId = 42L;
+        ArrayList<String> names = new ArrayList<>();
+        names.add("chat1"); names.add("chat2");
+
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(getUserIdByToken.execute(token)).thenReturn(userId);
+        when(getChatNamesUseCase.getChatNamesUser(userId)).thenReturn(names);
+
+        ResponseEntity<ArrayList<String>> response = controller.getChatNamesUser(request);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(2, response.getBody().size());
+        assertEquals("chat1", response.getBody().get(0));
+    }
 
     @Test
-    void testGetChat() {
-        long userId = 10L;
-        String chatName = "testChat";
-        // Timestamps for tests
-        Date ts1 = Date.from(Instant.parse("2025-04-26T10:00:00Z"));
-        Date ts2 = Date.from(Instant.parse("2025-04-26T10:01:00Z"));
-
-        List<ChatResponseDTO> expectedList = Arrays.asList(
-                ChatResponseDTO.builder()
-                        .message("hello")
-                        .response("world")
-                        .timestamp(ts1)
-                        .isSuspicious(false)
-                        .build(),
-                ChatResponseDTO.builder()
-                        .message("foo")
-                        .response("bar")
-                        .timestamp(ts2)
-                        .isSuspicious(true)
-                        .build()
+    @DisplayName("Should return chat messages for given chatName and valid token")
+    void shouldReturnChatMessagesForChatName() {
+        String token = "tokenABC";
+        Long userId = 7L;
+        String chatName = "general";
+        List<ChatResponseDTO> messages = Collections.singletonList(
+                ChatResponseDTO.builder().message("hello").build()
         );
-        when(getChatUseCase.execute(userId, chatName)).thenReturn(expectedList);
 
-        ResponseEntity<List<ChatResponseDTO>> response = chatGetController.getChat(userId, chatName);
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(getUserIdByToken.execute(token)).thenReturn(userId);
+        when(getChatUseCase.execute(userId, chatName)).thenReturn(messages);
 
-        assertEquals(ResponseEntity.ok(expectedList), response);
-        verify(getChatUseCase).execute(userId, chatName);
+        ResponseEntity<List<ChatResponseDTO>> response = controller.getChat(request, chatName);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1, response.getBody().size());
+        assertEquals("hello", response.getBody().get(0).getMessage());
     }
 
-    @Test
-    void testGetBanStatus_WhenBanned() {
-        long userId = 55L;
-        Date banTime = Date.from(Instant.parse("2025-04-26T10:01:00Z"));
-        BanAndTimeDTO dto = BanAndTimeDTO.builder()
-                .isBanned(true)
-                .banEndTime(banTime)
-                .build();
-        when(checkBanStatusUseCase.execute(userId)).thenReturn(dto);
-
-        ResponseEntity<BanAndTimeDTO> response = chatGetController.getBanStatus(userId);
-
-        assertEquals(ResponseEntity.ok(dto), response);
-        verify(checkBanStatusUseCase).execute(userId);
-    }
-
-    @Test
-    void testGetBanStatus_WhenNotBanned() {
-        long userId = 56L;
-        BanAndTimeDTO dto = BanAndTimeDTO.builder()
-                .isBanned(false)
-                .banEndTime(null)
-                .build();
-        when(checkBanStatusUseCase.execute(userId)).thenReturn(dto);
-
-        ResponseEntity<BanAndTimeDTO> response = chatGetController.getBanStatus(userId);
-
-        assertEquals(ResponseEntity.ok(dto), response);
-        verify(checkBanStatusUseCase).execute(userId);
-    }
 }

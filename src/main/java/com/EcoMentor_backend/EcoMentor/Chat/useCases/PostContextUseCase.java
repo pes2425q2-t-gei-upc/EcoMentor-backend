@@ -16,7 +16,7 @@ public class PostContextUseCase {
     private ChatUseCase chatUseCase;
     private GetCertificateByCertificateIdWFEUseCase getCertificateByCertificateIdWFEUseCase;
 
-    public ChatResponseDTO execute(CreateChatWithCertificateDTO createChatWithCertificateDTO) {
+    public ChatResponseDTO execute(CreateChatWithCertificateDTO createChatWithCertificateDTO, Long userId) {
         if (createChatWithCertificateDTO.getCertificateId() != null) {
             CertificateWithoutForeignEntitiesDTO dto = getCertificateByCertificateIdWFEUseCase.execute(
                    createChatWithCertificateDTO.getCertificateId());
@@ -24,13 +24,13 @@ public class PostContextUseCase {
             String message = createChatWithCertificateDTO.getMessage()
                     + " " + dto.toString();
 
-            return chatUseCase.execute(message, createChatWithCertificateDTO.getUserId(),
+            return chatUseCase.execute(message, userId,
                     createChatWithCertificateDTO.getChatName());
 
 
         } else {
             return chatUseCase.execute(createChatWithCertificateDTO.getMessage(),
-                    createChatWithCertificateDTO.getUserId(), createChatWithCertificateDTO.getChatName());
+                    userId, createChatWithCertificateDTO.getChatName());
 
         }
 
