@@ -1,5 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Recommendation.useCases;
 
+import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.AchivementProgressUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.OfficialCertificateRepository;
@@ -18,10 +19,13 @@ import org.springframework.stereotype.Service;
 public class CalculateRecommendationValuesUseCase {
 
     private final RecommendationMapper recommendationMapper;
+    private final AchivementProgressUseCase achievementProgressUseCase;
     private final OfficialCertificateRepository certificateRepository;
+    private final AchivementProgressUseCase achivementProgressUseCase;
+
 
     public TotalValuesRecommendationDTO calculateValues(List<CreateRecommendationDTO> recommendationDTOs,
-                                                        long certificateId) {
+                                                        long certificateId, long userId) {
         OfficialCertificate certificate = certificateRepository.findById(certificateId)
                 .orElseThrow(() -> new RuntimeException("Certificate not found"));
 
@@ -44,7 +48,17 @@ public class CalculateRecommendationValuesUseCase {
 
         String qualificationNew = "A"; //calculo a definir
 
-        // Paso 3: Devolver el DTO con todos los valores
+        if (qualificationNew.equals("A")) {
+            achievementProgressUseCase.execute(userId, 2L);
+            achievementProgressUseCase.execute(userId, 3L);
+            achievementProgressUseCase.execute(userId, 4L);
+        } else if (qualificationNew.equals("B")) {
+            achievementProgressUseCase.execute(userId, 3L);
+            achievementProgressUseCase.execute(userId, 2L);
+        } else if (qualificationNew.equals("C")) {
+            achivementProgressUseCase.execute(userId, 2L);
+        }
+
         return TotalValuesRecommendationDTO.builder()
                 .totalCost(totalCost)
                 .totalSavings(totalSavings)

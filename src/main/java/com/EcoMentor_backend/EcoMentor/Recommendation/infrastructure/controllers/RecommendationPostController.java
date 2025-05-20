@@ -7,9 +7,14 @@ import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GenerateZoneRecom
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.CreateRecommendationDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.TotalValuesRecommendationDTO;
+import com.EcoMentor_backend.EcoMentor.User.useCases.GetUserIdByToken;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,22 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
+@AllArgsConstructor
 @RequestMapping("/api/recommendation")
 public class RecommendationPostController {
     private final CreateRecommendationUserCase createRecommendationUserCase;
     private final GenerateRecommendationsUseCase generateRecommendationsUseCase;
     private final GenerateZoneRecommendationsUseCase generateZoneRecommendationsUseCase;
     private final CalculateRecommendationValuesUseCase calculateRecommendationValuesUseCase;
-
-    public RecommendationPostController(CreateRecommendationUserCase createRecommendationUserCase,
-                                        GenerateRecommendationsUseCase generateRecommendationsUseCase,
-                                        GenerateZoneRecommendationsUseCase generateZoneRecommendationsUseCase,
-                                        CalculateRecommendationValuesUseCase calculateRecommendationValuesUseCase) {
-        this.createRecommendationUserCase = createRecommendationUserCase;
-        this.generateRecommendationsUseCase = generateRecommendationsUseCase;
-        this.generateZoneRecommendationsUseCase = generateZoneRecommendationsUseCase;
-        this.calculateRecommendationValuesUseCase = calculateRecommendationValuesUseCase;
-    }
+    private GetUserIdByToken getUserIdByToken;
 
     @PostMapping
     public ResponseEntity<Long> createRecommendation(@RequestBody @Validated
@@ -66,11 +63,24 @@ public class RecommendationPostController {
     @PostMapping("/finalValues/{certificateId}")
     public ResponseEntity<TotalValuesRecommendationDTO> calculateValues(
             @RequestBody List<CreateRecommendationDTO> recommendationDTOs,
-            @PathVariable Long certificateId) {
+            @PathVariable Long certificateId,
+            HttpServletRequest request) {
+
+        Long userId = getUserIdFromToken(request);
 
         TotalValuesRecommendationDTO result = calculateRecommendationValuesUseCase
-                .calculateValues(recommendationDTOs, certificateId);
+                .calculateValues(recommendationDTOs, certificateId, userId);
 
         return ResponseEntity.ok(result);
+    }
+
+    private Long getUserIdFromToken(HttpServletRequest request) {
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String token = null;
+
+        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
+        return getUserIdByToken.execute(token);
     }
 }

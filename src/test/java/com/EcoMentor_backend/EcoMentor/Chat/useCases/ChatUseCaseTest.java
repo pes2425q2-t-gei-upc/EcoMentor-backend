@@ -3,6 +3,7 @@ package com.EcoMentor_backend.EcoMentor.Chat.useCases;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.AchivementProgressUseCase;
 import com.EcoMentor_backend.EcoMentor.Chat.entity.Chat;
 import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.repositories.ChatRepository;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
@@ -27,6 +28,7 @@ private UserRepository userRepository;
 private ChatUseCase chatUseCase;
 private IncreaseWarningUseCase increaseWarningUseCase;
 private EmailService emailService;
+private AchivementProgressUseCase achievementProgressUseCase;
 
 @BeforeEach
 void setUp() {
@@ -34,7 +36,8 @@ void setUp() {
     chatRepository = mock(ChatRepository.class);
     userRepository = mock(UserRepository.class);
     increaseWarningUseCase = mock(IncreaseWarningUseCase.class);
-    chatUseCase = new ChatUseCase(geminiService, chatRepository, userRepository, increaseWarningUseCase, emailService);
+    achievementProgressUseCase = mock(AchivementProgressUseCase.class);
+    chatUseCase = new ChatUseCase(geminiService, chatRepository, userRepository, increaseWarningUseCase, emailService, achievementProgressUseCase);
 }
 
     @Test
