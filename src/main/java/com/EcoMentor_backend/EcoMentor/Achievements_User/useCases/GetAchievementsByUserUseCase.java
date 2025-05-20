@@ -1,12 +1,11 @@
 package com.EcoMentor_backend.EcoMentor.Achievements_User.useCases;
 
+import com.EcoMentor_backend.EcoMentor.Achievements_User.entity.AchievementsUser;
 import com.EcoMentor_backend.EcoMentor.Achievements_User.infrastructure.repositories.AchievementsUserRepository;
 import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.dto.AchievementsUserDTO;
 import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.mapper.AchievementsUserMapper;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +28,17 @@ public class GetAchievementsByUserUseCase {
         this.achievementsUserMapper = achievementsUserMapper;
     }
 
-    public List<AchievementsUserDTO> execute(Long userId) {
+    public AchievementsUserDTO execute(Long userId, Long achievementId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        return achievementsUserRepository.findByUserProgress(user).stream()
-                .map(achievementsUserMapper::toDTO)
-                .collect(Collectors.toList());
+        AchievementsUser achivement = achievementsUserRepository
+                .findByUserProgressIdAndAchievementProgressAchievementId(userId, achievementId);
+
+        if (achivement == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Achievement not found");
+        }
+        return achievementsUserMapper.toDTO(achivement);
+
     }
 }

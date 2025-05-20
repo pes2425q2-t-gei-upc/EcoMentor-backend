@@ -1,12 +1,15 @@
 package com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.mapper;
 
+import com.EcoMentor_backend.EcoMentor.Achievement.useCases.mapper.AchievementMapper;
 import com.EcoMentor_backend.EcoMentor.Achievements_User.entity.AchievementsUser;
 import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.dto.AchievementsUserDTO;
-import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.dto.CreateAchievementsUserDTO;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class AchievementsUserMapper {
+    private AchievementMapper achivementMapper;
 
     public AchievementsUserDTO toDTO(AchievementsUser achievementsUser) {
         return AchievementsUserDTO.builder()
@@ -14,12 +17,7 @@ public class AchievementsUserMapper {
                 .progressStatus(achievementsUser.getProgressStatus())
                 .achievementId(achievementsUser.getAchievementProgress().getAchievementId())
                 .achievementName(achievementsUser.getAchievementProgress().getAchievementName())
-                .build();
-    }
-
-    public AchievementsUser toEntity(CreateAchievementsUserDTO createAchievementsUserDTO) {
-        return AchievementsUser.builder()
-                .progressStatus(createAchievementsUserDTO.getProgressStatus())
+                .achievement(achivementMapper.toDTO(achievementsUser.getAchievementProgress()))
                 .build();
     }
 }

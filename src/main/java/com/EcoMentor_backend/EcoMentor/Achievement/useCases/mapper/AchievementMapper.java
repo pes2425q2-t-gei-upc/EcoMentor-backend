@@ -10,14 +10,15 @@ public class AchievementMapper {
 
     public AchievementDTO toDTO(Achievement achievement) {
         return AchievementDTO.builder()
-                .achievementId(achievement.getAchievementId())
                 .achievementName(achievement.getAchievementName())
+                .maxProgress(achievement.getMaxProgress())
                 .build();
     }
 
     public Achievement toEntity(CreateAchievementDTO createAchievementDTO) {
         return Achievement.builder()
                 .achievementName(createAchievementDTO.getAchievementName())
+                .maxProgress(createAchievementDTO.getMaxProgress())
                 .build();
     }
 }

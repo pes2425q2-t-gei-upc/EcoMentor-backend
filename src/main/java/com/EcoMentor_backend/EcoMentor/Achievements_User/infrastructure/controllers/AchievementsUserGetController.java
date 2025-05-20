@@ -21,9 +21,11 @@ public class AchievementsUserGetController {
         this.getAchievementsByUserUseCase = getAchievementsByUserUseCase;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<AchievementsUserDTO>> getUserAchievements(@PathVariable Long userId) {
-        List<AchievementsUserDTO> achievements = getAchievementsByUserUseCase.execute(userId);
+    @GetMapping("/{userId}/{achievementId}")
+    public ResponseEntity<AchievementsUserDTO> getUserAchievements(@PathVariable Long userId,
+                                                                         @PathVariable Long achievementId) {
+
+        AchievementsUserDTO achievements = getAchievementsByUserUseCase.execute(userId, achievementId);
         return ResponseEntity.ok(achievements);
     }
 }
