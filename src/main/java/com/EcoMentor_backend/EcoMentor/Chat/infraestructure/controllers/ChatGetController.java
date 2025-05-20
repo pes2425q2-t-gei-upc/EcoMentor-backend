@@ -47,8 +47,7 @@ public class ChatGetController {
     }
 
     @GetMapping("/{userId}/ban-status")
-    public ResponseEntity<BanAndTimeDTO> getBanStatus(HttpServletRequest request, @PathVariable Long userId) {
-        Long loggedUserId = getUserIdFromToken(request);
+    public ResponseEntity<BanAndTimeDTO> getBanStatus(@PathVariable Long userId) {
 
         BanAndTimeDTO dto = checkBanStatusUseCase.execute(userId);
         return ResponseEntity.ok(dto);

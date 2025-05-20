@@ -1,5 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.useCases;
 
+import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.AchivementProgressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories.AddressRepository;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.AddCertificateToAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.CreateAddressUseCase;
@@ -11,10 +12,11 @@ import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculateUnoffic
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculatorResultsDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateUnofficialCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+@AllArgsConstructor
 @Service
 @Transactional
 public class CalculateUnofficialCertificateUseCase {
@@ -23,22 +25,12 @@ public class CalculateUnofficialCertificateUseCase {
     private final AddressRepository addressRepository;
     private final CreateAddressUseCase createAddressUseCase;
     private final CertificateMapper certificateMapper;
+    private final AchivementProgressUseCase achievementProgressUseCase;
 
-    public CalculateUnofficialCertificateUseCase(CertificateRepository certificateRepository,
-                                                 AddCertificateToAddressUseCase addCertificateToAddressUseCase,
-                                                 AddressRepository addressRepository,
-                                                 CreateAddressUseCase createAddressUseCase,
-                                                 CertificateMapper certificateMapper) {
-        // Constructor
-        this.certificateRepository = certificateRepository;
-        this.addCertificateToAddressUseCase = addCertificateToAddressUseCase;
-        this.addressRepository = addressRepository;
-        this.createAddressUseCase = createAddressUseCase;
-        this.certificateMapper = certificateMapper;
-    }
 
-    public CalculatorResultsDTO execute(CalculateUnofficialCertificateDTO calculateUnofficialCertificateDTO) {
-        // Extract parameters from DTO
+    public CalculatorResultsDTO execute(CalculateUnofficialCertificateDTO calculateUnofficialCertificateDTO,
+                                        long userId) {
+
         boolean solarThermal = calculateUnofficialCertificateDTO.isSolarThermal();
         boolean photovoltaicSolar = calculateUnofficialCertificateDTO.isPhotovoltaicSolar();
         boolean biomass = calculateUnofficialCertificateDTO.isBiomass();
@@ -121,6 +113,12 @@ public class CalculateUnofficialCertificateUseCase {
         Certificate certificate = certificateMapper.toEntity(unofficialCertificateDTO);
         certificateRepository.save(certificate);
         addCertificateToAddressUseCase.execute(id, certificate.getCertificateId());
+
+        achievementProgressUseCase.execute(userId, 5L);
+
+        //todo: Aqui falta para el achivement 6,7,8,9,10 pero no lo puedo hacer porque no existe la manera de conseguir
+        //todo: la media del certificado, Sanz hazlo tu mira el discord de logros
+
 
 
         return new CalculatorResultsDTO(certificate.getCertificateId(), results.getIoNonRenewablePrimaryEnergy(),
