@@ -39,10 +39,19 @@ public class DatabaseInitializer implements ApplicationRunner {
         }
         for (int i = 1; i <= 12; i++) {
             String achievementName = String.valueOf(i);
+            int ii = i;
             achievementRepository.findByAchievementName(achievementName).orElseGet(
                     () -> {
                         Achievement achievement = new Achievement();
                         achievement.setAchievementName(achievementName);
+                        if (ii  == 7 || ii == 3) {
+                            achievement.setMaxProgress(3);
+                        } else if (ii == 10) {
+                            achievement.setMaxProgress(5);
+                        } else {
+                            achievement.setMaxProgress(1);
+                        }
+
                         return achievementRepository.save(achievement);
                     }
             );

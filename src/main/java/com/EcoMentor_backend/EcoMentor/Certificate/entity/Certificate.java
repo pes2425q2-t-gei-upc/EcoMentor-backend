@@ -55,7 +55,6 @@ public class Certificate {
             inverseJoinColumns = @JoinColumn(name = "recommendationId", referencedColumnName = "recommendationId")
     )
     private List<Recommendation> recommendations;
-    //TODO decide definitive data structure for recommendations
 
     @ManyToMany(mappedBy = "certificates")
     private List<User> users = new ArrayList<>();

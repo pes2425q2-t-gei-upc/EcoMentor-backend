@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AchievementsUserRepository extends JpaRepository<AchievementsUser, Long> {
-    List<AchievementsUser> findByUserProgress(User user);
+    AchievementsUser findByUserProgressIdAndAchievementProgressAchievementId(Long userId, Long achievementId);
 }

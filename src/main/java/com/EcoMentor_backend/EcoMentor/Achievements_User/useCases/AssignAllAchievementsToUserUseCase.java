@@ -44,7 +44,7 @@ public class AssignAllAchievementsToUserUseCase {
                 AchievementsUser progress = AchievementsUser.builder()
                         .userProgress(user)
                         .achievementProgress(achievement)
-                        .progressStatus("0")
+                        .progressStatus(0)
                         .build();
 
                 achievementsUserRepository.save(progress);

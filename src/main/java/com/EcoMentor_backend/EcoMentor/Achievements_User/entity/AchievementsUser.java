@@ -28,13 +28,13 @@ public class AchievementsUser {
     private Long progressId;
 
     @NotNull
-    private String progressStatus;
+    private int progressStatus;
 
     @ManyToOne
     @JoinColumn(name = "achievementId", nullable = false, referencedColumnName = "achievementId")
     private Achievement achievementProgress;
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "userId", nullable = false, referencedColumnName = "id")
     private User userProgress;
 }
