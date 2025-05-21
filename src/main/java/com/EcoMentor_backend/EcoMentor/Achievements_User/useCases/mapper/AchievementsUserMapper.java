@@ -13,11 +13,8 @@ public class AchievementsUserMapper {
 
     public AchievementsUserDTO toDTO(AchievementsUser achievementsUser) {
         return AchievementsUserDTO.builder()
-                .progressId(achievementsUser.getProgressId())
                 .progressStatus(achievementsUser.getProgressStatus())
-                .achievementId(achievementsUser.getAchievementProgress().getAchievementId())
-                .achievementName(achievementsUser.getAchievementProgress().getAchievementName())
-                .achievement(achivementMapper.toDTO(achievementsUser.getAchievementProgress()))
+                .userId(achievementsUser.getUserProgress().getId())
                 .build();
     }
 }
