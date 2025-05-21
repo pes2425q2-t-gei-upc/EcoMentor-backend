@@ -1,39 +1,43 @@
 package com.EcoMentor_backend.EcoMentor.Achievement.infrastructure.controllers;
 
-import com.EcoMentor_backend.EcoMentor.Achievement.useCases.GetAchievementByIdUseCase;
 import com.EcoMentor_backend.EcoMentor.Achievement.useCases.GetAllAchievementsUseCase;
 import com.EcoMentor_backend.EcoMentor.Achievement.useCases.dto.AchievementDTO;
+import com.EcoMentor_backend.EcoMentor.User.useCases.GetUserIdByToken;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @Validated
+@AllArgsConstructor
 @RequestMapping("/api/achievement")
 public class AchievementGetController {
-    private final GetAchievementByIdUseCase getAchievementByIdUseCase;
     private final GetAllAchievementsUseCase getAllAchievementsUseCase;
-
-    public AchievementGetController(GetAchievementByIdUseCase getAchievementByIdUseCase,
-                                    GetAllAchievementsUseCase getAllAchievementsUseCase) {
-        this.getAchievementByIdUseCase = getAchievementByIdUseCase;
-        this.getAllAchievementsUseCase = getAllAchievementsUseCase;
-    }
+    private GetUserIdByToken getUserIdByToken;
 
     @GetMapping
-    public ResponseEntity<List<AchievementDTO>> getAllAchievements() {
-        List<AchievementDTO> achievements = getAllAchievementsUseCase.execute();
+    public ResponseEntity<List<AchievementDTO>> getAllAchievements(HttpServletRequest request) {
+        Long userId = getUserIdFromToken(request);
+        List<AchievementDTO> achievements = getAllAchievementsUseCase.execute(userId);
         return ResponseEntity.ok(achievements);
     }
 
-    @GetMapping("/{achievementId}")
-    public ResponseEntity<AchievementDTO> getAchievement(@PathVariable Long achievementId) {
-        AchievementDTO achievement = getAchievementByIdUseCase.execute(achievementId);
-        return ResponseEntity.ok(achievement);
+    private Long getUserIdFromToken(HttpServletRequest request) {
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String token = null;
+
+        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
+        return getUserIdByToken.execute(token);
     }
+
 }
