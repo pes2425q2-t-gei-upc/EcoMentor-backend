@@ -2,14 +2,7 @@
 
 EcoMentor is a backend service designed to support environmental education and sustainability initiatives.
 
-## Features
-
-- User authentication and authorization
-- Achievement tracking system
-- Geospatial data support
-- Email notifications
-- API documentation with Swagger/OpenAPI
-- MongoDB integration for chat functionality
+Our project aims to develop ECOMENTOR, an application designed to improve the energy efficiency of buildings in Catalonia and promote a more sustainable and eco-friendly lifestyle. The app allows users to dynamically view energy-related information of buildings across the Catalan territory on a map, based on data provided by energy certificates, and also compare two certified buildings. For users without an energy certificate, the app offers the possibility to obtain a digital pseudo-certificate through a short questionnaire that superficially evaluates certain characteristics of the building and returns an indicative result, along with guidance on how to obtain an official certificate. For those who already have a certificate, ECOMENTOR includes a chatbot that provides advice on how to improve the sustainability and energy consumption of their property, as well as a calculator that quantitatively shows the potential benefits or drawbacks of making specific changes to the building.
 
 ## Technologies
 
@@ -114,8 +107,4 @@ Build the Docker image:
 ```bash
 docker build -t ecomentor-backend .
 ```
-
-## License
-
-[Add license information here]
 
