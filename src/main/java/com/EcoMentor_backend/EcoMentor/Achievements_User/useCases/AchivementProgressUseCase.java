@@ -7,13 +7,13 @@ import com.EcoMentor_backend.EcoMentor.Shared.EmailService;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
 import jakarta.mail.MessagingException;
+import java.io.IOException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 
 
 @Service
