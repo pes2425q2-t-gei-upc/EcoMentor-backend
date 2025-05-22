@@ -15,4 +15,5 @@ public class AchievementDTO {
     private String achievementName;
     private int maxProgress;
     private int actualProgress;
+    private int type;
 }

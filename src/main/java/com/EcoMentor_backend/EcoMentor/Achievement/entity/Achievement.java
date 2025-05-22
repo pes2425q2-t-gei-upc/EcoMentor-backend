@@ -34,6 +34,8 @@ public class Achievement {
     @NotNull
     private String achievementName;
 
+    private int type;
+
     private int maxProgress;
 
     @OneToMany(mappedBy = "achievementProgress")
