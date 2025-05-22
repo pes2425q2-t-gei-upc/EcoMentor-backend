@@ -40,8 +40,8 @@ public class AchievementGetControllerTest {
         when(getUserIdByToken.execute(token)).thenReturn(userId);
 
         List<AchievementDTO> mockAchievements = List.of(
-                new AchievementDTO("1", 1, 1),
-                new AchievementDTO("2", 1, 1)
+                new AchievementDTO("1", 1, 1, 1),
+                new AchievementDTO("2", 1, 1, 1)
         );
         when(getAllAchievementsUseCase.execute(userId)).thenReturn(mockAchievements);
 

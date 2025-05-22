@@ -13,6 +13,7 @@ public class AchievementMapper {
                 .achievementName(achievement.getAchievementName())
                 .maxProgress(achievement.getMaxProgress())
                 .actualProgress(0) // Assuming actual progress is 0 when mapping to DTO
+                .type(achievement.getType())
                 .build();
     }
 
@@ -20,6 +21,7 @@ public class AchievementMapper {
         return Achievement.builder()
                 .achievementName(createAchievementDTO.getAchievementName())
                 .maxProgress(createAchievementDTO.getMaxProgress())
+                .type(createAchievementDTO.getType())
                 .build();
     }
 }

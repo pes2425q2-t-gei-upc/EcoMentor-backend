@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class CreateAchievementDTO {
     private String achievementName;
     private int maxProgress;
+    private int type;
 }

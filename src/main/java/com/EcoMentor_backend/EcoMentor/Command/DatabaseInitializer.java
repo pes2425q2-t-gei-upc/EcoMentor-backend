@@ -52,6 +52,14 @@ public class DatabaseInitializer implements ApplicationRunner {
                             achievement.setMaxProgress(1);
                         }
 
+                        if (ii == 1 || ii == 11 || ii == 12) {
+                            achievement.setType(1);
+                        } else if (ii == 2 || ii == 4 || ii == 3) {
+                            achievement.setType(2);
+                        } else {
+                            achievement.setType(3);
+                        }
+
                         return achievementRepository.save(achievement);
                     }
             );
