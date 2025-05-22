@@ -21,7 +21,7 @@ public class AssignAllAchievementsToUserUseCaseTest {
     private AchievementRepository achievementRepository;
     private AchievementsUserRepository achievementsUserRepository;
     private AssignAllAchievementsToUserUseCase assignAllAchievementsToUserUseCase;
-
+    
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
