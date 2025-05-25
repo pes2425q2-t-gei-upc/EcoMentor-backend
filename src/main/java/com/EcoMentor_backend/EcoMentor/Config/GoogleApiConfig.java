@@ -26,7 +26,8 @@ public class GoogleApiConfig {
     }
 
     @Bean
-    public GoogleIdTokenVerifier.Builder googleIdTokenVerifierBuilder(NetHttpTransport httpTransport, JsonFactory jsonFactory, GoogleConfig googleConfig) {
+    public GoogleIdTokenVerifier.Builder googleIdTokenVerifierBuilder(
+            NetHttpTransport httpTransport, JsonFactory jsonFactory, GoogleConfig googleConfig) {
         GoogleIdTokenVerifier.Builder builder = new GoogleIdTokenVerifier.Builder(httpTransport, jsonFactory);
 
         if (googleConfig != null && googleConfig.getClientId() != null) {
