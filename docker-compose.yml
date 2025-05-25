@@ -11,6 +11,7 @@ services:
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
+      - GOOGLE_WEB_CLIENT_ID=${GOOGLE_WEB_CLIENT_ID}
       - DB_HOST=postgres
       - MONGO_HOST=mongo
 
