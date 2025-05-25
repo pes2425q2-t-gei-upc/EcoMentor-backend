@@ -2,10 +2,9 @@ package com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto;
 
 
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
-import java.time.Year;
-
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.KindOfHeating;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.KindOfRefrigeration;
+import java.time.Year;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
