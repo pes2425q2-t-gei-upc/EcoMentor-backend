@@ -453,7 +453,7 @@ public class GenerateRecommendationsUseCase {
                             .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
                                     / nonRenewablePrimaryEnergyInitial * 100)
                             .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
-                            .upgradedAnualCost(certificate.getAnnualCost() + 100)
+                            .upgradedAnualCost(certificate.getAnnualCost() * 1.05f)
                             .totalPrice(800)
                             .build()
             );
@@ -635,12 +635,12 @@ public class GenerateRecommendationsUseCase {
                 districtNet,
                 geothermal,
                 insulation,
-                windowEfficiency * 0.95f,
-                heatingEmissionsInitial * 0.95f,
-                refrigerationEmissionsInitial * 0.95f,
+                windowEfficiency * 0.98f,
+                heatingEmissionsInitial * 0.97f,
+                refrigerationEmissionsInitial * 0.96f,
                 acsEmissionsInitial,
-                lightingEmissionsInitial * 0.90f,
-                residentialUseVentilation * 0.95f
+                lightingEmissionsInitial * 0.98f,
+                residentialUseVentilation * 0.97f
         );
         recommendations.add(
                 Recommendation.builder()

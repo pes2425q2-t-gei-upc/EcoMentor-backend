@@ -38,10 +38,13 @@ public class CalculateRecommendationValuesUseCase {
                 .mapToDouble(Recommendation::getTotalPrice)
                 .sum();
 
-        float totalNewAnnualCost = (float) recommendations.stream()
+        double minCost = recommendations.stream()
                 .mapToDouble(Recommendation::getUpgradedAnualCost)
-                .average()
+                .min()
                 .orElse(0.0);
+
+        float totalNewAnnualCost = (float) (recommendations.size() > 1 ? minCost * 0.93 : minCost);
+
 
         float totalOldAnnualCost = certificate.getAnnualCost();
         float totalSavings = totalOldAnnualCost - totalNewAnnualCost;
