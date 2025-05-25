@@ -450,7 +450,7 @@ public class GenerateZoneRecommendationsUseCase {
                     heatingEmissionsInitial,
                     refrigerationEmissionsInitial,
                     acsEmissionsInitial,
-                    lightingEmissionsInitial * 0.95f,
+                    lightingEmissionsInitial * 0.97f,
                     residentialUseVentilation
             );
             recommendations.add(
