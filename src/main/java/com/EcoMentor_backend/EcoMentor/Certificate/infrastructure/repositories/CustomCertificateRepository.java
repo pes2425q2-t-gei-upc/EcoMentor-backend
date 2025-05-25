@@ -2,6 +2,8 @@ package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.KindOfHeating;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.KindOfRefrigeration;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculatorResultsDTO;
 import java.util.List;
 import org.springframework.stereotype.Repository;
@@ -38,13 +40,33 @@ public interface CustomCertificateRepository {
 
     float calculateBaseIoLighting(int lightingAprox, String buildingUse);
 
+    CalculatorResultsDTO calculateQualificationsForANewCertificate(String climateZone, String buildingUse,
+                                                                   boolean solarThermal, boolean photovoltaicSolar,
+                                                                   float insulation, float windowEfficiency,
+                                                                   float residentialUseVentilation,
+                                                                   KindOfHeating typeOfHeating, KindOfHeating typeOfAcs,
+                                                                   KindOfRefrigeration typeOfRefrigeration,
+                                                                   float heatingConsumption, float acsConsumption,
+                                                                   float refrigerationConsumption,
+                                                                   float lightingConsumption, float cadastreMeters);
+
+    CalculatorResultsDTO calculateRecomendationQualifications(String climateZone, String buildingUse,
+                                                                     float nonRenewablePrimaryEnergyInitial,
+                                                                     boolean solarThermal, boolean photovoltaicSolar,
+                                                                     boolean biomass,
+                                                                     boolean districtNet, boolean geothermal,
+                                                                     float insulation,
+                                                                     float windowEfficiency,
+                                                                     float heatingEmissionsInitial,
+                                                                     float refrigerationEmissionsInitial,
+                                                              float acsEmissionsInitial,
+                                                                     float lightingEmissionsInitial,
+                                                                     float residentialUseVentilation);
+
     CalculatorResultsDTO calculateQualifications(String climateZone, String buildingUse,
-                                                 int nonRenewablePrimaryEnergyAprox,
-                                                 boolean solarThermal, boolean photovoltaicSolar, boolean biomass,
-                                                 boolean districtNet, boolean geothermal, float insulation,
-                                                 float windowEfficiency, float heatingEmissionsInitial,
-                                                 float refrigerationEmissionsInitial, float acsEmissionsInitial,
-                                                 float lightingEmissionsInitial, float residentialUseVentilation);
+                                                 float ioNonRenewablePrimaryEnergy,
+                                                 float ioCO2E, float ioHeating, float ioRefrigeration,
+                                                 float ioACS, float ioLighting);
 
     float calculateAproxInsulation(int insulation, String buildingUse);
 

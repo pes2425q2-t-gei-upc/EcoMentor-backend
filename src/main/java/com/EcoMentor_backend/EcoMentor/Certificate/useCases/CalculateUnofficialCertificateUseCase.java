@@ -33,21 +33,12 @@ public class CalculateUnofficialCertificateUseCase {
 
         boolean solarThermal = calculateUnofficialCertificateDTO.isSolarThermal();
         boolean photovoltaicSolar = calculateUnofficialCertificateDTO.isPhotovoltaicSolar();
-        boolean biomass = calculateUnofficialCertificateDTO.isBiomass();
-        boolean districtNet = calculateUnofficialCertificateDTO.isDistrictNet();
         String buildingUse = calculateUnofficialCertificateDTO.getBuildingUse();
-        int npREAprox = calculateUnofficialCertificateDTO.getNonRenewablePrimaryEnergyAprox();
-        int heatingAprox = calculateUnofficialCertificateDTO.getHeatingEmissionsAprox();
-        float heatingEmissionsInitial = certificateRepository.calculateBaseIoHeating(heatingAprox, buildingUse);
-        int refrigerationAprox = calculateUnofficialCertificateDTO.getRefrigerationEmissionsAprox();
-        float refrigerationEmissionsInitial = certificateRepository
-                .calculateBaseIoRefrigeration(refrigerationAprox, buildingUse);
-        int acsAprox = calculateUnofficialCertificateDTO.getAcsEmissionsAprox();
-        float acsEmissionsInitial = certificateRepository.calculateBaseIoACS(acsAprox, buildingUse);
-        int lightingAprox = calculateUnofficialCertificateDTO.getLightingEmissionsAprox();
-        float lightingEmissionsInitial = certificateRepository.calculateBaseIoLighting(lightingAprox, buildingUse);
+        float heatingConsumption = calculateUnofficialCertificateDTO.getHeatingConsumption();
+        float refrigerationConsumption = calculateUnofficialCertificateDTO.getRefrigerationConsumption();
+        float acsConsumption = calculateUnofficialCertificateDTO.getAcsConsumption();
+        float lightingConsumption = calculateUnofficialCertificateDTO.getLightingConsumption();
         String climateZone = calculateUnofficialCertificateDTO.getClimateZone();
-        boolean geothermal = calculateUnofficialCertificateDTO.isGeothermal();
         float insulation = certificateRepository.calculateAproxInsulation(calculateUnofficialCertificateDTO
                 .getInsulation(), buildingUse);
         float windowEfficiency = certificateRepository
@@ -56,6 +47,10 @@ public class CalculateUnofficialCertificateUseCase {
         float residentialUseVentilation = certificateRepository
                 .calculateAproxResidentialUseVentilation(calculateUnofficialCertificateDTO
                         .getResidentialUseVentilation(), buildingUse);
+        KindOfHeating typeOfHeating = calculateUnofficialCertificateDTO.getKindOfHeating();
+        KindOfHeating typeOfAcs = calculateUnofficialCertificateDTO.getKindOfAcs();
+        KindOfRefrigeration typeOfRefrigeration = calculateUnofficialCertificateDTO.getKindOfRefrigeration();
+        float cadastreMeters = calculateUnofficialCertificateDTO.getCadastreMeters();
 
         CreateAddressDTO createAddressDTO = calculateUnofficialCertificateDTO.getCreateAddressDTO();
         Long id;
@@ -68,17 +63,18 @@ public class CalculateUnofficialCertificateUseCase {
             id = createAddressUseCase.execute(createAddressDTO);
         }
 
-        CalculatorResultsDTO results = certificateRepository.calculateQualifications(climateZone, buildingUse,
-                npREAprox, solarThermal, photovoltaicSolar, biomass, districtNet, geothermal, insulation,
-                windowEfficiency, heatingEmissionsInitial, refrigerationEmissionsInitial, acsEmissionsInitial,
-                lightingEmissionsInitial, residentialUseVentilation);
+        CalculatorResultsDTO results = certificateRepository.calculateQualificationsForANewCertificate(climateZone,
+                buildingUse,
+                solarThermal, photovoltaicSolar, insulation, windowEfficiency, residentialUseVentilation,
+                typeOfHeating, typeOfAcs, typeOfRefrigeration, heatingConsumption, acsConsumption,
+                refrigerationConsumption, lightingConsumption, cadastreMeters);
 
         CreateUnofficialCertificateDTO unofficialCertificateDTO = new CreateUnofficialCertificateDTO();
         unofficialCertificateDTO.setCertificateType(CertificateType.UNOFFICIAL);
         unofficialCertificateDTO.setCreateAddressDTO(createAddressDTO);
         unofficialCertificateDTO.setFloor(calculateUnofficialCertificateDTO.getFloor());
         unofficialCertificateDTO.setDoor(calculateUnofficialCertificateDTO.getDoor());
-        unofficialCertificateDTO.setCadastreMeters(calculateUnofficialCertificateDTO.getCadastreMeters());
+        unofficialCertificateDTO.setCadastreMeters(cadastreMeters);
         unofficialCertificateDTO.setClimateZone(climateZone);
         unofficialCertificateDTO.setBuildingYear(calculateUnofficialCertificateDTO.getBuildingYear());
         unofficialCertificateDTO.setBuildingUse(buildingUse);
@@ -86,15 +82,18 @@ public class CalculateUnofficialCertificateUseCase {
         unofficialCertificateDTO.setNonRenewablePrimaryQualification(results.getNonRenewablePrimaryQualification());
         unofficialCertificateDTO.setCo2Emissions(results.getIoCO2E());
         unofficialCertificateDTO.setCo2Qualification(results.getCo2Qualification());
-        unofficialCertificateDTO.setFinalEnergyConsumption(calculateUnofficialCertificateDTO
-                .getFinalEnergyConsumption());
+        unofficialCertificateDTO.setFinalEnergyConsumption(heatingConsumption + refrigerationConsumption
+                + acsConsumption + lightingConsumption);
         unofficialCertificateDTO.setAnnualCost(calculateUnofficialCertificateDTO.getAnnualCost());
         unofficialCertificateDTO.setElectricVehicle(calculateUnofficialCertificateDTO.isElectricVehicle());
         unofficialCertificateDTO.setSolarThermal(solarThermal);
         unofficialCertificateDTO.setPhotovoltaicSolar(photovoltaicSolar);
-        unofficialCertificateDTO.setBiomass(biomass);
-        unofficialCertificateDTO.setDistrictNet(districtNet);
-        unofficialCertificateDTO.setGeothermal(geothermal);
+        unofficialCertificateDTO.setBiomass(typeOfHeating == KindOfHeating.BIOMASSA
+                || typeOfAcs == KindOfHeating.BIOMASSA);
+        unofficialCertificateDTO.setDistrictNet(typeOfHeating == KindOfHeating.DISTRICTE
+                || typeOfAcs == KindOfHeating.DISTRICTE || typeOfRefrigeration == KindOfRefrigeration.DISTRICTE);
+        unofficialCertificateDTO.setGeothermal(typeOfHeating == KindOfHeating.GEOTERMIA
+                || typeOfAcs == KindOfHeating.GEOTERMIA || typeOfRefrigeration == KindOfRefrigeration.GEOTERMIA);
         unofficialCertificateDTO.setInsulation(calculateUnofficialCertificateDTO.getInsulation());
         unofficialCertificateDTO.setWindowEfficiency(calculateUnofficialCertificateDTO.getWindowEfficiency());
         unofficialCertificateDTO.setHeatingEmissions(results.getIoHeating());
