@@ -7,6 +7,7 @@ import com.EcoMentor_backend.EcoMentor.Address.useCases.CreateAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculateUnofficialCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculatorResultsDTO;
@@ -115,9 +116,17 @@ public class CalculateUnofficialCertificateUseCase {
 
         achievementProgressUseCase.execute(userId, 5L);
 
-        //todo: Aqui falta para el achivement 6,7,8,9,10 pero no lo puedo hacer porque no existe la manera de conseguir
-        //todo: la media del certificado, Sanz hazlo tu mira el discord de logros
+        if (results.getNonRenewablePrimaryQualification() == Qualification.B
+                || results.getNonRenewablePrimaryQualification() == Qualification.A) {
+            achievementProgressUseCase.execute(userId, 6L);
+            achievementProgressUseCase.execute(userId, 7L);
+        }
 
+        if (results.getNonRenewablePrimaryQualification() == Qualification.A) {
+            achievementProgressUseCase.execute(userId, 8L);
+            achievementProgressUseCase.execute(userId, 9L);
+            achievementProgressUseCase.execute(userId, 10L);
+        }
 
 
         return new CalculatorResultsDTO(certificate.getCertificateId(), results.getIoNonRenewablePrimaryEnergy(),
