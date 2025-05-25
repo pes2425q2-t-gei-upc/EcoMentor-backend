@@ -31,7 +31,7 @@ class GenerateRecommendationsUseCaseTest {
     void setUp() {
         recommendationRepository = mock(RecommendationRepository.class);
         certificateRepository = mock(OfficialCertificateRepository.class);
-        useCase = new GenerateRecommendationsUseCase(recommendationRepository, certificateRepository);
+        useCase = new GenerateRecommendationsUseCase(recommendationRepository, certificateRepository, null);
 
         // Mock a certificate and common repository behavior
         certificate = mock(OfficialCertificate.class);

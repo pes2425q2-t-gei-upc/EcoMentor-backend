@@ -2,7 +2,6 @@ package com.EcoMentor_backend.EcoMentor.Recommendation.useCases;
 
 import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.AchivementProgressUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
-import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.OfficialCertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.CreateRecommendationDTO;
@@ -41,12 +40,17 @@ public class CalculateRecommendationValuesUseCase {
 
         float totalNewAnnualCost = (float) recommendations.stream()
                 .mapToDouble(Recommendation::getUpgradedAnualCost)
-                .sum();
+                .average()
+                .orElse(0.0);
 
         float totalOldAnnualCost = certificate.getAnnualCost();
         float totalSavings = totalOldAnnualCost - totalNewAnnualCost;
 
-        String qualificationNew = "A"; //calculo a definir
+        // Calcular la mejor calificación (A es mejor que G)
+        String qualificationNew = recommendations.stream()
+                .map(Recommendation::getUpgradedICEE)
+                .min(String::compareTo)
+                .orElse("G"); // Por defecto, la peor si no hay recomendaciones
 
         if (qualificationNew.equals("A")) {
             achievementProgressUseCase.execute(userId, 2L);

@@ -3,7 +3,9 @@ package com.EcoMentor_backend.EcoMentor.Recommendation.useCases;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAverageValuesInAZonUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AverageValuesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
+import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CustomCertificateRepositoryImpl;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.OfficialCertificateRepository;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculatorResultsDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
 import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.repositories.RecommendationRepository;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-
 @Service
 @Transactional
 public class GenerateZoneRecommendationsUseCase {
@@ -22,13 +23,16 @@ public class GenerateZoneRecommendationsUseCase {
     private final RecommendationRepository recommendationRepository;
     private final OfficialCertificateRepository certificateRepository;
     private final GetAverageValuesInAZonUseCase averageValuesUseCase;
+    private final CustomCertificateRepositoryImpl customCertificateRepository;
 
     public GenerateZoneRecommendationsUseCase(RecommendationRepository recommendationRepository,
                                               OfficialCertificateRepository certificateRepository,
-                                              GetAverageValuesInAZonUseCase averageValuesUseCase) {
+                                              GetAverageValuesInAZonUseCase averageValuesUseCase,
+                                              CustomCertificateRepositoryImpl customCertificateRepository) {
         this.recommendationRepository = recommendationRepository;
         this.certificateRepository = certificateRepository;
         this.averageValuesUseCase = averageValuesUseCase;
+        this.customCertificateRepository = customCertificateRepository;
     }
 
     public List<RecommendationDTO> execute(Long certificateId, Integer radius) {
@@ -84,16 +88,49 @@ public class GenerateZoneRecommendationsUseCase {
     private List<Recommendation> generateByZone(OfficialCertificate certificate, AverageValuesDTO avg) {
         List<Recommendation> recommendations = new ArrayList<>();
 
+        String climateZone = certificate.getClimateZone();
+        String buildingUse = certificate.getBuildingUse();
+        float nonRenewablePrimaryEnergyInitial = certificate.getNonRenewablePrimaryEnergy();
+        boolean solarThermal = certificate.isSolarThermal();
+        boolean photovoltaicSolar = certificate.isPhotovoltaicSolar();
+        boolean biomass = certificate.isBiomass();
+        boolean districtNet = certificate.isDistrictNet();
+        boolean geothermal = certificate.isGeothermal();
+        float insulation = certificate.getInsulation();
+        float windowEfficiency = certificate.getWindowEfficiency();
+        float heatingEmissionsInitial = certificate.getHeatingEmissions();
+        float refrigerationEmissionsInitial = certificate.getRefrigerationEmissions();
+        float acsEmissionsInitial = certificate.getAcsEmissions();
+        float lightingEmissionsInitial = certificate.getLightingEmissions();
+        float residentialUseVentilation = certificate.getResidentialUseVentilation();
+
         // Aislamiento por debajo del promedio de la zona
         if (certificate.getInsulation() < avg.getInsulation()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    customCertificateRepository.calculateAproxInsulation(2, buildingUse),
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("1")
                             .description("1")
                             .recommendationType("INSULATION")
-                            .upgradePercentage((avg.getInsulation() - certificate.getInsulation())
-                                    * 100 / avg.getInsulation())
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.9f)
                             .totalPrice(4000)
                             .build()
@@ -102,13 +139,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Paneles solares si no hay
         if (!certificate.isPhotovoltaicSolar()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    true,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("2")
                             .description("2")
                             .recommendationType("SOLAR")
-                            .upgradePercentage(20.0f)
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.8f)
                             .totalPrice(6000)
                             .build()
@@ -117,14 +172,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Eficiencia ventanas por debajo del promedio
         if (certificate.getWindowEfficiency() < avg.getWindowEfficiency()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    customCertificateRepository.calculateAproxWindowEfficiciency(2, buildingUse),
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("3")
                             .description("3")
                             .recommendationType("WINDOWS")
-                            .upgradePercentage((avg.getWindowEfficiency() - certificate.getWindowEfficiency())
-                                    * 100 / avg.getWindowEfficiency())
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.85f)
                             .totalPrice(3000)
                             .build()
@@ -133,14 +205,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Bomba de calor si emisiones de calefacción superiores al promedio
         if (certificate.getHeatingEmissions() > avg.getHeatingEmissions()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial * 0.75f, // Mejora en emisiones de calefacción
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("4")
                             .description("4")
                             .recommendationType("HEAT_PUMP")
-                            .upgradePercentage((certificate.getHeatingEmissions() - avg.getHeatingEmissions())
-                                    * 100 / avg.getHeatingEmissions())
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.85f)
                             .totalPrice(7000)
                             .build()
@@ -148,14 +237,32 @@ public class GenerateZoneRecommendationsUseCase {
         }
 
         // Biomasa si aplica
-        if (!certificate.isBiomass() && certificate.getHeatingEmissions() > avg.getHeatingEmissions()) {
+        if (!certificate.isBiomass()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    true,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("5")
                             .description("5")
                             .recommendationType("BIOMASS")
-                            .upgradePercentage(12.0f)
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.87f)
                             .totalPrice(5000)
                             .build()
@@ -164,14 +271,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // HVAC por encima del consumo final promedio
         if (certificate.getFinalEnergyConsumption() > avg.getFinalEnergyConsumption()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    customCertificateRepository.calculateAproxWindowEfficiciency(2, buildingUse),
+                    heatingEmissionsInitial * 0.8f, // Mejora del 10% en emisiones de calefacción
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("6")
                             .description("6")
                             .recommendationType("HVAC")
-                            .upgradePercentage((certificate.getFinalEnergyConsumption()
-                                    - avg.getFinalEnergyConsumption()) * 100 / avg.getFinalEnergyConsumption())
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.92f)
                             .totalPrice(4000)
                             .build()
@@ -180,14 +304,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Iluminación por encima del promedio de emisiones
         if (certificate.getLightingEmissions() > avg.getLightingEmissions()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial * 0.85f,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("7")
                             .description("7")
                             .recommendationType("LIGHTING")
-                            .upgradePercentage((certificate.getLightingEmissions() - avg.getLightingEmissions())
-                                    * 100 / avg.getLightingEmissions())
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.95f)
                             .totalPrice(2000)
                             .build()
@@ -196,13 +337,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Solar térmico
         if (!certificate.isSolarThermal()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    true,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("8")
                             .description("8")
                             .recommendationType("SOLAR_THERMAL")
-                            .upgradePercentage(25.0f)
-                            .upgradedICEE("B")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.75f)
                             .totalPrice(3500)
                             .build()
@@ -211,13 +370,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Red de calor urbano
         if (!certificate.isDistrictNet()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    true,
+                    geothermal,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("9")
                             .description("9")
                             .recommendationType("DISTRICT_HEATING")
-                            .upgradePercentage(18.0f)
-                            .upgradedICEE("B")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.82f)
                             .totalPrice(2000)
                             .build()
@@ -226,13 +403,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Geotermia
         if (!certificate.isGeothermal()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    true,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("10")
                             .description("10")
                             .recommendationType("GEOTHERMAL")
-                            .upgradePercentage(20.0f)
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.8f)
                             .totalPrice(12000)
                             .build()
@@ -241,13 +436,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Carga vehículo eléctrico
         if (!certificate.isElectricVehicle()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial * 0.95f,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("11")
                             .description("11")
                             .recommendationType("EV_CHARGING")
-                            .upgradePercentage(0f)
-                            .upgradedICEE(certificate.getAnnualCost() > 0 ? "A" : "B")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() + 100)
                             .totalPrice(800)
                             .build()
@@ -255,14 +468,34 @@ public class GenerateZoneRecommendationsUseCase {
         }
 
         // Recuperación de calor en ventilación
-        if (certificate.getResidentialUseVentilation() > 0) {
+        if (certificate.getResidentialUseVentilation() > customCertificateRepository
+                .calculateAproxResidentialUseVentilation(3, buildingUse)) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    customCertificateRepository.calculateAproxResidentialUseVentilation(2,
+                            buildingUse)
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("12")
                             .description("12")
                             .recommendationType("VENTILATION")
-                            .upgradePercentage(10.0f)
-                            .upgradedICEE("B")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.88f)
                             .totalPrice(2500)
                             .build()
@@ -271,14 +504,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Optimización refrigeración
         if (certificate.getRefrigerationEmissions() > avg.getRefrigerationEmissions()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial * 0.85f,
+                    acsEmissionsInitial,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("13")
                             .description("13")
                             .recommendationType("REFRIGERATION")
-                            .upgradePercentage((certificate.getRefrigerationEmissions()
-                                    - avg.getRefrigerationEmissions()) * 100 / avg.getRefrigerationEmissions())
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.9f)
                             .totalPrice(6000)
                             .build()
@@ -287,14 +537,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Agua caliente sanitaria por encima del promedio
         if (certificate.getAcsEmissions() > avg.getAcsEmissions()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation,
+                    windowEfficiency,
+                    heatingEmissionsInitial,
+                    refrigerationEmissionsInitial,
+                    acsEmissionsInitial * 0.85f,
+                    lightingEmissionsInitial,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("14")
                             .description("14")
                             .recommendationType("WATER_HEATING")
-                            .upgradePercentage((certificate.getAcsEmissions() - avg.getAcsEmissions())
-                                    * 100 / avg.getAcsEmissions())
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.85f)
                             .totalPrice(4500)
                             .build()
@@ -303,13 +570,31 @@ public class GenerateZoneRecommendationsUseCase {
 
         // Rehabilitación energética profunda
         if (!certificate.isEnergeticRehabilitation()) {
+            CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                    climateZone,
+                    buildingUse,
+                    nonRenewablePrimaryEnergyInitial,
+                    solarThermal,
+                    photovoltaicSolar,
+                    biomass,
+                    districtNet,
+                    geothermal,
+                    insulation * 0.91f,
+                    windowEfficiency * 0.87f,
+                    heatingEmissionsInitial * 0.94f,
+                    refrigerationEmissionsInitial * 0.90f,
+                    acsEmissionsInitial * 0.90f,
+                    lightingEmissionsInitial * 0.92f,
+                    residentialUseVentilation
+            );
             recommendations.add(
                     Recommendation.builder()
                             .name("15")
                             .description("15")
                             .recommendationType("REHABILITATION")
-                            .upgradePercentage(35.0f)
-                            .upgradedICEE("A")
+                            .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                    / nonRenewablePrimaryEnergyInitial * 100)
+                            .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                             .upgradedAnualCost(certificate.getAnnualCost() * 0.65f)
                             .totalPrice(15000)
                             .build()
@@ -317,26 +602,62 @@ public class GenerateZoneRecommendationsUseCase {
         }
 
         // Retro‑comisionado
+        CalculatorResultsDTO resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                climateZone,
+                buildingUse,
+                nonRenewablePrimaryEnergyInitial * 0.95f,
+                solarThermal,
+                photovoltaicSolar,
+                biomass,
+                districtNet,
+                geothermal,
+                insulation,
+                windowEfficiency * 0.98f,
+                heatingEmissionsInitial * 0.95f,
+                refrigerationEmissionsInitial * 0.95f,
+                acsEmissionsInitial * 0.97f,
+                lightingEmissionsInitial * 0.89f,
+                residentialUseVentilation * 0.95f
+        );
         recommendations.add(
                 Recommendation.builder()
                         .name("16")
                         .description("16")
                         .recommendationType("COMMISSIONING")
-                        .upgradePercentage(15.0f)
-                        .upgradedICEE("B")
+                        .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                / nonRenewablePrimaryEnergyInitial * 100)
+                        .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                         .upgradedAnualCost(certificate.getAnnualCost() * 0.85f)
                         .totalPrice(2000)
                         .build()
         );
 
         // Control inteligente
+        resultsDTO = customCertificateRepository.calculateRecomendationQualifications(
+                climateZone,
+                buildingUse,
+                nonRenewablePrimaryEnergyInitial,
+                solarThermal,
+                photovoltaicSolar,
+                biomass,
+                districtNet,
+                geothermal,
+                insulation,
+                windowEfficiency * 0.95f,
+                heatingEmissionsInitial * 0.95f,
+                refrigerationEmissionsInitial * 0.95f,
+                acsEmissionsInitial,
+                lightingEmissionsInitial * 0.90f,
+                residentialUseVentilation * 0.95f
+        );
         recommendations.add(
                 Recommendation.builder()
                         .name("17")
                         .description("17")
                         .recommendationType("SMART_CONTROL")
-                        .upgradePercentage(5.0f)
-                        .upgradedICEE("B")
+                        .upgradePercentage(resultsDTO.getIoNonRenewablePrimaryEnergy()
+                                / nonRenewablePrimaryEnergyInitial * 100)
+                        .upgradedICEE(resultsDTO.getNonRenewablePrimaryQualification().toString())
                         .upgradedAnualCost(certificate.getAnnualCost() * 0.95f)
                         .totalPrice(1500)
                         .build()
