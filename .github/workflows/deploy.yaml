@@ -63,6 +63,7 @@ jobs:
                 environment:
                   - GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
                   - SPRING_MAIL_PASSWORD=${{ secrets.SPRING_MAIL_PASSWORD }}
+                  - GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
                   - DB_HOST=postgres
                   - MONGO_HOST=mongo
             

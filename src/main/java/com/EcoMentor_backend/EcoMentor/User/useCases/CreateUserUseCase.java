@@ -1,5 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.User.useCases;
 
+import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.AssignAllAchievementsToUserUseCase;
 import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import com.EcoMentor_backend.EcoMentor.Role.entity.RoleName;
 import com.EcoMentor_backend.EcoMentor.Role.infrastructure.repositories.RoleRepository;
@@ -25,6 +26,7 @@ public class CreateUserUseCase {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final AssignAllAchievementsToUserUseCase assignAllAchievementsToUserUseCase;
 
     public User execute(CreateUserDTO userDTO) throws MessagingException, IOException {
 
@@ -39,6 +41,7 @@ public class CreateUserUseCase {
         user.setRoles(Set.of(role));
 
         userRepository.save(user);
+        assignAllAchievementsToUserUseCase.execute(user);
         System.out.println("User created " + user);
         emailService.sendHtmlEmail(user.getEmail(), "[ECOMENTOR] - Welcome to Ecomentor!", "email/welcome.html");
         return user;

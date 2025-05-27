@@ -1,9 +1,11 @@
 package com.EcoMentor_backend.EcoMentor.User.useCases;
 
+import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.AchivementProgressUseCase;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import com.EcoMentor_backend.EcoMentor.User.entity.User;
 import com.EcoMentor_backend.EcoMentor.User.infrastructure.repositories.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,14 +13,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class AddCertificateToUserUseCase {
     private final UserRepository userRepository;
     private final CertificateRepository certificateRepository;
+    private final AchivementProgressUseCase achivementProgressUseCase;
 
-    public AddCertificateToUserUseCase(UserRepository userRepository, CertificateRepository certificateRepository) {
-        this.userRepository = userRepository;
-        this.certificateRepository = certificateRepository;
-    }
 
     public void execute(Long userId, Long certificateId) {
         Certificate certificate = certificateRepository.findCertificateByCertificateId(certificateId);
@@ -40,5 +40,7 @@ public class AddCertificateToUserUseCase {
 
         certificateRepository.save(certificate);
         userRepository.save(user);
+        long achivement = 1;
+        achivementProgressUseCase.execute(userId, achivement);
     }
 }

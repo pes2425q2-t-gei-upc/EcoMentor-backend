@@ -1,5 +1,6 @@
 package com.EcoMentor_backend.EcoMentor.Chat.useCases;
 
+import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.AchivementProgressUseCase;
 import com.EcoMentor_backend.EcoMentor.Chat.entity.Chat;
 import com.EcoMentor_backend.EcoMentor.Chat.infraestructure.repositories.ChatRepository;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
@@ -20,11 +21,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 
+@AllArgsConstructor
 @Service
 public class ChatUseCase {
     private final GeminiService gemini;
@@ -32,15 +35,9 @@ public class ChatUseCase {
     private final UserRepository userRepository;
     private final IncreaseWarningUseCase increaseWarningUseCase;
     private final EmailService emailService;
+    private final AchivementProgressUseCase achievementProgressUseCase;
 
-    public ChatUseCase(GeminiService gemini, ChatRepository repo, UserRepository userRepository,
-                       IncreaseWarningUseCase increaseWarningUseCase, EmailService emailService) {
-        this.gemini = gemini;
-        this.repo = repo;
-        this.userRepository = userRepository;
-        this.increaseWarningUseCase = increaseWarningUseCase;
-        this.emailService = emailService;
-    }
+
 
     public ChatResponseDTO execute(String message, Long userId, String chatName) {
         Date nowUtc = new Date();
@@ -48,6 +45,17 @@ public class ChatUseCase {
         boolean suspicus = false;
 
         if (inappropriateLanguageDetector(message)) {
+
+            achievementProgressUseCase.execute(userId, 12L);
+
+            User user = userRepository.findById(userId).orElseThrow();
+            try {
+                emailService.sendHtmlEmail(user.getEmail(), "[ECOMENTOR] - Inappropriate language detected",
+                        "email/blockChat.html");
+            } catch (MessagingException | IOException e) {
+                System.out.println("Error sending email: " + e.getMessage());
+            }
+
             Chat chat = Chat.builder()
                     .userId(userId)
                     .message("")
@@ -57,13 +65,6 @@ public class ChatUseCase {
                     .isSuspicious(true)
                     .build();
 
-            User user = userRepository.findById(userId).orElseThrow();
-            try {
-                emailService.sendHtmlEmail(user.getEmail(), "[ECOMENTOR] - Inappropriate language detected",
-                        "email/blockChat.html");
-            } catch (MessagingException | IOException e) {
-                System.out.println("Error sending email: " + e.getMessage());
-            }
             increaseWarningUseCase.execute(userId);
             repo.save(chat);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inappropriate language detected");
@@ -83,6 +84,7 @@ public class ChatUseCase {
                 Date messageTime = m3.getTimestamp();
                 long secondsDiff = (now.getTime() - messageTime.getTime()) / 1000;
                 if (secondsDiff < 300) {
+                    achievementProgressUseCase.execute(userId, 12L);
                     throw new ResponseStatusException(
                             HttpStatus.TOO_MANY_REQUESTS,
                             "Messages are too close in time"
@@ -150,6 +152,8 @@ public class ChatUseCase {
                 .build();
 
         repo.save(chat);
+
+        achievementProgressUseCase.execute(userId, 11L);
 
         return ChatResponseDTO.builder()
                 .message(message)
