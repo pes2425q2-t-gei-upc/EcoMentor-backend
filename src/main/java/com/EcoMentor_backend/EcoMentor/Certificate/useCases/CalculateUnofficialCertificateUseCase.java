@@ -1,20 +1,23 @@
 package com.EcoMentor_backend.EcoMentor.Certificate.useCases;
 
+import com.EcoMentor_backend.EcoMentor.Achievements_User.useCases.AchivementProgressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.infrastructure.repositories.AddressRepository;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.AddCertificateToAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.CreateAddressUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.CreateAddressDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.CertificateType;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CertificateRepository;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculateUnofficialCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculatorResultsDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CreateUnofficialCertificateDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.mapper.CertificateMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+@AllArgsConstructor
 @Service
 @Transactional
 public class CalculateUnofficialCertificateUseCase {
@@ -23,39 +26,20 @@ public class CalculateUnofficialCertificateUseCase {
     private final AddressRepository addressRepository;
     private final CreateAddressUseCase createAddressUseCase;
     private final CertificateMapper certificateMapper;
+    private final AchivementProgressUseCase achievementProgressUseCase;
 
-    public CalculateUnofficialCertificateUseCase(CertificateRepository certificateRepository,
-                                                 AddCertificateToAddressUseCase addCertificateToAddressUseCase,
-                                                 AddressRepository addressRepository,
-                                                 CreateAddressUseCase createAddressUseCase,
-                                                 CertificateMapper certificateMapper) {
-        // Constructor
-        this.certificateRepository = certificateRepository;
-        this.addCertificateToAddressUseCase = addCertificateToAddressUseCase;
-        this.addressRepository = addressRepository;
-        this.createAddressUseCase = createAddressUseCase;
-        this.certificateMapper = certificateMapper;
-    }
 
-    public CalculatorResultsDTO execute(CalculateUnofficialCertificateDTO calculateUnofficialCertificateDTO) {
-        // Extract parameters from DTO
+    public CalculatorResultsDTO execute(CalculateUnofficialCertificateDTO calculateUnofficialCertificateDTO,
+                                        long userId) {
+
         boolean solarThermal = calculateUnofficialCertificateDTO.isSolarThermal();
         boolean photovoltaicSolar = calculateUnofficialCertificateDTO.isPhotovoltaicSolar();
-        boolean biomass = calculateUnofficialCertificateDTO.isBiomass();
-        boolean districtNet = calculateUnofficialCertificateDTO.isDistrictNet();
         String buildingUse = calculateUnofficialCertificateDTO.getBuildingUse();
-        int npREAprox = calculateUnofficialCertificateDTO.getNonRenewablePrimaryEnergyAprox();
-        int heatingAprox = calculateUnofficialCertificateDTO.getHeatingEmissionsAprox();
-        float heatingEmissionsInitial = certificateRepository.calculateBaseIoHeating(heatingAprox, buildingUse);
-        int refrigerationAprox = calculateUnofficialCertificateDTO.getRefrigerationEmissionsAprox();
-        float refrigerationEmissionsInitial = certificateRepository
-                .calculateBaseIoRefrigeration(refrigerationAprox, buildingUse);
-        int acsAprox = calculateUnofficialCertificateDTO.getAcsEmissionsAprox();
-        float acsEmissionsInitial = certificateRepository.calculateBaseIoACS(acsAprox, buildingUse);
-        int lightingAprox = calculateUnofficialCertificateDTO.getLightingEmissionsAprox();
-        float lightingEmissionsInitial = certificateRepository.calculateBaseIoLighting(lightingAprox, buildingUse);
+        float heatingConsumption = calculateUnofficialCertificateDTO.getHeatingConsumption();
+        float refrigerationConsumption = calculateUnofficialCertificateDTO.getRefrigerationConsumption();
+        float acsConsumption = calculateUnofficialCertificateDTO.getAcsConsumption();
+        float lightingConsumption = calculateUnofficialCertificateDTO.getLightingConsumption();
         String climateZone = calculateUnofficialCertificateDTO.getClimateZone();
-        boolean geothermal = calculateUnofficialCertificateDTO.isGeothermal();
         float insulation = certificateRepository.calculateAproxInsulation(calculateUnofficialCertificateDTO
                 .getInsulation(), buildingUse);
         float windowEfficiency = certificateRepository
@@ -64,6 +48,10 @@ public class CalculateUnofficialCertificateUseCase {
         float residentialUseVentilation = certificateRepository
                 .calculateAproxResidentialUseVentilation(calculateUnofficialCertificateDTO
                         .getResidentialUseVentilation(), buildingUse);
+        KindOfHeating typeOfHeating = calculateUnofficialCertificateDTO.getKindOfHeating();
+        KindOfHeating typeOfAcs = calculateUnofficialCertificateDTO.getKindOfAcs();
+        KindOfRefrigeration typeOfRefrigeration = calculateUnofficialCertificateDTO.getKindOfRefrigeration();
+        float cadastreMeters = calculateUnofficialCertificateDTO.getCadastreMeters();
 
         CreateAddressDTO createAddressDTO = calculateUnofficialCertificateDTO.getCreateAddressDTO();
         Long id;
@@ -76,17 +64,18 @@ public class CalculateUnofficialCertificateUseCase {
             id = createAddressUseCase.execute(createAddressDTO);
         }
 
-        CalculatorResultsDTO results = certificateRepository.calculateQualifications(climateZone, buildingUse,
-                npREAprox, solarThermal, photovoltaicSolar, biomass, districtNet, geothermal, insulation,
-                windowEfficiency, heatingEmissionsInitial, refrigerationEmissionsInitial, acsEmissionsInitial,
-                lightingEmissionsInitial, residentialUseVentilation);
+        CalculatorResultsDTO results = certificateRepository.calculateQualificationsForANewCertificate(climateZone,
+                buildingUse,
+                solarThermal, photovoltaicSolar, insulation, windowEfficiency, residentialUseVentilation,
+                typeOfHeating, typeOfAcs, typeOfRefrigeration, heatingConsumption, acsConsumption,
+                refrigerationConsumption, lightingConsumption, cadastreMeters);
 
         CreateUnofficialCertificateDTO unofficialCertificateDTO = new CreateUnofficialCertificateDTO();
         unofficialCertificateDTO.setCertificateType(CertificateType.UNOFFICIAL);
         unofficialCertificateDTO.setCreateAddressDTO(createAddressDTO);
         unofficialCertificateDTO.setFloor(calculateUnofficialCertificateDTO.getFloor());
         unofficialCertificateDTO.setDoor(calculateUnofficialCertificateDTO.getDoor());
-        unofficialCertificateDTO.setCadastreMeters(calculateUnofficialCertificateDTO.getCadastreMeters());
+        unofficialCertificateDTO.setCadastreMeters(cadastreMeters);
         unofficialCertificateDTO.setClimateZone(climateZone);
         unofficialCertificateDTO.setBuildingYear(calculateUnofficialCertificateDTO.getBuildingYear());
         unofficialCertificateDTO.setBuildingUse(buildingUse);
@@ -94,15 +83,18 @@ public class CalculateUnofficialCertificateUseCase {
         unofficialCertificateDTO.setNonRenewablePrimaryQualification(results.getNonRenewablePrimaryQualification());
         unofficialCertificateDTO.setCo2Emissions(results.getIoCO2E());
         unofficialCertificateDTO.setCo2Qualification(results.getCo2Qualification());
-        unofficialCertificateDTO.setFinalEnergyConsumption(calculateUnofficialCertificateDTO
-                .getFinalEnergyConsumption());
+        unofficialCertificateDTO.setFinalEnergyConsumption(heatingConsumption + refrigerationConsumption
+                + acsConsumption + lightingConsumption);
         unofficialCertificateDTO.setAnnualCost(calculateUnofficialCertificateDTO.getAnnualCost());
         unofficialCertificateDTO.setElectricVehicle(calculateUnofficialCertificateDTO.isElectricVehicle());
         unofficialCertificateDTO.setSolarThermal(solarThermal);
         unofficialCertificateDTO.setPhotovoltaicSolar(photovoltaicSolar);
-        unofficialCertificateDTO.setBiomass(biomass);
-        unofficialCertificateDTO.setDistrictNet(districtNet);
-        unofficialCertificateDTO.setGeothermal(geothermal);
+        unofficialCertificateDTO.setBiomass(typeOfHeating == KindOfHeating.BIOMASSA
+                || typeOfAcs == KindOfHeating.BIOMASSA);
+        unofficialCertificateDTO.setDistrictNet(typeOfHeating == KindOfHeating.DISTRICTE
+                || typeOfAcs == KindOfHeating.DISTRICTE || typeOfRefrigeration == KindOfRefrigeration.DISTRICTE);
+        unofficialCertificateDTO.setGeothermal(typeOfHeating == KindOfHeating.GEOTERMIA
+                || typeOfAcs == KindOfHeating.GEOTERMIA || typeOfRefrigeration == KindOfRefrigeration.GEOTERMIA);
         unofficialCertificateDTO.setInsulation(calculateUnofficialCertificateDTO.getInsulation());
         unofficialCertificateDTO.setWindowEfficiency(calculateUnofficialCertificateDTO.getWindowEfficiency());
         unofficialCertificateDTO.setHeatingEmissions(results.getIoHeating());
@@ -121,6 +113,20 @@ public class CalculateUnofficialCertificateUseCase {
         Certificate certificate = certificateMapper.toEntity(unofficialCertificateDTO);
         certificateRepository.save(certificate);
         addCertificateToAddressUseCase.execute(id, certificate.getCertificateId());
+
+        achievementProgressUseCase.execute(userId, 5L);
+
+        if (results.getNonRenewablePrimaryQualification() == Qualification.B
+                || results.getNonRenewablePrimaryQualification() == Qualification.A) {
+            achievementProgressUseCase.execute(userId, 6L);
+            achievementProgressUseCase.execute(userId, 7L);
+        }
+
+        if (results.getNonRenewablePrimaryQualification() == Qualification.A) {
+            achievementProgressUseCase.execute(userId, 8L);
+            achievementProgressUseCase.execute(userId, 9L);
+            achievementProgressUseCase.execute(userId, 10L);
+        }
 
 
         return new CalculatorResultsDTO(certificate.getCertificateId(), results.getIoNonRenewablePrimaryEnergy(),

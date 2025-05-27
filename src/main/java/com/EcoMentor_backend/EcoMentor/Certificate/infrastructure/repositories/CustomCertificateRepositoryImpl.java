@@ -2,6 +2,8 @@ package com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories;
 
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.KindOfHeating;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.KindOfRefrigeration;
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculatorResultsDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -633,15 +635,132 @@ public class CustomCertificateRepositoryImpl implements CustomCertificateReposit
     }
 
     @Override
-    public CalculatorResultsDTO calculateQualifications(String climateZone, String buildingUse,
-                                                        int nonRenewablePrimaryEnergyAprox,
-                                                        boolean solarThermal, boolean photovoltaicSolar,
-                                                        boolean biomass,
-                                                        boolean districtNet, boolean geothermal, float insulation,
-                                                        float windowEfficiency, float heatingEmissionsInitial,
-                                                        float refrigerationEmissionsInitial, float acsEmissionsInitial,
-                                                        float lightingEmissionsInitial,
-                                                        float residentialUseVentilation) {
+    public CalculatorResultsDTO calculateQualificationsForANewCertificate(String climateZone, String buildingUse,
+                                                                   boolean solarThermal, boolean photovoltaicSolar,
+                                                                   float insulation, float windowEfficiency,
+                                                                   float residentialUseVentilation,
+                                                                   KindOfHeating typeOfHeating, KindOfHeating typeOfAcs,
+                                                                   KindOfRefrigeration typeOfRefrigeration,
+                                                                   float heatingConsumption, float acsConsumption,
+                                                                   float refrigerationConsumption,
+                                                                   float lightingConsumption, float cadastreMeters) {
+
+        float indicadorPhotovoltaicSolarLighting = 1.0f;
+        if (photovoltaicSolar) {
+            indicadorPhotovoltaicSolarLighting = indicadorPhotovoltaicSolarLighting - 0.18f;
+        }
+
+        float indicadorSolarThermalHeating = 1.0f;
+        float indicadorSolarThermalACS = 1.0f;
+        if (solarThermal) {
+            indicadorSolarThermalHeating = indicadorSolarThermalHeating - 0.32f;
+            indicadorSolarThermalACS = indicadorSolarThermalACS - 0.60f;
+        }
+
+        float fpHeating;
+        float eeHeating;
+        float indicadorPhotovoltaicSolarHeating = 1.0f;
+        if (typeOfHeating == KindOfHeating.BIOMASSA) {
+            fpHeating = 0.02f;
+            eeHeating = 0.015f;
+        } else if (typeOfHeating == KindOfHeating.DISTRICTE) {
+            fpHeating = 0.8f;
+            eeHeating = 0.183f;
+        } else if (typeOfHeating == KindOfHeating.GEOTERMIA) {
+            fpHeating = 0.49f;
+            eeHeating = 0.083f;
+        } else if (typeOfHeating == KindOfHeating.ELECTRICA) {
+            if (photovoltaicSolar) {
+                indicadorPhotovoltaicSolarHeating = indicadorPhotovoltaicSolarHeating - 0.18f;
+            }
+            fpHeating = 1.95f;
+            eeHeating = 0.331f;
+        } else {
+            fpHeating = 1.19f;
+            eeHeating = 0.251f;
+        }
+        float ioHeating = heatingConsumption * eeHeating * indicadorPhotovoltaicSolarHeating
+                * indicadorSolarThermalHeating / cadastreMeters;
+        ioHeating +=  4.209f * (insulation - 0.779f) + 0.001f * (windowEfficiency - 1.6f)
+                + 5.984f * (residentialUseVentilation - 0.612f);
+        float fpRefrigeration;
+        float eeRefrigeration;
+        float indicadorPhotovoltaicSolarRefrigeration = 1.0f;
+        if (typeOfRefrigeration == KindOfRefrigeration.DISTRICTE) {
+            fpRefrigeration = 0.8f;
+            eeRefrigeration = 0.183f;
+        } else if (typeOfRefrigeration == KindOfRefrigeration.GEOTERMIA) {
+            fpRefrigeration = 0.49f;
+            eeRefrigeration = 0.083f;
+        } else {
+            if (photovoltaicSolar) {
+                indicadorPhotovoltaicSolarRefrigeration = indicadorPhotovoltaicSolarRefrigeration - 0.18f;
+            }
+            fpRefrigeration = 1.95f;
+            eeRefrigeration = 0.331f;
+        }
+        float ioRefrigeration = refrigerationConsumption * eeRefrigeration
+                * indicadorPhotovoltaicSolarRefrigeration / cadastreMeters;
+        ioRefrigeration += 0.039f * (insulation - 0.779f) + 0.001f * (windowEfficiency - 1.6f)
+                + 0.432f * (residentialUseVentilation - 0.612f);
+        float fpAcs;
+        float eeAcs;
+        float indicadorPhotovoltaicSolarACS = 1.0f;
+        if (typeOfAcs == KindOfHeating.BIOMASSA) {
+            fpAcs = 0.02f;
+            eeAcs = 0.015f;
+        } else if (typeOfAcs == KindOfHeating.DISTRICTE) {
+            fpAcs = 0.8f;
+            eeAcs = 0.183f;
+        } else if (typeOfAcs == KindOfHeating.GEOTERMIA) {
+            fpAcs = 0.49f;
+            eeAcs = 0.083f;
+        } else if (typeOfAcs == KindOfHeating.ELECTRICA) {
+            if (photovoltaicSolar) {
+                indicadorPhotovoltaicSolarACS = indicadorPhotovoltaicSolarACS - 0.18f;
+            }
+            fpAcs = 1.95f;
+            eeAcs = 0.331f;
+        } else {
+            fpAcs = 1.19f;
+            eeAcs = 0.251f;
+        }
+        float ioACS = acsConsumption * eeAcs * indicadorPhotovoltaicSolarACS * indicadorSolarThermalACS
+                / cadastreMeters;
+        float ioLighting = lightingConsumption * 0.331f * indicadorPhotovoltaicSolarLighting / cadastreMeters;
+        float ioCO2E = ioHeating + ioACS + ioLighting + ioRefrigeration;
+
+        float ioAcsNRPE = acsConsumption * fpAcs * indicadorPhotovoltaicSolarACS * indicadorSolarThermalACS
+                / cadastreMeters;
+        float ioHeatingNRPE = heatingConsumption * fpHeating * indicadorPhotovoltaicSolarHeating
+                * indicadorSolarThermalHeating / cadastreMeters;
+
+        float ioRefrigerationNRPE = refrigerationConsumption * fpRefrigeration
+                * indicadorPhotovoltaicSolarRefrigeration / cadastreMeters;
+
+        float ioLightingNRPE = lightingConsumption * 1.95f * indicadorPhotovoltaicSolarLighting / cadastreMeters;
+
+        float ioNonRenewablePrimaryEnergy = ioLightingNRPE + ioRefrigerationNRPE + ioHeatingNRPE + ioAcsNRPE;
+        ioNonRenewablePrimaryEnergy += 19.991f / 4 * (insulation - 0.779f) + 0.001f * (windowEfficiency - 1.6f)
+                + 48.362f / 4 * (residentialUseVentilation - 0.612f);
+
+        return calculateQualifications(climateZone, buildingUse, ioNonRenewablePrimaryEnergy, ioCO2E,
+                ioHeating, ioRefrigeration, ioACS, ioLighting);
+
+    }
+
+    @Override
+    public CalculatorResultsDTO calculateRecomendationQualifications(String climateZone, String buildingUse,
+                                                                     float nonRenewablePrimaryEnergyInitial,
+                                                                     boolean solarThermal, boolean photovoltaicSolar,
+                                                                     boolean biomass,
+                                                                     boolean districtNet, boolean geothermal,
+                                                                     float insulation, float windowEfficiency,
+                                                                     float heatingEmissionsInitial,
+                                                                     float refrigerationEmissionsInitial,
+                                                                     float acsEmissionsInitial,
+                                                                     float lightingEmissionsInitial,
+                                                                     float residentialUseVentilation) {
         float indicadorPhotovoltaicSolarRefrigeration = 1.0f;
         float indicadorPhotovoltaicSolarNRPE = 1.0f;
         float indicadorPhotovoltaicSolarHeating = 1.0f;
@@ -749,7 +868,7 @@ public class CustomCertificateRepositoryImpl implements CustomCertificateReposit
         }
 
 
-        float nonRenewablePrimaryEnergyInitial = calculateBaseIoNPRE(nonRenewablePrimaryEnergyAprox, buildingUse);
+
 
         float ioNonRenewablePrimaryEnergy = nonRenewablePrimaryEnergyInitial * indicadorBiomassNRPE
                 * indicadorGeothermalNRPE * indicadorDistrictNetNRPE * indicadorPhotovoltaicSolarNRPE
@@ -778,6 +897,18 @@ public class CustomCertificateRepositoryImpl implements CustomCertificateReposit
 
         float ioLighting = lightingEmissionsInitial * indicadorPhotovoltaicSolarLighting;
         float ioCO2E = ioHeating + ioRefrigeration + ioACS + ioLighting;
+
+        return calculateQualifications(climateZone, buildingUse, ioNonRenewablePrimaryEnergy, ioCO2E, ioHeating,
+                ioRefrigeration, ioACS, ioLighting);
+
+    }
+
+
+    @Override
+    public CalculatorResultsDTO calculateQualifications(String climateZone, String buildingUse,
+                                                        float ioNonRenewablePrimaryEnergy, float ioCO2E,
+                                                        float ioHeating, float ioRefrigeration, float ioACS,
+                                                        float ioLighting) {
 
 
         if (Objects.equals(buildingUse, "terciario")) {

@@ -1,42 +1,48 @@
 package com.EcoMentor_backend.EcoMentor.Chat.useCases;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.EcoMentor_backend.EcoMentor.Certificate.useCases.GetCertificateByCertificateIdWFEUseCase;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CertificateWithoutForeignEntitiesDTO;
+import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.ChatResponseDTO;
 import com.EcoMentor_backend.EcoMentor.Chat.useCases.dto.CreateChatWithCertificateDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import java.time.ZonedDateTime;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 class PostContextUseCaseTest {
 
-private ChatUseCase chatUseCase;
-private GetCertificateByCertificateIdWFEUseCase getCertificateByCertificateIdWFEUseCase;
-private PostContextUseCase postContextUseCase;
+    private ChatUseCase chatUseCase;
+    private GetCertificateByCertificateIdWFEUseCase certUseCase;
+    private PostContextUseCase postContextUseCase;
 
-@BeforeEach
-void setUp() {
-    chatUseCase = mock(ChatUseCase.class);
-    getCertificateByCertificateIdWFEUseCase = mock(GetCertificateByCertificateIdWFEUseCase.class);
-    postContextUseCase = new PostContextUseCase(chatUseCase, getCertificateByCertificateIdWFEUseCase);
-}
-
-
+    @BeforeEach
+    void setUp() {
+        chatUseCase = Mockito.mock(ChatUseCase.class);
+        certUseCase = Mockito.mock(GetCertificateByCertificateIdWFEUseCase.class);
+        postContextUseCase = new PostContextUseCase(chatUseCase, certUseCase);
+    }
 
 
-@Test
-@DisplayName("Throws exception when certificate retrieval fails")
-void throwsExceptionWhenCertificateRetrievalFails() {
-    CreateChatWithCertificateDTO dto = new CreateChatWithCertificateDTO(1L, "Chat1", ZonedDateTime.now(), "Message", 123L);
-    when(getCertificateByCertificateIdWFEUseCase.execute(123L)).thenThrow(new RuntimeException("Certificate not found"));
+    @Test
+    @DisplayName("Should call chatUseCase directly when certificateId is null")
+    void shouldCallChatUseCaseDirectly() {
+        Long userId = 3L;
+        CreateChatWithCertificateDTO input = new CreateChatWithCertificateDTO();
+        input.setChatName("chatB");
+        input.setMessage("Hi there");
+        input.setCertificateId(null);
 
-    RuntimeException exception = assertThrows(RuntimeException.class, () -> postContextUseCase.execute(dto));
+        ChatResponseDTO expectedResponse = ChatResponseDTO.builder()
+                .message("SimpleReply").build();
+        when(chatUseCase.execute("Hi there", userId, "chatB")).thenReturn(expectedResponse);
 
-    assertEquals("Certificate not found", exception.getMessage());
-}
+        ChatResponseDTO actual = postContextUseCase.execute(input, userId);
 
-
+        assertEquals(expectedResponse, actual);
+        verify(certUseCase, never()).execute(any());
+        verify(chatUseCase, times(1)).execute("Hi there", userId, "chatB");
+    }
 }

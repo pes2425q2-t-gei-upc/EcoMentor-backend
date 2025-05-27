@@ -1,6 +1,7 @@
 package com.EcoMentor_backend.EcoMentor.User.entity;
 
 
+import com.EcoMentor_backend.EcoMentor.Achievements_User.entity.AchievementsUser;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.Certificate;
 import com.EcoMentor_backend.EcoMentor.Role.entity.Role;
 import jakarta.persistence.Column;
@@ -12,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
@@ -73,6 +75,9 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "certificateId", referencedColumnName = "certificateId")
     )
     private List<Certificate> certificates = new ArrayList<>();
+
+    @OneToMany(mappedBy = "userProgress")
+    private List<AchievementsUser> progresses = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

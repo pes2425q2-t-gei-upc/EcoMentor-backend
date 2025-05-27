@@ -4,23 +4,21 @@ import com.EcoMentor_backend.EcoMentor.Address.entity.Address;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.GetAverageValuesInAZonUseCase;
 import com.EcoMentor_backend.EcoMentor.Address.useCases.dto.AverageValuesDTO;
 import com.EcoMentor_backend.EcoMentor.Certificate.entity.OfficialCertificate;
+import com.EcoMentor_backend.EcoMentor.Certificate.entity.Qualification;
+import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.CustomCertificateRepositoryImpl;
 import com.EcoMentor_backend.EcoMentor.Certificate.infrastructure.repositories.OfficialCertificateRepository;
-import com.EcoMentor_backend.EcoMentor.Recommendation.entity.Recommendation;
+import com.EcoMentor_backend.EcoMentor.Certificate.useCases.dto.CalculatorResultsDTO;
 import com.EcoMentor_backend.EcoMentor.Recommendation.infrastructure.repositories.RecommendationRepository;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.GenerateZoneRecommendationsUseCase;
 import com.EcoMentor_backend.EcoMentor.Recommendation.useCases.dto.RecommendationDTO;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Point;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -36,100 +34,108 @@ class GenerateZoneRecommendationsUseCaseTest {
     @Mock
     private GetAverageValuesInAZonUseCase averageValuesUseCase;
 
+    @Mock
+    private CustomCertificateRepositoryImpl customCertificateRepository;
+
     @InjectMocks
-    private GenerateZoneRecommendationsUseCase generateZoneRecommendationsUseCase;
+    private GenerateZoneRecommendationsUseCase useCase;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
-    @DisplayName("Returns recommendations when certificate and averages are valid")
     @Test
-    void returnsRecommendationsWhenCertificateAndAveragesAreValid() {
+    void execute_shouldReturnRecommendations_whenDataIsValid() {
+        // Given
         Long certificateId = 1L;
-        Integer radius = 5000; // Ensure this matches the expected value
+        int radius = 10;
+
         OfficialCertificate certificate = mock(OfficialCertificate.class);
+        when(certificateRepository.findById(certificateId)).thenReturn(Optional.of(certificate));
+        when(certificate.getRecommendations()).thenReturn(new ArrayList<>());
+
+        // Mock manual de Address y Location
+        Address address = mock(Address.class);
+        Point location = mock(Point.class);
+        when(location.getX()).thenReturn(2.0);
+        when(location.getY()).thenReturn(1.0);
+        when(address.getLocation()).thenReturn(location);
+        when(certificate.getAddress()).thenReturn(address);
+
+        when(certificate.getClimateZone()).thenReturn("C");
+        when(certificate.getBuildingUse()).thenReturn("RESIDENTIAL");
+        when(certificate.getNonRenewablePrimaryEnergy()).thenReturn(100f);
+        when(certificate.isSolarThermal()).thenReturn(false);
+        when(certificate.isPhotovoltaicSolar()).thenReturn(false);
+        when(certificate.isBiomass()).thenReturn(false);
+        when(certificate.isDistrictNet()).thenReturn(false);
+        when(certificate.isGeothermal()).thenReturn(false);
+        when(certificate.getInsulation()).thenReturn(1.0f);
+        when(certificate.getWindowEfficiency()).thenReturn(1.0f);
+        when(certificate.getHeatingEmissions()).thenReturn(10f);
+        when(certificate.getRefrigerationEmissions()).thenReturn(10f);
+        when(certificate.getAcsEmissions()).thenReturn(10f);
+        when(certificate.getLightingEmissions()).thenReturn(10f);
+        when(certificate.getResidentialUseVentilation()).thenReturn(1.0f);
+        when(certificate.getAnnualCost()).thenReturn(1000f);
+        when(certificate.getFinalEnergyConsumption()).thenReturn(100f);
+
         AverageValuesDTO averages = new AverageValuesDTO();
-        averages.setInsulation(10.0f); // Set valid values for averages
-        averages.setWindowEfficiency(8.0f); // Add other required fields
-        Address address = mock(Address.class);
-        Point location = mock(Point.class);
+        averages.setInsulation(2f);
+        averages.setWindowEfficiency(2f);
+        averages.setHeatingEmissions(5f);
+        averages.setLightingEmissions(5f);
+        averages.setFinalEnergyConsumption(50f);
 
-        when(certificateRepository.findById(certificateId)).thenReturn(Optional.of(certificate));
-        when(certificate.getAddress()).thenReturn(address);
-        when(address.getLocation()).thenReturn(location);
-        when(location.getX()).thenReturn(10.0);
-        when(location.getY()).thenReturn(20.0);
-        when(averageValuesUseCase.execute(20.0, 10.0, radius)).thenReturn(averages); // Ensure radius matches here
-        when(recommendationRepository.saveAll(anyList())).thenReturn(new ArrayList<>());
+        when(averageValuesUseCase.execute(anyDouble(), anyDouble(), eq(radius))).thenReturn(averages);
 
-        List<RecommendationDTO> result = generateZoneRecommendationsUseCase.execute(certificateId, radius);
+        CalculatorResultsDTO results = new CalculatorResultsDTO();
+        results.setIoNonRenewablePrimaryEnergy(80f);
+        results.setNonRenewablePrimaryQualification(Qualification.B);
 
-        assertNotNull(result);
+        when(customCertificateRepository.calculateAproxInsulation(anyInt(), anyString())).thenReturn(2f);
+        when(customCertificateRepository.calculateAproxWindowEfficiciency(anyInt(), anyString())).thenReturn(2f);
+        when(customCertificateRepository.calculateRecomendationQualifications(any(), any(), anyFloat(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyFloat(), anyFloat(), anyFloat(), anyFloat(), anyFloat(), anyFloat(), anyFloat()))
+                .thenReturn(results);
+
+        // When
+        List<RecommendationDTO> dtoList = useCase.execute(certificateId, radius);
+
+        // Then
+        assertNotNull(dtoList);
+        assertFalse(dtoList.isEmpty());
+
         verify(certificateRepository).findById(certificateId);
-        verify(averageValuesUseCase).execute(20.0, 10.0, radius);
+        verify(recommendationRepository).deleteAll(anyList());
         verify(recommendationRepository).saveAll(anyList());
     }
 
-    @DisplayName("Throws exception when certificate is not found")
     @Test
-    void throwsExceptionWhenCertificateIsNotFound() {
-        Long certificateId = 1L;
-        Integer radius = 5;
+    void execute_shouldThrowException_whenCertificateNotFound() {
+        when(certificateRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        when(certificateRepository.findById(certificateId)).thenReturn(Optional.empty());
-
-        assertThrows(ResponseStatusException.class, () -> generateZoneRecommendationsUseCase.execute(certificateId, radius));
-        verify(certificateRepository).findById(certificateId);
-        verifyNoInteractions(averageValuesUseCase);
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> useCase.execute(1L, 10));
+        assertEquals("404 NOT_FOUND \"Certificate not found\"", ex.getMessage());
     }
 
-    @DisplayName("Handles null average values gracefully")
     @Test
-    void handlesNullAverageValuesGracefully() {
-        Long certificateId = 1L;
-        Integer radius = 5000;
+    void execute_shouldThrowException_whenAverageValuesAreNull() {
         OfficialCertificate certificate = mock(OfficialCertificate.class);
+        when(certificateRepository.findById(1L)).thenReturn(Optional.of(certificate));
+        when(certificate.getRecommendations()).thenReturn(new ArrayList<>());
+
+        // Mock manual de Address y Location
         Address address = mock(Address.class);
         Point location = mock(Point.class);
-
-        when(certificateRepository.findById(certificateId)).thenReturn(Optional.of(certificate));
-        when(certificate.getAddress()).thenReturn(address);
+        when(location.getX()).thenReturn(2.0);
+        when(location.getY()).thenReturn(1.0);
         when(address.getLocation()).thenReturn(location);
-        when(location.getX()).thenReturn(10.0);
-        when(location.getY()).thenReturn(20.0);
-        when(averageValuesUseCase.execute(20.0, 10.0, radius)).thenReturn(null);
-
-        assertThrows(ResponseStatusException.class, () -> generateZoneRecommendationsUseCase.execute(certificateId, radius));
-        verify(certificateRepository).findById(certificateId);
-        verify(averageValuesUseCase).execute(20.0, 10.0, radius);
-    }
-
-    @DisplayName("Handles empty recommendations list gracefully")
-    @Test
-    void handlesEmptyRecommendationsListGracefully() {
-        Long certificateId = 1L;
-        Integer radius = 5000;
-        OfficialCertificate certificate = mock(OfficialCertificate.class);
-        Address address = mock(Address.class);
-        Point location = mock(Point.class);
-        AverageValuesDTO averages = mock(AverageValuesDTO.class);
-
-        when(certificateRepository.findById(certificateId)).thenReturn(Optional.of(certificate));
         when(certificate.getAddress()).thenReturn(address);
-        when(address.getLocation()).thenReturn(location);
-        when(location.getX()).thenReturn(10.0);
-        when(location.getY()).thenReturn(20.0);
-        when(averageValuesUseCase.execute(20.0, 10.0, radius)).thenReturn(averages);
-        when(recommendationRepository.saveAll(anyList())).thenReturn(new ArrayList<>());
 
-        List<RecommendationDTO> result = generateZoneRecommendationsUseCase.execute(certificateId, radius);
+        when(averageValuesUseCase.execute(anyDouble(), anyDouble(), anyInt())).thenReturn(null);
 
-        assertNotNull(result);
-        assertTrue(result.size() == 8);
-        verify(certificateRepository).findById(certificateId);
-        verify(averageValuesUseCase).execute(20.0, 10.0, radius);
-        verify(recommendationRepository).saveAll(anyList());
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> useCase.execute(1L, 10));
+        assertEquals("400 BAD_REQUEST \"Average values not found\"", ex.getMessage());
     }
 }

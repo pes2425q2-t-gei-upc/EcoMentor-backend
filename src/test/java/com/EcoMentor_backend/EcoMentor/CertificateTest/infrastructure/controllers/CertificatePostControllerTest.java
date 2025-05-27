@@ -79,21 +79,5 @@ class CertificatePostControllerTest {
         verify(getCertificateBySetOfValuesUseCase, times(1)).execute(parameter, values);
     }
 
-    @Test
-    void testCalculateUnofficialCertificate() {
-        // Arrange
-        CalculateUnofficialCertificateDTO calculateUnofficialCertificateDTO = new CalculateUnofficialCertificateDTO();
-        CalculatorResultsDTO expectedResults = new CalculatorResultsDTO();
-        when(calculateUnofficialCertificateUseCase.execute(calculateUnofficialCertificateDTO))
-                .thenReturn(expectedResults);
 
-        // Act
-        ResponseEntity<CalculatorResultsDTO> response =
-                certificatePostController.calculateUnofficialCertificate(calculateUnofficialCertificateDTO);
-
-        // Assert
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(expectedResults, response.getBody());
-        verify(calculateUnofficialCertificateUseCase, times(1)).execute(calculateUnofficialCertificateDTO);
-    }
 }

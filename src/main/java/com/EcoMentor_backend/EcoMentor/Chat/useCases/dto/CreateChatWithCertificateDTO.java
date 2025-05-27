@@ -17,15 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateChatWithCertificateDTO {
-
-    @NotBlank
-    private Long userId;
-
     @NotBlank
     private String chatName;
-
-    @NotBlank
-    ZonedDateTime dateTime;
 
     @NotBlank
     private String message;
